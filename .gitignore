@@ -30,3 +30,4 @@ public/uploads/plantes/*
 .settings/org.eclipse.wst.validation.prefs
 .buildpath
 .project
+.env.test
