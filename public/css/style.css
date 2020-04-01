@@ -1,0 +1,76 @@
+.card-body {
+	padding: 0.8rem;
+}
+
+.culture-card-header {
+	padding      : 0.6rem 1rem;
+	margin-bottom: 0;
+	border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+	background   : #cae5ce;
+}
+
+.culture-card-header h5 {
+	margin-bottom: 0;
+	font-size    : 1.10rem;
+}
+
+.list-unstyled {
+	padding: 0;
+	margin : 0;
+}
+
+html {
+	font-size: 0.90rem;
+}
+
+.table-striped tbody tr:nth-of-type(2n+1) {
+    background-color: rgba(201,228,205,0.5);
+}
+
+.shadow {
+    -webkit-box-shadow: 0 8px 6px -6px black;
+    -moz-box-shadow: 0 8px 6px -6px black;
+    box-shadow: 0 8px 6px -6px black;
+}
+
+.cdlist-group {
+    max-height                : 50rem;
+    margin-bottom             : 1rem;
+    overflow-x                : none;
+    overflow-y                : auto;
+    -webkit-overflow-scrolling: touch;
+}
+/*
+.navbar_background {
+	background-color: #366c50;
+} */
+
+.border-1ere-culture {
+	border-left: #17a0b6 solid 6px;
+}
+
+.border-retour-ok {
+	border-left: #28a745 solid 6px;
+}
+
+.border-retour-ko {
+	border-left: #ffaa00 solid 6px;
+}
+
+.custom-file-label::after {
+    content:"Parcourir...";
+}
+
+.bottom-line {
+    border-bottom: 0.1rem solid #dadada;
+}
+
+.card-img-top {
+    width: 100%;
+    height: 10vw;
+    object-fit: cover;
+}
+
+.thumb-shadow {
+    box-shadow: 0 3px 3px 0 rgba(0, 0, 0, 0.10), 0 3px 3px 0 rgba(0, 0, 0, 0.10);
+}

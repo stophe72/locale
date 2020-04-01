@@ -1,0 +1,11 @@
+{% extends 'layout.html.twig' %}
+
+{% block body %}
+    <div class="container-fluid p-0">
+        {% include 'nav.html.twig' %}
+    </div>
+    <div class="container-fluid">
+        {% block content %}{% endblock %}
+    </div>
+    {% block javascripts %}{% endblock %}
+{% endblock %}

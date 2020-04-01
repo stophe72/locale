@@ -1,0 +1,138 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 col-sm-6 mb-4">
+        <h3 class="text-success"><i class="fa fa-university"></i> {{ page_title }}</h3>
+        <div class="d-none text-success spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col text-right">
+            <a href="{{ path("user_banque_add") }}" class="btn btn-primary">Ajouter</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr class="d-flex">
+                    <th class="col-sm-2">Id.</th>
+                    <th class="col-sm-6">Libellé</th>
+                    <th class="col-sm-4"></th>
+                </tr>
+            </thead>
+            {% for banque in banques %}
+                <tr class="d-flex">
+                    <td class="col-sm-2 align-middle">{{ banque.id }}</td>
+                    <td class="col-sm-6 align-middle">{{ banque.libelle }}</td>
+                    <td class="col-sm-4 text-right">
+                        <a href="{{ path('user_banque_edit', {'id': banque.id}) }}" title="Détails de la banque" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
+                        </a>
+                        <a href="#" onclick='del_confirm({{ banque.id }}, "{{ banque.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la banque ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La banque "<span id="banque_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $("#autocomplete").autocomplete({
+        debounce: 500,
+        source: function( request, response ) {
+        // Fetch data
+            $.ajax({
+                url: '#', {#'{{ path('ajaxParcelleGetParcelles') }}',#}
+                type: 'post',
+                dataType: "json",
+                data: {
+                    search: request.term
+                },
+                success: function( data ) {
+                    response(data);
+                }
+            });
+        },
+        select: function (event, ui) {
+            $('#autocomplete').val(ui.item.label);
+
+            return false;
+        }
+    });
+
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.banqueId;
+
+        window.location.href = "/banque/delete/" + id;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.banqueId = id;
+
+        $.ajax({
+            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            dataType: "json",
+            data: {
+                "banqueId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#exampleModal');
+
+                    dialog.find('.modal-body').text("Supprimer la banque " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#banque_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
+{% endblock %}
