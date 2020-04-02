@@ -76,29 +76,6 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-    $("#autocomplete").autocomplete({
-        debounce: 500,
-        source: function( request, response ) {
-        // Fetch data
-            $.ajax({
-                url: '#', {#'{{ path('ajaxParcelleGetParcelles') }}',#}
-                type: 'post',
-                dataType: "json",
-                data: {
-                    search: request.term
-                },
-                success: function( data ) {
-                    response(data);
-                }
-            });
-        },
-        select: function (event, ui) {
-            $('#autocomplete').val(ui.item.label);
-
-            return false;
-        }
-    });
-
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.banqueId;

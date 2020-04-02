@@ -25,7 +25,6 @@ DROP TABLE IF EXISTS `adresse`;
 CREATE TABLE `adresse` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
-  `majeurId` int(11) NOT NULL,
   `adresse1` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adresse2` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `codePostal` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -34,9 +33,7 @@ CREATE TABLE `adresse` (
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `adresse_FK` (`userId`),
-  KEY `adresse_FK_1` (`majeurId`),
-  CONSTRAINT `adresse_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
-  CONSTRAINT `adresse_FK_1` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
+  CONSTRAINT `adresse_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -343,7 +340,7 @@ CREATE TABLE `tribunal` (
   PRIMARY KEY (`id`),
   KEY `tribunal_FK` (`userId`),
   CONSTRAINT `tribunal_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -362,7 +359,7 @@ CREATE TABLE `typeCompte` (
   PRIMARY KEY (`id`),
   KEY `typeCompte_FK` (`userId`),
   CONSTRAINT `typeCompte_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -458,4 +455,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-01 20:57:54
+-- Dump completed on 2020-04-02 23:46:13

@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use Exception;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,9 +26,9 @@ class SecurityController extends AbstractController
         return $this->render(
             'security/login.html.twig',
             [
-                'page_title' => 'WOJ',
                 'last_username' => $lastUsername,
-                'error' => $error
+                'page_title' => 'MJPM',
+                'error' => $error,
             ]
         );
     }
@@ -39,6 +38,6 @@ class SecurityController extends AbstractController
      */
     public function logout()
     {
-        throw new Exception('This method can be blank - it will be intercepted by the logout key on your firewall');
+        throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 }

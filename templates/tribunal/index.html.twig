@@ -2,12 +2,12 @@
 
 {% block content %}
     <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-success"><i class="fa fa-university"></i> {{ page_title }}</h3>
+        <h3 class="text-success"><i class="fa fa-gavel"></i> {{ page_title }}</h3>
         <div class="d-none text-success spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_typecompte_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_tribunal_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -19,15 +19,15 @@
                     <th class="col-sm-4"></th>
                 </tr>
             </thead>
-            {% for typeCompte in typeComptes %}
+            {% for tribunal in tribunaux %}
                 <tr class="d-flex">
-                    <td class="col-sm-2 align-middle">{{ typeCompte.id }}</td>
-                    <td class="col-sm-6 align-middle">{{ typeCompte.libelle }}</td>
+                    <td class="col-sm-2 align-middle">{{ tribunal.id }}</td>
+                    <td class="col-sm-6 align-middle">{{ tribunal.libelle }}</td>
                     <td class="col-sm-4 text-right">
-                        <a href="{{ path('user_typecompte_edit', {'id': typeCompte.id}) }}" title="Détails du type de compte" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('user_tribunal_edit', {'id': tribunal.id}) }}" title="Détails du tribunal" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ typeCompte.id }}, "{{ typeCompte.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ tribunal.id }}, "{{ tribunal.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
@@ -43,7 +43,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer le type de compte ?
+                    Supprimer le tribunal ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>Le type de compte "<span id="typeCompte_name"></span>" est utilisé.</p>
+                    <p>La tribunal "<span id="tribunal_name"></span>" est utilisée.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -78,19 +78,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.typeCompteId;
+        const id = el.dataset.tribunalId;
 
-        window.location.href = "/typeCompte/delete/" + id;
+        window.location.href = "/tribunal/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.typeCompteId = id;
+        document.getElementById('btn_delete').dataset.tribunalId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "typeCompteId": id
+                "tribunalId": id
             },
 
             success: function (reponse)
@@ -98,10 +98,10 @@
                 if (reponse['data']) {
                     var dialog = $('#exampleModal');
 
-                    dialog.find('.modal-body').text("Supprimer le type de compte " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer le tribunal " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#typeCompte_name").html(name);
+                    $("#tribunal_name").html(name);
                     $("#myModal").modal();
                 }
             },

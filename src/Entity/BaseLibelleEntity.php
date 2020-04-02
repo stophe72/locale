@@ -42,4 +42,9 @@ class BaseLibelleEntity extends BaseUserEntity
 
         return $this;
     }
+
+    public function __toString()
+    {
+        return $this->getLibelle();
+    }
 }
