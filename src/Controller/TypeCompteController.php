@@ -41,7 +41,7 @@ class TypeCompteController extends AbstractController
     /**
      * @Route("user/typecompte/add", name="user_typecompte_add")
      */
-    public function add(Request $request, TypeCompteRepository $typeCompteRepository)
+    public function add(Request $request)
     {
         $typeCompte = new TypeCompteEntity();
 

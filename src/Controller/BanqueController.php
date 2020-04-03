@@ -42,7 +42,7 @@ class BanqueController extends AbstractController
     /**
      * @Route("user/banque/add", name="user_banque_add")
      */
-    public function add(Request $request, BanqueRepository $banqueRepository)
+    public function add(Request $request)
     {
         $banque = new BanqueEntity();
 

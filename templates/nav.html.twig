@@ -12,7 +12,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="{{ path("user_notesdefrais") }}">
                         Notes de frais
                     </a>
                 </li>
@@ -46,6 +46,7 @@
                         <a class="dropdown-item" href="{{ path("user_banques") }}">Banques</a>
                         <a class="dropdown-item" href="{{ path("user_tribunaux") }}">Tribunaux</a>
                         <a class="dropdown-item" href="{{ path("user_typecomptes") }}">Types de compte</a>
+                        <a class="dropdown-item" href="{{ path("user_typesfrais") }}">Types de frais</a>
                         {#<a class="dropdown-item" href="{{ path("parcelles") }}"><i class="text-success fas fa-chart-pie"></i> Parcelles</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href={{ path("familles") }}><i class="text-success fas fa-th"></i> Familles</a>

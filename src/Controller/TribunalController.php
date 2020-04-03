@@ -41,7 +41,7 @@ class TribunalController extends AbstractController
     /**
      * @Route("user/tribunal/add", name="user_tribunal_add")
      */
-    public function add(Request $request, TribunalRepository $tribunalRepository)
+    public function add(Request $request)
     {
         $tribunal = new TribunalEntity();
 
