@@ -4,5 +4,31 @@
 
 {% block form_content %}
     {{ form_errors(form) }}
-    {{ form(form) }}
+    {{ form_row(form.civilite) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.prenom) }}
+    {{ form_widget(form.adresse) }}
+    {{ form_row(form.dateNaissance) }}
+    {{ form_row(form.numeroSS) }}
+
+    <h5 class="bottom-line mt-3 text-secondary">Jugement</h5>
+    {{ form_row(form.numeroRG) }}
+    {{ form_row(form.dateJugement) }}
+    {{ form_row(form.tribunal) }}
+
+    <h5 class="bottom-line my-3 text-secondary">Mesure</h5>
+    <div class="row my-3">
+        <div class="col-sm-2 px-0">
+            {{ form_label(form.debutMesure) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.debutMesure) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_label(form.finMesure) }}
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.finMesure) }}
+        </div>
+    </div>
 {% endblock %}

@@ -42,6 +42,11 @@ class MajeurEntity extends BaseUserEntity
     private $numeroSS;
 
     /**
+     * @ORM\Column(name="numeroRG", type="string", length=100)
+     */
+    private $numeroRG;
+
+    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TribunalEntity")
      * @ORM\JoinColumn(name="tribunalId", referencedColumnName="id", nullable=false)
      */
@@ -81,7 +86,7 @@ class MajeurEntity extends BaseUserEntity
 
     public function setNom(string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = strtoupper($nom);
 
         return $this;
     }
@@ -129,7 +134,7 @@ class MajeurEntity extends BaseUserEntity
 
     public function setNumeroSS(string $numeroSS): self
     {
-        $this->numeroSS = $numeroSS;
+        $this->numeroSS = strtoupper($numeroSS);
 
         return $this;
     }
@@ -178,6 +183,26 @@ class MajeurEntity extends BaseUserEntity
     public function setFinMesure(\DateTimeInterface $finMesure): self
     {
         $this->finMesure = $finMesure;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of numeroRG
+     */
+    public function getNumeroRG()
+    {
+        return $this->numeroRG;
+    }
+
+    /**
+     * Set the value of numeroRG
+     *
+     * @return  self
+     */
+    public function setNumeroRG($numeroRG)
+    {
+        $this->numeroRG = strtoupper($numeroRG);
 
         return $this;
     }

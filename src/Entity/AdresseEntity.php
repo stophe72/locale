@@ -30,11 +30,6 @@ class AdresseEntity extends BaseUserEntity
      */
     private $ville;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getAdresse1(): ?string
     {
         return $this->adresse1;
@@ -42,7 +37,7 @@ class AdresseEntity extends BaseUserEntity
 
     public function setAdresse1(string $adresse1): self
     {
-        $this->adresse1 = $adresse1;
+        $this->adresse1 = strtoupper($adresse1);
 
         return $this;
     }
@@ -54,7 +49,7 @@ class AdresseEntity extends BaseUserEntity
 
     public function setAdresse2(?string $adresse2): self
     {
-        $this->adresse2 = $adresse2;
+        $this->adresse2 = strtoupper($adresse2);
 
         return $this;
     }
@@ -78,7 +73,7 @@ class AdresseEntity extends BaseUserEntity
 
     public function setVille(string $ville): self
     {
-        $this->ville = $ville;
+        $this->ville = strtoupper($ville);
 
         return $this;
     }

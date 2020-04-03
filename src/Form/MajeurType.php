@@ -20,7 +20,17 @@ class MajeurType extends AbstractType
             ->add(
                 'civilite',
                 ChoiceType::class,
-                []
+                [
+                    'label' => 'Civilité',
+                    'choices' => [
+                        'Madame' => 'Madame',
+                        'Mademoiselle' => 'Mademoiselle',
+                        'Monsieur' => 'Monsieur',
+                    ],
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
+                ]
             )
             ->add('nom', TextType::class)
             ->add(
@@ -34,13 +44,19 @@ class MajeurType extends AbstractType
                 'dateNaissance',
                 DateType::class,
                 [
+                    'label' => 'Date de naissance',
                     'widget'   => 'single_text',
                 ]
             )
             ->add(
                 'numeroSS',
                 TextType::class,
-                ['label' => 'Numéro de Sécurité Sociale']
+                ['label' => 'N° Sécurité Sociale']
+            )
+            ->add(
+                'numeroRG',
+                TextType::class,
+                ['label' => 'N° Répertoire Général']
             )
             ->add(
                 'dateJugement',
@@ -54,7 +70,7 @@ class MajeurType extends AbstractType
                 'debutMesure',
                 DateType::class,
                 [
-                    'label' => 'Début de mesure',
+                    'label' => 'Début',
                     'widget'   => 'single_text',
                 ]
             )
@@ -62,7 +78,7 @@ class MajeurType extends AbstractType
                 'finMesure',
                 DateType::class,
                 [
-                    'label' => 'Fin de mesure',
+                    'label' => 'Fin',
                     'widget'   => 'single_text',
                 ]
             )
@@ -72,6 +88,9 @@ class MajeurType extends AbstractType
                 EntityType::class,
                 [
                     'class' => TribunalEntity::class,
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
                 ]
             );
     }
