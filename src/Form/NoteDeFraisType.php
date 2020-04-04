@@ -4,8 +4,8 @@ namespace App\Form;
 
 use App\Entity\NoteDeFraisEntity;
 use App\Entity\TypeFraisEntity;
-use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -15,6 +15,8 @@ class NoteDeFraisType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        $typesFrais = $options['typesFrais'];
+
         $builder
             ->add(
                 'date',
@@ -26,14 +28,16 @@ class NoteDeFraisType extends AbstractType
             ->add('montant', MoneyType::class)
             ->add(
                 'typeFrais',
-                EntityType::class,
+                ChoiceType::class,
                 [
                     'label' => 'Type de frais',
-                    'class' => TypeFraisEntity::class,
-                    'attr' =>
-                    [
-                        'class' => 'custom-select',
-                    ],
+                    'choices' => $typesFrais,
+                    'choice_label' => function (TypeFraisEntity $typeFrais) {
+                        return $typeFrais->getLibelle();
+                    },
+                    'choice_value' => function (TypeFraisEntity $typeFrais = null) {
+                        return $typeFrais ? $typeFrais->getId() : '';
+                    },
                 ]
             );
     }
@@ -43,5 +47,10 @@ class NoteDeFraisType extends AbstractType
         $resolver->setDefaults([
             'data_class' => NoteDeFraisEntity::class,
         ]);
+        $resolver->setRequired(
+            [
+                'typesFrais',
+            ]
+        );
     }
 }

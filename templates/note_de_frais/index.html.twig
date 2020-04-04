@@ -13,7 +13,7 @@
     <div class="row">
         <table class="table table-striped">
             <thead>
-                <tr class="d-flex">
+                <tr>
                     <th>Id.</th>
                     <th>Date</th>
                     <th>Type de frais</th>
@@ -21,8 +21,9 @@
                     <th></th>
                 </tr>
             </thead>
+            <tbody>
             {% for ndf in pagination.items %}
-                <tr class="d-flex">
+                <tr>
                     <td>{{ ndf.id }}</td>
                     <td class="align-right">{{ ndf.date|date('d/m/Y') }}</td>
                     <td>{{ ndf.typeFrais }}</td>
@@ -31,12 +32,13 @@
                         <a href="{{ path('user_ndf_edit', {'id': ndf.id}) }}" title="Détails de la note" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.typeFrais.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
                 </tr>
             {% endfor %}
+            </tbody>
         </table>
         <div class="pagination justify-content-center pt-2">
             {{ knp_pagination_render(pagination) }}

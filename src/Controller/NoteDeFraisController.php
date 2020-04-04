@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\NoteDeFraisEntity;
 use App\Form\NoteDeFraisType;
 use App\Repository\NoteDeFraisEntityRepository;
+use App\Repository\TypeFraisRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -57,11 +58,13 @@ class NoteDeFraisController extends AbstractController
     /**
      * @Route("user/notesdefrais/add", name="user_ndf_add")
      */
-    public function add(Request $request)
+    public function add(Request $request, TypeFraisRepository $typeFraisRepository)
     {
         $noteDeFrais = new NoteDeFraisEntity();
 
-        $form = $this->createForm(NoteDeFraisType::class, $noteDeFrais);
+        $typesFrais = $typeFraisRepository->findBy([], ['libelle' => 'ASC']);
+
+        $form = $this->createForm(NoteDeFraisType::class, $noteDeFrais, ['typesFrais' => $typesFrais]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

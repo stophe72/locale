@@ -27,7 +27,7 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/add", name="user_majeur_add")
      */
-    public function add(Request $request, MajeurRepository $majeurRepository)
+    public function add(Request $request)
     {
         $majeur = new MajeurEntity();
 

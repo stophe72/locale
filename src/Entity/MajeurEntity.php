@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
 class MajeurEntity extends BaseUserEntity
 {
     /**
-     * @ORM\Column(type="string", length=6)
+     * @ORM\Column(type="string", length=25)
      */
     private $civilite;
 

@@ -21,7 +21,7 @@ class AdresseEntity extends BaseUserEntity
     private $adresse2;
 
     /**
-     * @ORM\Column(type="string", length=10)
+     * @ORM\Column(name="codePostal", type="string", length=10)
      */
     private $codePostal;
 
