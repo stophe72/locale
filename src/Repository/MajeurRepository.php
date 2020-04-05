@@ -19,6 +19,15 @@ class MajeurRepository extends ServiceEntityRepository
         parent::__construct($registry, MajeurEntity::class);
     }
 
+    public function getAllOrderByNomPrenom()
+    {
+        $qb = $this->createQueryBuilder('m')
+            ->orderBy('m.nom', 'ASC')
+            ->addOrderBy('m.prenom', 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
+
     // /**
     //  * @return MajeurEntity[] Returns an array of MajeurEntity objects
     //  */

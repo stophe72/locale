@@ -21,6 +21,11 @@ class MajeurEntity extends BaseUserEntity
     private $nom;
 
     /**
+     * @ORM\Column(name="nomEtatCivil", type="string", length=100)
+     */
+    private $nomEtatCivil;
+
+    /**
      * @ORM\Column(type="string", length=100)
      */
     private $prenom;
@@ -98,7 +103,7 @@ class MajeurEntity extends BaseUserEntity
 
     public function setPrenom(string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucfirst($prenom);
 
         return $this;
     }
@@ -203,6 +208,26 @@ class MajeurEntity extends BaseUserEntity
     public function setNumeroRG($numeroRG)
     {
         $this->numeroRG = strtoupper($numeroRG);
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nomEtatCivil
+     */
+    public function getNomEtatCivil()
+    {
+        return $this->nomEtatCivil;
+    }
+
+    /**
+     * Set the value of nomEtatCivil
+     *
+     * @return  self
+     */
+    public function setNomEtatCivil($nomEtatCivil)
+    {
+        $this->nomEtatCivil = $nomEtatCivil;
 
         return $this;
     }

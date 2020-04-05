@@ -8,9 +8,25 @@ use App\Repository\MajeurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class MajeurController extends AbstractController
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * Constructeur
+     *
+     * @param $session SessionInterface
+     */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     /**
      * @Route("user/majeurs", name="user_majeurs")
      */
@@ -56,11 +72,46 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/edit/{id}", name="user_majeur_edit")
      */
-    public function edit(MajeurRepository $majeurRepository)
+    public function edit(Request $request, MajeurEntity $majeur, MajeurRepository $majeurRepository)
     {
-        return $this->render('majeur/index.html.twig', [
-            'majeurs' => $majeurRepository->findBy([], ['nom' => 'ASC']),
-            'page_title' => 'Liste des majeurs',
-        ]);
+        $form = $this->createForm(MajeurType::class, $majeur);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($majeur);
+            $em->flush();
+
+            return $this->redirectToRoute('user_majeurs');
+        }
+
+        return $this->render(
+            'majeur/new_or_edit.html.twig',
+            [
+                'form'        => $form->createView(),
+                'page_title'  => 'Editer un majeur',
+                'baseEntity' => $majeur,
+                'url_back'    => 'user_majeurs',
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/show/{id}", name="user_majeur_show")
+     */
+    public function show(MajeurEntity $majeur)
+    {
+        $user = $this->security->getUser();
+        if ($majeur && $majeur->isOwnBy($user)) {
+            return $this->render(
+                'majeur/show.html.twig',
+                [
+                    'majeur' => $majeur,
+                    'page_title' => 'Détails d\'un majeur',
+                    'url_back'   => $this->generateUrl('user_majeurs'),
+                ]
+            );
+        }
+        return $this->redirectToRoute('user_majeurs');
     }
 }

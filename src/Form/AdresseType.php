@@ -26,6 +26,7 @@ class AdresseType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Complément d\'adresse',
+                    'required' => false,
                 ]
             )
             ->add('codePostal', NumberType::class, [

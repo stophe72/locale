@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use App\Entity\NoteDeFraisEntity;
 use App\Form\NoteDeFraisType;
-use App\Repository\NoteDeFraisEntityRepository;
+use App\Repository\NoteDeFraisRepository;
 use App\Repository\TypeFraisRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -35,12 +35,12 @@ class NoteDeFraisController extends AbstractController
     public function index(
         PaginatorInterface $paginator,
         Request $request,
-        NoteDeFraisEntityRepository $noteDeFraisEntityRepository
+        NoteDeFraisRepository $noteDeFraisRepository
     ) {
         $user = $this->security->getUser();
         $startPage = $request->get('page', 1);
         $pagination = $paginator->paginate(
-            $noteDeFraisEntityRepository->getQueryBuilder($user),
+            $noteDeFraisRepository->getQueryBuilder($user),
             $startPage,
             12,
             [

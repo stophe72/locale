@@ -34,6 +34,13 @@ class MajeurType extends AbstractType
             )
             ->add('nom', TextType::class)
             ->add(
+                'nomEtatCivil',
+                TextType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
                 'prenom',
                 TextType::class,
                 [

@@ -13,7 +13,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  * @method NoteDeFraisEntity[]    findAll()
  * @method NoteDeFraisEntity[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class NoteDeFraisEntityRepository extends ServiceEntityRepository
+class NoteDeFraisRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
