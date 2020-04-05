@@ -1,0 +1,8 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-calendar-alt" %}
+
+{% block form_content %}
+    {{ form_errors(form) }}
+    {{ form_row(form.libelle) }}
+{% endblock %}

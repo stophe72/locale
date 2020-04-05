@@ -2,63 +2,37 @@
 
 {% block content %}
     <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fa fa-users"></i> {{ page_title }}</h3>
+        <h3 class="text-primary"><i class="fa fa-user-shield"></i> {{ page_title }}</h3>
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_majeur_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_prestationsociale_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Civilité</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Date jugement</th>
-                    <th>N° R.G.</th>
-                    <th>Début mesure</th>
-                    <th>Fin mesure</th>
-                    <th></th>
+                    <th class="col-sm-2">Id.</th>
+                    <th class="col-sm-6">Libellé</th>
+                    <th class="col-sm-4"></th>
                 </tr>
             </thead>
-            <tbody>
-            {% for majeur in majeurs %}
+            {% for prestationsociale in prestation_sociales %}
                 <tr>
-                    <td>{{ majeur.civilite }}</td>
-                    <td>{{ majeur.nom }}</td>
-                    <td>{{ majeur.prenom }}</td>
-                    <td>{{ majeur.dateJugement|date("d/m/Y") }}</td>
-                    <td>{{ majeur.numeroRG }}</td>
-                    <td>{{ majeur.debutMesure|date("d/m/Y") }}</td>
-                    <td>{{ majeur.finMesure|date("d/m/Y") }}</td>
-                    <td>
-                        <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-info-circle"></i> Détails
+                    <td class="col-sm-2 align-middle">{{ prestationsociale.id }}</td>
+                    <td class="col-sm-6 align-middle">{{ prestationsociale.libelle }}</td>
+                    <td class="col-sm-4 text-right">
+                        <a href="{{ path('user_prestationsociale_edit', {'id': prestationsociale.id}) }}" title="Détails de la période" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
                         </a>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
-                                <i class="fa fa-pen"></i> Editer
-                            </a>
-                            <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{{ path('user_majeur_edit', {'id': majeur.id}) }}">
-                                    <i class="fa fa-copy"></i> Compte gestion
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
-                                    <i class="fa fa-trash"></i> Supprimer
-                                </a>
-                            </div>
-                        </div>
+                        <a href="#" onclick='del_confirm({{ prestationsociale.id }}, "{{ prestationsociale.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
     </div>
 
@@ -69,7 +43,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer le majeur ?
+                    Supprimer la prestation sociale ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -90,7 +64,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La majeur "<span id="majeur_name"></span>" est utilisée.</p>
+                    <p>La prestation sociale "<span id="prestationsociale_name"></span>" est utilisée.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -104,19 +78,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.majeurId;
+        const id = el.dataset.prestationsocialeId;
 
-        window.location.href = "/majeur/delete/" + id;
+        window.location.href = "/prestationsociale/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.majeurId = id;
+        document.getElementById('btn_delete').dataset.prestationsocialeId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "majeurId": id
+                "prestationsocialeId": id
             },
 
             success: function (reponse)
@@ -124,10 +98,10 @@
                 if (reponse['data']) {
                     var dialog = $('#exampleModal');
 
-                    dialog.find('.modal-body').text("Supprimer le majeur " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer la prestation sociale " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#majeur_name").html(name);
+                    $("#prestationsociale_name").html(name);
                     $("#myModal").modal();
                 }
             },

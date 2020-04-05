@@ -1,0 +1,115 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 col-sm-6 mb-4">
+        <h3 class="text-primary"><i class="fa fa-shield-alt"></i> {{ page_title }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col text-right">
+            <a href="{{ path("user_protection_add") }}" class="btn btn-primary">Ajouter</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="col-sm-2">Id.</th>
+                    <th class="col-sm-6">Libellé</th>
+                    <th class="col-sm-4"></th>
+                </tr>
+            </thead>
+            {% for protection in protections %}
+                <tr>
+                    <td class="col-sm-2 align-middle">{{ protection.id }}</td>
+                    <td class="col-sm-6 align-middle">{{ protection.libelle }}</td>
+                    <td class="col-sm-4 text-right">
+                        <a href="{{ path('user_protection_edit', {'id': protection.id}) }}" title="Détails de la protection" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
+                        </a>
+                        <a href="#" onclick='del_confirm({{ protection.id }}, "{{ protection.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la protection ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La protection "<span id="protection_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.protectionId;
+
+        window.location.href = "/protection/delete/" + id;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.protectionId = id;
+
+        $.ajax({
+            url: "#", {#"{{ path('ajaxCanDeleteProtection') }}",#}
+            dataType: "json",
+            data: {
+                "protectionId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#exampleModal');
+
+                    dialog.find('.modal-body').text("Supprimer la protection " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#protection_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
+{% endblock %}

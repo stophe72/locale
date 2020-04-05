@@ -1,0 +1,92 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mb-4 mt-4">
+        <h3 class="text-primary"><i class="fa fa-info-circle"></i> {{ page_title }}</h3>
+    </div>
+    <div class="row">
+        <table class="table">
+            <tr>
+                <th>Id.</th>
+                <td>{{ majeur.id }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ majeur.nom }}</td>
+            </tr>
+            <tr>
+                <th>Nom état civil</th>
+                <td>{{ majeur.nomEtatCivil }}</td>
+            </tr>
+            <tr>
+                <th>Prénom</th>
+                <td>{{ majeur.prenom }}</td>
+            </tr>
+            <tr>
+                <th>Adresse</th>
+                <td>{{ majeur.adresse.adresse1 }}</td>
+            </tr>
+            <tr>
+                <th>Complément d'adresse</th>
+                <td>{{ majeur.adresse.adresse2 }}</td>
+            </tr>
+            <tr>
+                <th>Code postal</th>
+                <td>{{ majeur.adresse.codePostal }}</td>
+            </tr>
+            <tr>
+                <th>Ville</th>
+                <td>{{ majeur.adresse.  ville }}</td>
+            </tr>
+            <tr>
+                <th>Date de naissance</th>
+                <td>{{ majeur.dateNaissance|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th>N° de Sécurité Sociale</th>
+                <td>{{ majeur.numeroSS }}</td>
+            </tr>
+            <tr>
+                <th>N° de Répertoire Général</th>
+                <td>{{ majeur.numeroRG }}</td>
+            </tr>
+            <tr>
+                <th>Date de jugement</th>
+                <td>{{ majeur.dateJugement|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th>Tribunal</th>
+                <td>{{ majeur.tribunal.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Début de mesure</th>
+                <td>{{ majeur.debutMesure|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th>Fin de mesure</th>
+                <td>{{ majeur.finMesure|date('m/d/Y') }}</td>
+            </tr>
+        </table>
+    </div>
+        <div class="row">
+            <div class="col-2">
+                <small>Date de création</small>
+            </div>
+            <div class="col">
+                <small>{{ majeur.dateCreation|date("d/m/Y H:i:s") }}</small>
+            </div>
+        </div>
+        {% if majeur.dateModification is not null %}
+            <div class="row">
+                <div class="col-2">
+                    <small>Date de modification</small>
+                </div>
+                <div class="col">
+                    <small>{{ majeur.dateModification|date("d/m/Y H:i:s") }}</small>
+                </div>
+            </div>
+        {% endif %}
+    <div class="row float-right mx-0">
+        <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
+    </div>
+{% endblock %}
