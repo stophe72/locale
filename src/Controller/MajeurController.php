@@ -6,6 +6,7 @@ use App\Entity\MajeurEntity;
 use App\Form\MajeurType;
 use App\Repository\MajeurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -94,6 +95,26 @@ class MajeurController extends AbstractController
                 'url_back'    => 'user_majeurs',
             ]
         );
+    }
+
+    /**
+     * @Route("user/majeur/ajaxMajeursGetByName", name="ajax_majeurs_get_by_name")
+     */
+    public function ajaxMajeursGetByName(Request $request, MajeurRepository $majeurRepository)
+    {
+        $name = $request->get('name');
+        $user = $this->security->getUser();
+
+        /** @var MajeurEntity[] $majeurs */
+        $majeurs = $majeurRepository->findByName($name, $user);
+        $a       = [];
+        foreach ($majeurs as $majeur) {
+            $a[] = [
+                'value' => $majeur->getId(),
+                'label' => $majeur->getNom(),
+            ];
+        }
+        return new JsonResponse($a);
     }
 
     /**

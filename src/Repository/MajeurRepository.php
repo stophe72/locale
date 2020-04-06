@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\MajeurEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 
@@ -19,7 +20,7 @@ class MajeurRepository extends ServiceEntityRepository
         parent::__construct($registry, MajeurEntity::class);
     }
 
-    public function getAllOrderByNomPrenom()
+    public function getAllOrderByNomPrenom(UserEntity $user)
     {
         $qb = $this->createQueryBuilder('m')
             ->orderBy('m.nom', 'ASC')
@@ -28,32 +29,18 @@ class MajeurRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    // /**
-    //  * @return MajeurEntity[] Returns an array of MajeurEntity objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function findByName(?string $name, UserEntity $user, $maxResult = 12)
     {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('m.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('m')
+            ->innerJoin('m.user', 'user')
+            ->where('user = :userId')
+            ->andWhere('LOWER(m.nom) LIKE LOWER(:nom)')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('nom', '%' . $name . '%')
+            ->addOrderBy('m.nom', 'ASC')
+            ->addOrderBy('m.prenom', 'ASC')
+            ->setMaxResults($maxResult);
 
-    /*
-    public function findOneBySomeField($value): ?MajeurEntity
-    {
-        return $this->createQueryBuilder('m')
-            ->andWhere('m.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getResult();
     }
-    */
 }

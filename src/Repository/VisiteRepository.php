@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\UserEntity;
 use App\Entity\VisiteEntity;
+use App\Models\VisiteFilter;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method VisiteEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,42 +22,36 @@ class VisiteRepository extends ServiceEntityRepository
         parent::__construct($registry, VisiteEntity::class);
     }
 
-    public function getAllOrderByNomPrenom()
+    public function getFromFilter(UserEntity $user, VisiteFilter $visiteFilter)
     {
-        $qb = $this->createQueryBuilder('v')
-            ->innerJoin('v.majeur', 'm')
-            ->orderBy('m.nom', 'ASC')
+        $qb = $this->createQueryBuilder('v');
+        $qb->innerJoin('v.majeur', 'm')
+            ->innerJoin('v.user', 'u', Join::WITH, $qb->expr()->eq('v.user', ':userId'))
+            ->setParameter('userId', $user->getId())
+            ->orderBy('v.date', 'DESC')
+            ->addOrderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC');
+
+        if ($visiteFilter->getMajeurNom()) {
+            $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
+                ->setParameter('majeurNom', '%' . $visiteFilter->getMajeurNom() . '%');
+        }
+        if ($visiteFilter->getDateDebut() && $visiteFilter->getDateFin()) {
+            if ($visiteFilter->getDateDebut()->getTimestamp() > $visiteFilter->getDateFin()->getTimestamp()) {
+                $d = $visiteFilter->getDateFin();
+                $visiteFilter->setDateFin($visiteFilter->getDateDebut());
+                $visiteFilter->setDateDebut($d);
+            }
+        }
+        if ($visiteFilter->getDateDebut()) {
+            $qb->andWhere('v.date >= :dateDebut')
+                ->setParameter('dateDebut', $visiteFilter->getDateDebut());
+        }
+        if ($visiteFilter->getDateFin()) {
+            $qb->andWhere('v.date <= :dateFin')
+                ->setParameter('dateFin', $visiteFilter->getDateFin());
+        }
 
         return $qb->getQuery()->getResult();
     }
-
-    // /**
-    //  * @return VisiteEntity[] Returns an array of VisiteEntity objects
-    //  */
-    /*
-    public function findByExampleField($value)
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('v.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
-
-    /*
-    public function findOneBySomeField($value): ?VisiteEntity
-    {
-        return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
 }
