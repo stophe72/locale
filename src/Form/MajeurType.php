@@ -37,6 +37,7 @@ class MajeurType extends AbstractType
                 'nomEtatCivil',
                 TextType::class,
                 [
+                    'label' => 'Nom état civil',
                     'required' => false,
                 ]
             )
