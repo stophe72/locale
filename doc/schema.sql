@@ -34,7 +34,7 @@ CREATE TABLE `adresse` (
   PRIMARY KEY (`id`),
   KEY `adresse_FK` (`userId`),
   CONSTRAINT `adresse_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -151,7 +151,7 @@ CREATE TABLE `lieuVie` (
   PRIMARY KEY (`id`),
   KEY `lieuVie_FK` (`userId`),
   CONSTRAINT `lieuVie_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,6 +166,7 @@ CREATE TABLE `majeur` (
   `userId` int(11) NOT NULL,
   `civilite` varchar(25) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nomEtatCivil` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `prenom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adresseId` int(11) NOT NULL,
   `dateNaissance` date NOT NULL,
@@ -185,7 +186,7 @@ CREATE TABLE `majeur` (
   CONSTRAINT `majeur_FK` FOREIGN KEY (`adresseId`) REFERENCES `adresse` (`id`),
   CONSTRAINT `majeur_FK_2` FOREIGN KEY (`tribunalId`) REFERENCES `tribunal` (`id`),
   CONSTRAINT `majeur_FK_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -204,7 +205,7 @@ CREATE TABLE `nature` (
   PRIMARY KEY (`id`),
   KEY `nature_FK` (`userId`),
   CONSTRAINT `nature_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -283,7 +284,7 @@ CREATE TABLE `periode` (
   PRIMARY KEY (`id`),
   KEY `periode_FK` (`userId`),
   CONSTRAINT `periode_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -302,7 +303,7 @@ CREATE TABLE `prestationSociale` (
   PRIMARY KEY (`id`),
   KEY `prestationSociale_FK` (`userId`),
   CONSTRAINT `prestationSociale_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -321,7 +322,7 @@ CREATE TABLE `protection` (
   PRIMARY KEY (`id`),
   KEY `protection_FK` (`userId`),
   CONSTRAINT `protection_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -431,7 +432,7 @@ CREATE TABLE `visite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
-  `date` datetime NOT NULL,
+  `date` date NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -439,7 +440,7 @@ CREATE TABLE `visite` (
   KEY `visite_FK_1` (`userId`),
   CONSTRAINT `visite_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
   CONSTRAINT `visite_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -455,4 +456,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-04 12:11:50
+-- Dump completed on 2020-04-08 22:57:23
