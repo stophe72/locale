@@ -90,6 +90,8 @@ class VisiteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $visite->setUser($user);
+
             $em = $this->getDoctrine()->getManager();
             $em->persist($visite);
             $em->flush();

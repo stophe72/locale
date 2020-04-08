@@ -1,0 +1,13 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-sliders-h" %}
+
+{% block form_content %}
+    {{ form_errors(form) }}
+    {{ form_row(form.nature) }}
+    {{ form_row(form.protection) }}
+    {{ form_row(form.lieuVie) }}
+    {{ form_row(form.periode) }}
+    {{ form_row(form.prestationSociale) }}
+    {{ form_row(form.ressources) }}
+{% endblock %}
