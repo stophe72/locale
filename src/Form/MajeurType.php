@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\MajeurEntity;
+use App\Entity\ParametreMissionEntity;
 use App\Entity\TribunalEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -100,6 +101,10 @@ class MajeurType extends AbstractType
                         'class' => 'custom-select',
                     ],
                 ]
+            )
+            ->add(
+                'parametreMission',
+                ParametreMissionType::class
             );
     }
 

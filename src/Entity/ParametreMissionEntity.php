@@ -12,31 +12,31 @@ class ParametreMissionEntity extends BaseUserEntity
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\NatureEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="natureId", referencedColumnName="id", nullable=false)
      */
     private $nature;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\ProtectionEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="protectionId", referencedColumnName="id", nullable=false)
      */
     private $protection;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\LieuVieEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="lieuVieId", referencedColumnName="id", nullable=false)
      */
     private $lieuVie;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PeriodeEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="periodeId", referencedColumnName="id", nullable=false)
      */
     private $periode;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PrestationSocialeEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="prestationSocialeId", referencedColumnName="id", nullable=false)
      */
     private $prestationSociale;
 
@@ -45,11 +45,6 @@ class ParametreMissionEntity extends BaseUserEntity
      */
     private $ressources;
 
-    /**
-     * @ORM\OneToOne(targetEntity="App\Entity\MajeurEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $majeur;
 
     public function getNature(): ?NatureEntity
     {
@@ -119,18 +114,6 @@ class ParametreMissionEntity extends BaseUserEntity
     public function setRessources(float $ressources): self
     {
         $this->ressources = $ressources;
-
-        return $this;
-    }
-
-    public function getMajeur(): ?MajeurEntity
-    {
-        return $this->majeur;
-    }
-
-    public function setMajeur(MajeurEntity $majeur): self
-    {
-        $this->majeur = $majeur;
 
         return $this;
     }

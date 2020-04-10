@@ -44,15 +44,39 @@ class ParametreMissionController extends AbstractController
     public function add(MajeurEntity $majeur, Request $request, MajeurRepository $majeurRepository)
     {
         $pm = new ParametreMissionEntity();
-        $pm->setMajeur($majeur);
 
         $form = $this->createForm(ParametreMissionType::class, $pm);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pm);
+            $em->flush();
+
+            return $this->redirectToRoute('user_majeurs');
+        }
 
         return $this->render('parametre_mission/new_or_edit.html.twig', [
             'page_title' => 'Paramètres de la mission',
             'form' => $form->createView(),
             'baseEntity' => $pm,
+            'url_back' => 'user_majeurs',
+        ]);
+    }
+
+    /**
+     * @Route("user/parametremission/show/{id}", name="user_parametremission_show")
+     */
+    public function show(ParametreMissionEntity $parametreMission)
+    {
+        $user = $this->security->getUser();
+
+        if (!$parametreMission->isOwnBy($user)) {
+            $this->redirectToRoute('user_parametremissions');
+        }
+        return $this->render('parametre_mission/show.html.twig', [
+            'page_title' => 'Détails du paramètre de la mission',
+            'parametreMission' => $parametreMission,
             'url_back' => 'user_majeurs',
         ]);
     }

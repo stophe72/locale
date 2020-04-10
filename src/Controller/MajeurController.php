@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\MajeurEntity;
 use App\Form\MajeurType;
+use App\Repository\DonneeBancaireRepository;
 use App\Repository\MajeurRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -120,13 +121,15 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/show/{id}", name="user_majeur_show")
      */
-    public function show(MajeurEntity $majeur)
+    public function show(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository)
     {
         $user = $this->security->getUser();
         if ($majeur && $majeur->isOwnBy($user)) {
+            $dbs = $donneeBancaireRepository->findBy(['user' => $user, 'majeur' => $majeur,], []);
             return $this->render(
                 'majeur/show.html.twig',
                 [
+                    'donneeBancaires' => $dbs,
                     'majeur' => $majeur,
                     'page_title' => 'Détails d\'un majeur',
                     'url_back'   => $this->generateUrl('user_majeurs'),

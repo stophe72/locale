@@ -19,7 +19,6 @@ class ParametreMissionType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('ressources', MoneyType::class)
             ->add(
                 'nature',
                 EntityType::class,
@@ -44,6 +43,7 @@ class ParametreMissionType extends AbstractType
                 'lieuVie',
                 EntityType::class,
                 [
+                    'label' => 'Lieu de vie',
                     'class' => LieuVieEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
@@ -54,6 +54,7 @@ class ParametreMissionType extends AbstractType
                 'periode',
                 EntityType::class,
                 [
+                    'label' => 'Période',
                     'class' => PeriodeEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
@@ -69,7 +70,8 @@ class ParametreMissionType extends AbstractType
                         'class' => 'custom-select',
                     ]
                 ]
-            );
+            )
+            ->add('ressources', MoneyType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)

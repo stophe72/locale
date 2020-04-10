@@ -9,12 +9,35 @@
     {{ form_row(form.nomEtatCivil) }}
     {{ form_row(form.prenom) }}
     {{ form_widget(form.adresse) }}
-    {{ form_row(form.dateNaissance) }}
-    {{ form_row(form.numeroSS) }}
-
-    <h5 class="bottom-line mt-3 text-secondary">Jugement</h5>
-    {{ form_row(form.numeroRG) }}
-    {{ form_row(form.dateJugement) }}
+    <div class="row my-3">
+        <div class="col-sm-2 col-form-label">
+            Date de naissance
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.dateNaissance) }}
+        </div>
+        <div class="col-sm-2 col-form-label">
+            N° de Sécurité Sociale
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.numeroSS) }}
+        </div>
+    </div>
+    <h5 class="bottom-line my-3 text-secondary">Jugement</h5>
+    <div class="row my-3">
+        <div class="col-sm-2 col-form-label">
+            N° Répertoire Général
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.numeroRG) }}
+        </div>
+        <div class="col-sm-2 col-form-label">
+            Date du jugement
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.dateJugement) }}
+        </div>
+    </div>
     {{ form_row(form.tribunal) }}
 
     <h5 class="bottom-line my-3 text-secondary">Mesure</h5>
@@ -32,4 +55,6 @@
             {{ form_widget(form.finMesure) }}
         </div>
     </div>
+    <h5 class="bottom-line my-3 text-secondary">Paramètres de la mission</h5>
+    {{ form_widget(form.parametreMission) }}
 {% endblock %}

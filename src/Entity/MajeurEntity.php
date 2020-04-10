@@ -58,6 +58,12 @@ class MajeurEntity extends BaseUserEntity
     private $tribunal;
 
     /**
+     * @ORM\OneToOne(targetEntity="App\Entity\ParametreMissionEntity")
+     * @ORM\JoinColumn(name="parametreMissionId", referencedColumnName="id", nullable=false)
+     */
+    private $parametreMission;
+
+    /**
      * @ORM\Column(name="dateJugement", type="date", nullable=false)
      */
     private $dateJugement;
@@ -195,7 +201,7 @@ class MajeurEntity extends BaseUserEntity
     /**
      * Get the value of numeroRG
      */
-    public function getNumeroRG()
+    public function getNumeroRG(): ?string
     {
         return $this->numeroRG;
     }
@@ -205,7 +211,7 @@ class MajeurEntity extends BaseUserEntity
      *
      * @return  self
      */
-    public function setNumeroRG($numeroRG)
+    public function setNumeroRG(?string $numeroRG)
     {
         $this->numeroRG = strtoupper($numeroRG);
 
@@ -215,7 +221,7 @@ class MajeurEntity extends BaseUserEntity
     /**
      * Get the value of nomEtatCivil
      */
-    public function getNomEtatCivil()
+    public function getNomEtatCivil(): ?string
     {
         return $this->nomEtatCivil;
     }
@@ -225,9 +231,29 @@ class MajeurEntity extends BaseUserEntity
      *
      * @return  self
      */
-    public function setNomEtatCivil($nomEtatCivil)
+    public function setNomEtatCivil(?string $nomEtatCivil)
     {
         $this->nomEtatCivil = $nomEtatCivil;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of parametreMission
+     */
+    public function getParametreMission(): ?ParametreMissionEntity
+    {
+        return $this->parametreMission;
+    }
+
+    /**
+     * Set the value of parametreMission
+     *
+     * @return  self
+     */
+    public function setParametreMission(ParametreMissionEntity $parametreMission)
+    {
+        $this->parametreMission = $parametreMission;
 
         return $this;
     }

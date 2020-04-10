@@ -25,12 +25,21 @@ class DonneeBancaireController extends AbstractController
     /**
      * @Route("user/donneebancaire/add/{id}", name="user_donneebancaire_add")
      */
-    public function add(MajeurEntity $majeur, Request $request, MajeurRepository $majeurRepository)
+    public function add(MajeurEntity $majeur, Request $request)
     {
         $db = new DonneeBancaireEntity();
+        $db->setMajeur($majeur);
 
         $form = $this->createForm(DonneeBancaireType::class, $db);
         $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($db);
+            $em->flush();
+
+            return $this->redirectToRoute('user_majeur_show', ['id' => $majeur->getId(),]);
+        }
 
         return $this->render('donnee_bancaire/new_or_edit.html.twig', [
             'page_title' => 'Données bancaires',

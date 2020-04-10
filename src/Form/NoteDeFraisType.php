@@ -30,6 +30,9 @@ class NoteDeFraisType extends AbstractType
                 'typeFrais',
                 ChoiceType::class,
                 [
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
                     'label' => 'Type de frais',
                     'choices' => $typesFrais,
                     'choice_label' => function (TypeFraisEntity $typeFrais) {

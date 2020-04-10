@@ -132,7 +132,7 @@ CREATE TABLE `donneeBancaire` (
   CONSTRAINT `donneeBancaire_FK_1` FOREIGN KEY (`banqueId`) REFERENCES `banque` (`id`),
   CONSTRAINT `donneeBancaire_FK_2` FOREIGN KEY (`typeCompteId`) REFERENCES `typeCompte` (`id`),
   CONSTRAINT `donneeBancaire_FK_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -172,6 +172,7 @@ CREATE TABLE `majeur` (
   `dateNaissance` date NOT NULL,
   `numeroSS` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tribunalId` int(11) NOT NULL,
+  `parametreMissionId` int(11) NOT NULL,
   `dateJugement` date NOT NULL,
   `numeroRG` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `debutMesure` date NOT NULL,
@@ -179,13 +180,15 @@ CREATE TABLE `majeur` (
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `majeur_FK` (`adresseId`),
   KEY `majeur_FK_1` (`civilite`),
-  KEY `majeur_FK_2` (`tribunalId`),
-  KEY `majeur_FK_3` (`userId`),
-  CONSTRAINT `majeur_FK` FOREIGN KEY (`adresseId`) REFERENCES `adresse` (`id`),
-  CONSTRAINT `majeur_FK_2` FOREIGN KEY (`tribunalId`) REFERENCES `tribunal` (`id`),
-  CONSTRAINT `majeur_FK_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  KEY `majeur_FK_user` (`userId`),
+  KEY `majeur_FK_parametremission` (`parametreMissionId`),
+  KEY `majeur_FK_tribunal` (`tribunalId`),
+  KEY `majeur_FK_adresse` (`adresseId`),
+  CONSTRAINT `majeur_FK_adresse` FOREIGN KEY (`adresseId`) REFERENCES `adresse` (`id`),
+  CONSTRAINT `majeur_FK_parametremission` FOREIGN KEY (`parametreMissionId`) REFERENCES `parametreMission` (`id`),
+  CONSTRAINT `majeur_FK_tribunal` FOREIGN KEY (`tribunalId`) REFERENCES `tribunal` (`id`),
+  CONSTRAINT `majeur_FK_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -241,7 +244,6 @@ DROP TABLE IF EXISTS `parametreMission`;
 CREATE TABLE `parametreMission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
-  `majeurId` int(11) NOT NULL,
   `natureId` int(11) NOT NULL,
   `protectionId` int(11) NOT NULL,
   `lieuVieId` int(11) NOT NULL,
@@ -251,21 +253,19 @@ CREATE TABLE `parametreMission` (
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `parametreMission_FK` (`majeurId`),
   KEY `parametreMission_FK_1` (`natureId`),
   KEY `parametreMission_FK_2` (`lieuVieId`),
   KEY `parametreMission_FK_3` (`protectionId`),
   KEY `parametreMission_FK_4` (`periodeId`),
   KEY `parametreMission_FK_5` (`prestationSocialeId`),
   KEY `parametreMission_FK_6` (`userId`),
-  CONSTRAINT `parametreMission_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
   CONSTRAINT `parametreMission_FK_1` FOREIGN KEY (`natureId`) REFERENCES `nature` (`id`),
   CONSTRAINT `parametreMission_FK_2` FOREIGN KEY (`lieuVieId`) REFERENCES `lieuVie` (`id`),
   CONSTRAINT `parametreMission_FK_3` FOREIGN KEY (`protectionId`) REFERENCES `protection` (`id`),
   CONSTRAINT `parametreMission_FK_4` FOREIGN KEY (`periodeId`) REFERENCES `periode` (`id`),
   CONSTRAINT `parametreMission_FK_5` FOREIGN KEY (`prestationSocialeId`) REFERENCES `prestationSociale` (`id`),
   CONSTRAINT `parametreMission_FK_6` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -456,4 +456,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-08 22:57:23
+-- Dump completed on 2020-04-10 23:36:50

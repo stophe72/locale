@@ -3,33 +3,35 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DonneeBancaireRepository")
  * @ORM\Table(name="donneeBancaire")
+ * @UniqueEntity(fields={"banque", "numeroCompte"})
  */
 class DonneeBancaireEntity extends BaseUserEntity
 {
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\BanqueEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="banqueId", referencedColumnName="id", nullable=false)
      */
     private $banque;
 
     /**
      * @ORM\OneToOne(targetEntity="App\Entity\TypeCompteEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="typeCompteId", referencedColumnName="id", nullable=false)
      */
     private $typeCompte;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(name="numeroCompte", type="string", length=100)
      */
     private $numeroCompte;
 
