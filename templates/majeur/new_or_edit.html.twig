@@ -17,12 +17,13 @@
             {{ form_widget(form.dateNaissance) }}
         </div>
         <div class="col-sm-2 col-form-label">
-            N° de Sécurité Sociale
+            Lieu de naissance
         </div>
         <div class="col-sm-4">
-            {{ form_widget(form.numeroSS) }}
+            {{ form_widget(form.lieuNaissance) }}
         </div>
     </div>
+    {{ form_row(form.numeroSS) }}
     <h5 class="bottom-line my-3 text-secondary">Jugement</h5>
     <div class="row my-3">
         <div class="col-sm-2 col-form-label">

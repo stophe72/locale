@@ -57,6 +57,7 @@ class MajeurType extends AbstractType
                     'widget'   => 'single_text',
                 ]
             )
+            ->add('lieuNaissance', TextType::class)
             ->add(
                 'numeroSS',
                 TextType::class,

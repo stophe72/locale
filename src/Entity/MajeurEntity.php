@@ -13,12 +13,12 @@ use Doctrine\ORM\Mapping as ORM;
 class MajeurEntity extends BaseUserEntity
 {
     /**
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string", length=25, nullable=false)
      */
     private $civilite;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $nom;
 
@@ -28,7 +28,7 @@ class MajeurEntity extends BaseUserEntity
     private $nomEtatCivil;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $prenom;
 
@@ -44,12 +44,17 @@ class MajeurEntity extends BaseUserEntity
     private $dateNaissance;
 
     /**
-     * @ORM\Column(name="numeroSS", type="string", length=100)
+     * @ORM\Column(name="lieuNaissance", type="string", length=100, nullable=false)
+     */
+    private $lieuNaissance;
+
+    /**
+     * @ORM\Column(name="numeroSS", type="string", length=100, nullable=false)
      */
     private $numeroSS;
 
     /**
-     * @ORM\Column(name="numeroRG", type="string", length=100)
+     * @ORM\Column(name="numeroRG", type="string", length=100, nullable=false)
      */
     private $numeroRG;
 
@@ -304,5 +309,25 @@ class MajeurEntity extends BaseUserEntity
     public function __toString()
     {
         return $this->nom . " " . $this->prenom;
+    }
+
+    /**
+     * Get the value of lieuNaissance
+     */
+    public function getLieuNaissance()
+    {
+        return $this->lieuNaissance;
+    }
+
+    /**
+     * Set the value of lieuNaissance
+     *
+     * @return  self
+     */
+    public function setLieuNaissance($lieuNaissance)
+    {
+        $this->lieuNaissance = $lieuNaissance;
+
+        return $this;
     }
 }
