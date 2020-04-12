@@ -1,7 +1,7 @@
 <div class="shadow">
     <nav class="navbar-dark navbar-expand-lg bg-primary navbar">
         <a class="navbar-brand" href="#">
-            NJPM
+            <img src="{{ asset("images/mjpm.png") }}" height="56" width="56">
         </a>
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -16,6 +16,15 @@
                         <a class="dropdown-item" href="{{ path('user_comptesgestion') }}"><i class="fas fa-tasks"></i> Comptes gestion</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('user_visites') }}"><i class="fa fa-handshake"></i> Visites</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_liensexternes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Liens externes
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_liensexternes">
+                        <a class="dropdown-item" href="#"><i class="fas fa-gavel"></i> Jugements</a>
+                        <a class="dropdown-item" target="blank" href="https://dgcs-alt.social.gouv.fr/dgcs/ocmi"><i class="fas fa-gavel"></i> OCMI</a>
                     </div>
                 </li>
                 <li class="nav-item">
@@ -46,7 +55,7 @@
                     </div>
                 </li>
             </ul>
-            {% if is_granted("ROLE_ADMIN") %}
+            {# {% if is_granted("ROLE_ADMIN") %}
             <ul id="navbar" class="navbar-nav">
                 <li class="nav-item dropdown justify-content-end">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_parametres" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -56,7 +65,7 @@
                     </div>
                 </li>
             </ul>
-            {% endif %}
+            {% endif %} #}
             <ul id="navbar" class="navbar-nav">
                 <li class="nav-item dropdown justify-content-end ml-3">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_parametres" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
