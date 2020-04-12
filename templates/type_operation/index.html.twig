@@ -2,59 +2,39 @@
 
 {% block content %}
     <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fa fa-users"></i> {{ page_title }}</h3>
+        <h3 class="text-primary"><i class="fa fa-balance-scale"></i> {{ page_title }}</h3>
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_majeur_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_typeoperation_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Civilité</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Date jugement</th>
-                    <th>N° R.G.</th>
-                    <th>Début mesure</th>
-                    <th>Fin mesure</th>
+                    <th>Id.</th>
+                    <th>Libellé</th>
+                    <th>Type</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-            {% for majeur in majeurs %}
+            {% for typeOperation in typeOperations %}
                 <tr>
-                    <td>{{ majeur.civilite }}</td>
-                    <td>{{ majeur.nom }}</td>
-                    <td>{{ majeur.prenom }}</td>
-                    <td>{{ majeur.dateJugement|date("d/m/Y") }}</td>
-                    <td>{{ majeur.numeroRG }}</td>
-                    <td>{{ majeur.debutMesure|date("d/m/Y") }}</td>
-                    <td>{{ majeur.finMesure|date("d/m/Y") }}</td>
-                    <td>
-                        <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-info-circle"></i> Détails
+                    <td>{{ typeOperation.id }}</td>
+                    <td>{{ typeOperation.libelle }}</td>
+                    <td>{% if typeOperation.type == 1 %}Crédit{% else %}Débit{% endif %}</td>
+                    <td class="text-right">
+                        <a href="{{ path('user_typeoperation_edit', {'id': typeOperation.id}) }}" title="Détails du type d'opération" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
                         </a>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
-                                <i class="fa fa-pen"></i> Editer
-                            </a>
-                            <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
-                                    <i class="fa fa-trash"></i> Supprimer
-                                </a>
-                            </div>
-                        </div>
+                        <a href="#" onclick='del_confirm({{ typeOperation.id }}, "{{ typeOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
     </div>
 
@@ -65,7 +45,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer le majeur ?
+                    Supprimer le type d'opération ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -86,7 +66,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La majeur "<span id="majeur_name"></span>" est utilisée.</p>
+                    <p>Le type d'opération "<span id="typeOperation_name"></span>" est utilisé.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -100,19 +80,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.majeurId;
+        const id = el.dataset.typeOperationId;
 
-        window.location.href = "/majeur/delete/" + id;
+        window.location.href = "/typeOperation/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.majeurId = id;
+        document.getElementById('btn_delete').dataset.typeOperationId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "majeurId": id
+                "typeOperationId": id
             },
 
             success: function (reponse)
@@ -120,10 +100,10 @@
                 if (reponse['data']) {
                     var dialog = $('#exampleModal');
 
-                    dialog.find('.modal-body').text("Supprimer le majeur " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer le type d'opération " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#majeur_name").html(name);
+                    $("#typeOperation_name").html(name);
                     $("#myModal").modal();
                 }
             },

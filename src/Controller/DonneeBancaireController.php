@@ -3,9 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\DonneeBancaireEntity;
-use App\Entity\MajeurEntity;
 use App\Form\DonneeBancaireType;
-use App\Repository\MajeurRepository;
+use App\Repository\DonneeBancaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -13,22 +12,23 @@ use Symfony\Component\Routing\Annotation\Route;
 class DonneeBancaireController extends AbstractController
 {
     /**
-     * @Route("/donnee/bancaire", name="donnee_bancaire")
+     * @Route("user/donneebancaires", name="user_donneebancaires")
      */
-    public function index()
+    public function index(DonneeBancaireRepository $donneeBancaireRepository)
     {
+        $dbs = $donneeBancaireRepository->findAll();
         return $this->render('donnee_bancaire/index.html.twig', [
-            'controller_name' => 'DonneeBancaireController',
+            'donneebancaires' => $dbs,
+            'page_title' => 'Liste des données bancaires',
         ]);
     }
 
     /**
-     * @Route("user/donneebancaire/add/{id}", name="user_donneebancaire_add")
+     * @Route("user/donneebancaire/add", name="user_donneebancaire_add")
      */
-    public function add(MajeurEntity $majeur, Request $request)
+    public function add(Request $request)
     {
         $db = new DonneeBancaireEntity();
-        $db->setMajeur($majeur);
 
         $form = $this->createForm(DonneeBancaireType::class, $db);
         $form->handleRequest($request);
@@ -38,14 +38,38 @@ class DonneeBancaireController extends AbstractController
             $em->persist($db);
             $em->flush();
 
-            return $this->redirectToRoute('user_majeur_show', ['id' => $majeur->getId(),]);
+            return $this->redirectToRoute('user_donneebancaires');
         }
 
         return $this->render('donnee_bancaire/new_or_edit.html.twig', [
-            'page_title' => 'Données bancaires',
+            'page_title' => 'Ajouter une donnée bancaire',
             'form' => $form->createView(),
             'baseEntity' => $db,
-            'url_back' => 'user_majeurs',
+            'url_back' => 'user_donneebancaires',
+        ]);
+    }
+
+    /**
+     * @Route("user/donneebancaire/edit/{id}", name="user_donneebancaire_edit")
+     */
+    public function edit(DonneeBancaireEntity $donneeBancaire, Request $request)
+    {
+        $form = $this->createForm(DonneeBancaireType::class, $donneeBancaire);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($donneeBancaire);
+            $em->flush();
+
+            return $this->redirectToRoute('user_donneebancaires');
+        }
+
+        return $this->render('donnee_bancaire/new_or_edit.html.twig', [
+            'page_title' => 'Editer une donnée bancaire',
+            'form' => $form->createView(),
+            'baseEntity' => $donneeBancaire,
+            'url_back' => 'user_donneebancaires',
         ]);
     }
 }

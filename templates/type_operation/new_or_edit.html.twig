@@ -1,0 +1,9 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-balance-scale" %}
+
+{% block form_content %}
+    {{ form_errors(form) }}
+    {{ form_row(form.libelle) }}
+    {{ form_row(form.type) }}
+{% endblock %}

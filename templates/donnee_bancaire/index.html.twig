@@ -1,20 +1,123 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block title %}Hello DonneeBancaireController!{% endblock %}
+{% block content %}
+    <div class="row mt-4 col-sm-6 mb-4">
+        <h3 class="text-primary"><i class="fas fa-university"></i> {{ page_title }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col text-right">
+            <a href="{{ path("user_donneebancaire_add") }}" class="btn btn-primary">Ajouter</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id.</th>
+                    <th>Majeur</th>
+                    <th>Banque</th>
+                    <th>Type de compte</th>
+                    <th>Numéro de compte</th>
+                    <th>Solde</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% for donneebancaire in donneebancaires %}
+                <tr>
+                    <td>{{ donneebancaire.id }}</td>
+                    <td>{{ donneebancaire.majeur.nom }} {{ donneebancaire.majeur.prenom }}</td>
+                    <td>{{ donneebancaire.banque }}</td>
+                    <td>{{ donneebancaire.typeCompte.libelle }}</td>
+                    <td>{{ donneebancaire.numeroCompte }}</td>
+                    <td class="text-right">{{ donneebancaire.solde|format_currency('EUR') }}</td>
+                    <td class="text-right">
+                        <a href="{{ path('user_donneebancaire_edit', {'id': donneebancaire.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
+                        </a>
+                        <a href="#" onclick='del_confirm({{ donneebancaire.id }}, "{{ donneebancaire.numeroCompte }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la donnée bancaire ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La donnée bancaire "<span id="donneebancaire_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/stophe/html_public/mjpm/src/Controller/DonneeBancaireController.php'|file_link(0) }}">src/Controller/DonneeBancaireController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/stophe/html_public/mjpm/templates/donnee_bancaire/index.html.twig'|file_link(0) }}">templates/donnee_bancaire/index.html.twig</a></code></li>
-    </ul>
-</div>
+{% block javascripts %}
+<script type="text/javascript">
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.donneebancaireId;
+
+        window.location.href = "/donneebancaire/delete/" + id;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.donneebancaireId = id;
+
+        $.ajax({
+            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            dataType: "json",
+            data: {
+                "donneebancaireId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#exampleModal');
+
+                    dialog.find('.modal-body').text("Supprimer la donnée bancaire " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#donneebancaire_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
 {% endblock %}

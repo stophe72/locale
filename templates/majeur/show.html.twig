@@ -36,7 +36,7 @@
             </tr>
             <tr>
                 <th>Date de naissance</th>
-                <td>{{ majeur.dateNaissance|date('m/d/Y') }}</td>
+                <td>{{ majeur.dateNaissance|date('d/m/Y') }}</td>
             </tr>
             <tr>
                 <th>N° de Sécurité Sociale</th>
@@ -60,38 +60,6 @@
             </tr>
         </table>
     </div>
-
-    <h5 class="bottom-line my-3 text-secondary">Données bancaires</h5>
-    <div class="row mb-4">
-        <div class="col text-right">
-            <a href="{{ path("user_donneebancaire_add", { 'id': majeur.id }) }}" class="btn btn-primary">Ajouter</a>
-        </div>
-    </div>
-    <div class="row">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Banque</th>
-                    <th>Type de compte</th>
-                    <th>Numéro de compte</th>
-                    <th>Solde</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for db in donneeBancaires %}
-                <tr>
-                    <td>{{ db.banque.libelle }}</td>
-                    <td>{{ db.typeCompte.libelle }}</td>
-                    <td>{{ db.numeroCompte }}</td>
-                    <td>{{ db.solde|format_currency('EUR') }}</td>
-                    <td></td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
-    </div>
-
     <div class="row">
         <div class="col-2">
             <small>Date de création</small>

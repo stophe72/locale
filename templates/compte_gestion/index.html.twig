@@ -2,59 +2,43 @@
 
 {% block content %}
     <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fa fa-users"></i> {{ page_title }}</h3>
+        <h3 class="text-primary"><i class="fa fa-tasks"></i> {{ page_title }}</h3>
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_majeur_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_comptegestion_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Civilité</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
-                    <th>Date jugement</th>
-                    <th>N° R.G.</th>
-                    <th>Début mesure</th>
-                    <th>Fin mesure</th>
+                    <th>Id.</th>
+                    <th>Majeur</th>
+                    <th>Date</th>
+                    <th>Nature de l'opération</th>
+                    <th>Type d'opération</th>
                     <th></th>
                 </tr>
             </thead>
-            <tbody>
-            {% for majeur in majeurs %}
+            {% for operation in operations %}
                 <tr>
-                    <td>{{ majeur.civilite }}</td>
-                    <td>{{ majeur.nom }}</td>
-                    <td>{{ majeur.prenom }}</td>
-                    <td>{{ majeur.dateJugement|date("d/m/Y") }}</td>
-                    <td>{{ majeur.numeroRG }}</td>
-                    <td>{{ majeur.debutMesure|date("d/m/Y") }}</td>
-                    <td>{{ majeur.finMesure|date("d/m/Y") }}</td>
-                    <td>
-                        <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-info-circle"></i> Détails
+                    <td>{{ operation.id }}</td>
+                    <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
+                    <td>{{ operation.date|date('d/m/Y') }}</td>
+                    <td>{{ operation.natureOperation.libelle }}</td>
+                    <td>{{ operation.typeOperation.libelle }}</td>
+                    <td class="text-right">
+                        <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
                         </a>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
-                                <i class="fa fa-pen"></i> Editer
-                            </a>
-                            <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
-                                    <i class="fa fa-trash"></i> Supprimer
-                                </a>
-                            </div>
-                        </div>
+                        <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.natureOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
                     </td>
                 </tr>
             {% endfor %}
-            </tbody>
         </table>
     </div>
 
@@ -65,7 +49,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer le majeur ?
+                    Supprimer l'opération ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -86,7 +70,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La majeur "<span id="majeur_name"></span>" est utilisée.</p>
+                    <p>L'operation "<span id="operation_name"></span>" est utilisée.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -100,19 +84,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.majeurId;
+        const id = el.dataset.operationId;
 
-        window.location.href = "/majeur/delete/" + id;
+        window.location.href = "/comptegestion/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.majeurId = id;
+        document.getElementById('btn_delete').dataset.operationId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "majeurId": id
+                "operationId": id
             },
 
             success: function (reponse)
@@ -120,10 +104,10 @@
                 if (reponse['data']) {
                     var dialog = $('#exampleModal');
 
-                    dialog.find('.modal-body').text("Supprimer le majeur " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer l'opération " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#majeur_name").html(name);
+                    $("#operation_name").html(name);
                     $("#myModal").modal();
                 }
             },

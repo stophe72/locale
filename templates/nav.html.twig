@@ -11,7 +11,9 @@
                         Majeurs
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdown_majeurs">
-                        <a class="dropdown-item" href="{{ path('user_majeurs') }}"><i class="fas fa-users"></i> Gestion</a>
+                        <a class="dropdown-item" href="{{ path('user_majeurs') }}"><i class="fas fa-users"></i> Liste</a>
+                        <a class="dropdown-item" href="{{ path('user_donneebancaires') }}"><i class="fas fa-university"></i> Données bancaires</a>
+                        <a class="dropdown-item" href="{{ path('user_comptesgestion') }}"><i class="fas fa-tasks"></i> Comptes gestion</a>
                         <div class="dropdown-divider"></div>
                         <a class="dropdown-item" href="{{ path('user_visites') }}"><i class="fa fa-handshake"></i> Visites</a>
                     </div>
@@ -31,11 +33,13 @@
                         <a class="dropdown-item" href="{{ path("user_banques") }}"><i class="fas fa-university"></i> Banques</a>
                         <a class="dropdown-item" href="{{ path("user_lieu_vies") }}"><i class="fas fa-home"></i> Lieux de vie</a>
                         <a class="dropdown-item" href="{{ path("user_natures") }}"><i class="fas fa-list"></i> Natures de mission</a>
+                        <a class="dropdown-item" href="{{ path("user_naturesoperation") }}"><i class="fas fa-tag"></i> Natures d'opération</a>
                         <a class="dropdown-item" href="{{ path("user_tribunaux") }}"><i class="fas fa-gavel"></i> Tribunaux</a>
                         <div class="dropdown-divider"></div>
                         <div class="dropdown-header">TYPES</div>
                         <a class="dropdown-item" href="{{ path("user_typecomptes") }}"><i class="fas fa-university"></i> Comptes</a>
                         <a class="dropdown-item" href="{{ path("user_typesfrais") }}"><i class="fas fa-receipt"></i> Frais</a>
+                        <a class="dropdown-item" href="{{ path("user_typesoperation") }}"><i class="fas fa-balance-scale"></i> Opérations</a>
                         <a class="dropdown-item" href="{{ path("user_periodes") }}"><i class="fas fa-calendar-alt"></i> Périodes</a>
                         <a class="dropdown-item" href="{{ path("user_prestationsociales") }}"><i class="fas fa-user-shield"></i> Prestations sociales</a>
                         <a class="dropdown-item" href="{{ path("user_protections") }}"><i class="fas fa-shield-alt"></i> Protections</a>

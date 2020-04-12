@@ -2,18 +2,18 @@
 
 namespace App\Form;
 
-use App\Entity\BanqueEntity;
-use App\Entity\DonneeBancaireEntity;
+use App\Entity\CompteGestionEntity;
 use App\Entity\MajeurEntity;
-use App\Entity\TypeCompteEntity;
+use App\Entity\NatureOperationEntity;
+use App\Entity\TypeOperationEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DonneeBancaireType extends AbstractType
+class CompteGestionType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -28,34 +28,42 @@ class DonneeBancaireType extends AbstractType
                     ]
                 ]
             )
-            ->add('numeroCompte', TextType::class)
-            ->add('solde', MoneyType::class)
             ->add(
-                'banque',
+                'date',
+                DateType::class,
+                [
+                    'widget' => 'single_text',
+                ]
+            )
+            ->add(
+                'natureOperation',
                 EntityType::class,
                 [
-                    'class' => BanqueEntity::class,
+                    'label' => 'Nature de l\'opération',
+                    'class' => NatureOperationEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
                     ]
                 ]
             )
             ->add(
-                'typeCompte',
+                'typeOperation',
                 EntityType::class,
                 [
-                    'class' => TypeCompteEntity::class,
+                    'label' => 'Type d\'opération',
+                    'class' => TypeOperationEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
                     ]
                 ]
-            );
+            )
+            ->add('montant', MoneyType::class);
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DonneeBancaireEntity::class,
+            'data_class' => CompteGestionEntity::class,
         ]);
     }
 }

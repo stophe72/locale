@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -77,6 +79,16 @@ class MajeurEntity extends BaseUserEntity
      * @ORM\Column(name="finMesure", type="date", nullable=false)
      */
     private $finMesure;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="majeur")
+     */
+    private $compteGestionEntities;
+
+    public function __construct()
+    {
+        $this->compteGestionEntities = new ArrayCollection();
+    }
 
     public function getCivilite(): ?string
     {
@@ -256,5 +268,41 @@ class MajeurEntity extends BaseUserEntity
         $this->parametreMission = $parametreMission;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|CompteGestionEntity[]
+     */
+    public function getCompteGestionEntities(): Collection
+    {
+        return $this->compteGestionEntities;
+    }
+
+    public function addCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    {
+        if (!$this->compteGestionEntities->contains($compteGestionEntity)) {
+            $this->compteGestionEntities[] = $compteGestionEntity;
+            $compteGestionEntity->setMajeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    {
+        if ($this->compteGestionEntities->contains($compteGestionEntity)) {
+            $this->compteGestionEntities->removeElement($compteGestionEntity);
+            // set the owning side to null (unless already changed)
+            if ($compteGestionEntity->getMajeur() === $this) {
+                $compteGestionEntity->setMajeur(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->nom . " " . $this->prenom;
     }
 }
