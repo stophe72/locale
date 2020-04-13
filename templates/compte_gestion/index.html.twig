@@ -1,45 +1,74 @@
-{% extends 'layout.html.twig' %}
+{% extends 'layout_fluid.html.twig' %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
 
 {% block content %}
-    <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fa fa-tasks"></i> {{ page_title }}</h3>
-        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
-    </div>
-    <div class="row mb-4">
-        <div class="col text-right">
+    <div class="row my-4">
+        <div class="col-sm-6 offset-2">
+            <h3 class="text-primary"><i class="fa fa-tasks"></i> {{ page_title }}</h3>
+            <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+        </div>
+        <div class="col-sm-2 text-right">
             <a href="{{ path("user_comptegestion_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Id.</th>
-                    <th>Majeur</th>
-                    <th>Date</th>
-                    <th>Nature de l'opération</th>
-                    <th>Type d'opération</th>
-                    <th></th>
-                </tr>
-            </thead>
-            {% for operation in operations %}
-                <tr>
-                    <td>{{ operation.id }}</td>
-                    <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
-                    <td>{{ operation.date|date('d/m/Y') }}</td>
-                    <td>{{ operation.natureOperation.libelle }}</td>
-                    <td>{{ operation.typeOperation.libelle }}</td>
-                    <td class="text-right">
-                        <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-pen"></i> Editer
-                        </a>
-                        <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.natureOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
-                            <i class="fa fa-trash"></i> Supprimer
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
+        <div class="col-sm-2 mt-2">
+            {{ form_start(form) }}
+                {{ form_row(form.dateDebut) }}
+                {{ form_row(form.dateFin) }}
+                {{ form_row(form.majeurNom) }}
+                {{ form_row(form.natureOperation) }}
+                {{ form_row(form.typeOperation) }}
+                {{ form_row(form.montant) }}
+                <div class="float-right mt-3">
+                    <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
+                        <i class="fa fa-filter"></i> Appliquer</button>
+                    <button id="btnClearFilters" type="button" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i></button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+        <div class="col-sm-8">
+            {% if pagination.items|length == 0 %}
+                <div class="alert alert-info mt-3">Aucune opération</div>
+            {% else %}
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Id.</th>
+                            <th>Majeur</th>
+                            <th>Date</th>
+                            <th>Nature de l'opération</th>
+                            <th>Type d'opération</th>
+                            <th>Montant</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    {% for operation in pagination %}
+                        <tr>
+                            <td>{{ operation.id }}</td>
+                            <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
+                            <td>{{ operation.date|date('d/m/Y') }}</td>
+                            <td>{{ operation.natureOperation.libelle }}</td>
+                            <td>{{ operation.typeOperation.libelle }}</td>
+                            <td class="text-right">{{ operation.montant|format_currency('EUR') }}</td>
+                            <td class="text-right">
+                                <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
+                                    <i class="fa fa-pen"></i> Editer
+                                </a>
+                                <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.natureOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                                    <i class="fa fa-trash"></i> Supprimer
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <div class="pagination justify-content-center pt-3">
+                    {{ knp_pagination_render(pagination) }}
+                </div>
+            {% endif %}
+        </div>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -87,6 +116,21 @@
         const id = el.dataset.operationId;
 
         window.location.href = "/comptegestion/delete/" + id;
+    });
+
+    $('#btnClearFilters').on('click', function(e) {
+        $.ajax({
+            url: "{{ path('ajaxCompteGestionClearFilter') }}",
+            dataType: "json",
+            data: {
+                clearCompteGestionFilter: 1
+            },
+
+            success: function (reponse)
+            {
+                window.location.href = "{{ path('user_comptesgestion') }}";
+            },
+        });
     });
 
     function del_confirm(id, name) {

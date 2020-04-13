@@ -2,12 +2,12 @@
 
 {% block content %}
     <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fas fa-university"></i> {{ page_title }}</h3>
+        <h3 class="text-primary"><i class="fas fa-file-csv"></i> {{ page_title }}</h3>
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_donneebancaire_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_importoperation_add") }}" class="btn btn-primary">Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -16,28 +16,24 @@
                 <tr>
                     <th>Id.</th>
                     <th>Majeur</th>
-                    <th>Banque</th>
-                    <th>Type de compte</th>
-                    <th>Numéro de compte</th>
-                    <th>Solde courant</th>
-                    <th>Solde précédent</th>
+                    <th>Libellé</th>
+                    <th>Type d'opération</th>
+                    <th>Nature</th>
                     <th></th>
                 </tr>
             </thead>
-            {% for donneebancaire in donneebancaires %}
+            {% for io in importsOperation %}
                 <tr>
-                    <td>{{ donneebancaire.id }}</td>
-                    <td>{{ donneebancaire.majeur.nom }} {{ donneebancaire.majeur.prenom }}</td>
-                    <td>{{ donneebancaire.banque }}</td>
-                    <td>{{ donneebancaire.typeCompte.libelle }}</td>
-                    <td>{{ donneebancaire.numeroCompte }}</td>
-                    <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>
-                    <td class="text-right">{{ donneebancaire.soldePrecedent|format_currency('EUR') }}</td>
+                    <td>{{ io.id }}</td>
+                    <td>{{ io.majeur.nom }} {{ io.majeur.prenom }}</td>
+                    <td>{{ io.libelle }}</td>
+                    <td>{{ io.typeOperation.libelle }}</td>
+                    <td>{{ io.nature }}</td>
                     <td class="text-right">
-                        <a href="{{ path('user_donneebancaire_edit', {'id': donneebancaire.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('user_importoperation_edit', {'id': io.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ donneebancaire.id }}, "{{ donneebancaire.numeroCompte }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ io.id }}, "{{ io.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
@@ -74,7 +70,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La donnée bancaire "<span id="donneebancaire_name"></span>" est utilisée.</p>
+                    <p>L'import "<span id="importoperation_name"></span>" est utilisé.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -88,19 +84,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.donneebancaireId;
+        const id = el.dataset.importoperationId;
 
-        window.location.href = "/donneebancaire/delete/" + id;
+        window.location.href = "user/importoperation/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.donneebancaireId = id;
+        document.getElementById('btn_delete').dataset.importoperationId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "donneebancaireId": id
+                "importoperationId": id
             },
 
             success: function (reponse)
@@ -111,7 +107,7 @@
                     dialog.find('.modal-body').text("Supprimer la donnée bancaire " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#donneebancaire_name").html(name);
+                    $("#importoperation_name").html(name);
                     $("#myModal").modal();
                 }
             },

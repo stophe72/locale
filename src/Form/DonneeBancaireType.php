@@ -28,8 +28,28 @@ class DonneeBancaireType extends AbstractType
                     ]
                 ]
             )
-            ->add('numeroCompte', TextType::class)
-            ->add('solde', MoneyType::class)
+            ->add(
+                'numeroCompte',
+                TextType::class,
+                [
+                    'label' => 'Numéro de compte',
+                ]
+            )
+            ->add(
+                'soldeCourant',
+                MoneyType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'soldePrecedent',
+                MoneyType::class,
+                [
+                    'label' => 'Solde précédent',
+                    'required' => false,
+                ]
+            )
             ->add(
                 'banque',
                 EntityType::class,
@@ -44,6 +64,7 @@ class DonneeBancaireType extends AbstractType
                 'typeCompte',
                 EntityType::class,
                 [
+                    'label' => 'Type de compte',
                     'class' => TypeCompteEntity::class,
                     'attr' => [
                         'class' => 'custom-select',

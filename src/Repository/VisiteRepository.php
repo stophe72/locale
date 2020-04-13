@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\UserEntity;
 use App\Entity\VisiteEntity;
 use App\Models\VisiteFilter;
+use App\Utils\Utils;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -37,11 +38,9 @@ class VisiteRepository extends ServiceEntityRepository
                 ->setParameter('majeurNom', '%' . $visiteFilter->getMajeurNom() . '%');
         }
         if ($visiteFilter->getDateDebut() && $visiteFilter->getDateFin()) {
-            if ($visiteFilter->getDateDebut()->getTimestamp() > $visiteFilter->getDateFin()->getTimestamp()) {
-                $d = $visiteFilter->getDateFin();
-                $visiteFilter->setDateFin($visiteFilter->getDateDebut());
-                $visiteFilter->setDateDebut($d);
-            }
+            $dates = Utils::orderDates($visiteFilter->getDateDebut(), $visiteFilter->getDateFin());
+            $visiteFilter->setDateDebut($dates[0]);
+            $visiteFilter->setDateFin($dates[1]);
         }
         if ($visiteFilter->getDateDebut()) {
             $qb->andWhere('v.date >= :dateDebut')

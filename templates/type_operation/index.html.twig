@@ -16,7 +16,6 @@
                 <tr>
                     <th>Id.</th>
                     <th>Libellé</th>
-                    <th>Type</th>
                     <th></th>
                 </tr>
             </thead>
@@ -24,7 +23,6 @@
                 <tr>
                     <td>{{ typeOperation.id }}</td>
                     <td>{{ typeOperation.libelle }}</td>
-                    <td>{% if typeOperation.type == 1 %}Crédit{% else %}Débit{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ path('user_typeoperation_edit', {'id': typeOperation.id}) }}" title="Détails du type d'opération" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer

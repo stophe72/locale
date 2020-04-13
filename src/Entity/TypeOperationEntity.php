@@ -12,20 +12,4 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  */
 class TypeOperationEntity extends BaseLibelleEntity
 {
-    /**
-     * @ORM\Column(type="integer")
-     */
-    private $type;
-
-    public function getType(): ?int
-    {
-        return $this->type;
-    }
-
-    public function setType(int $type): self
-    {
-        $this->type = $type;
-
-        return $this;
-    }
 }

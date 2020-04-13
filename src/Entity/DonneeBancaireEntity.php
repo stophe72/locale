@@ -36,9 +36,14 @@ class DonneeBancaireEntity extends BaseUserEntity
     private $numeroCompte;
 
     /**
-     * @ORM\Column(type="float")
+     * @ORM\Column(name="soldeCourant", type="float")
      */
-    private $solde;
+    private $soldeCourant;
+
+    /**
+     * @ORM\Column(name="soldePrecedent", type="float")
+     */
+    private $soldePrecedent;
 
 
     public function getMajeur(): ?MajeurEntity
@@ -89,14 +94,26 @@ class DonneeBancaireEntity extends BaseUserEntity
         return $this;
     }
 
-    public function getSolde(): ?float
+    public function getSoldeCourant(): ?float
     {
-        return $this->solde;
+        return $this->soldeCourant;
     }
 
-    public function setSolde(float $solde): self
+    public function setSoldeCourant(float $soldeCourant): self
     {
-        $this->solde = $solde;
+        $this->soldeCourant = $soldeCourant;
+
+        return $this;
+    }
+
+    public function getSoldePrecedent(): ?float
+    {
+        return $this->soldePrecedent;
+    }
+
+    public function setSoldePrecedent(float $soldePrecedent): self
+    {
+        $this->soldePrecedent = $soldePrecedent;
 
         return $this;
     }

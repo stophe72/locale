@@ -76,7 +76,7 @@ CREATE TABLE `banque` (
   PRIMARY KEY (`id`),
   KEY `banque_FK` (`userId`),
   CONSTRAINT `banque_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -90,8 +90,8 @@ CREATE TABLE `compteGestion` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
-  `date` datetime NOT NULL,
-  `nature` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` date NOT NULL,
+  `natureOperationId` int(11) NOT NULL,
   `typeOperationId` int(11) NOT NULL,
   `montant` double NOT NULL,
   `dateCreation` datetime NOT NULL,
@@ -100,10 +100,12 @@ CREATE TABLE `compteGestion` (
   KEY `compteGestion_FK` (`majeurId`),
   KEY `compteGestion_FK_1` (`typeOperationId`),
   KEY `compteGestion_FK_2` (`userId`),
+  KEY `compteGestion_FK_3` (`natureOperationId`),
   CONSTRAINT `compteGestion_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
   CONSTRAINT `compteGestion_FK_1` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`),
-  CONSTRAINT `compteGestion_FK_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `compteGestion_FK_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `compteGestion_FK_3` FOREIGN KEY (`natureOperationId`) REFERENCES `natureOperation` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,7 +122,8 @@ CREATE TABLE `donneeBancaire` (
   `banqueId` int(11) NOT NULL,
   `typeCompteId` int(11) NOT NULL,
   `numeroCompte` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `solde` double NOT NULL,
+  `soldeCourant` float DEFAULT 0,
+  `soldePrecedent` float DEFAULT 0,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
@@ -132,7 +135,33 @@ CREATE TABLE `donneeBancaire` (
   CONSTRAINT `donneeBancaire_FK_1` FOREIGN KEY (`banqueId`) REFERENCES `banque` (`id`),
   CONSTRAINT `donneeBancaire_FK_2` FOREIGN KEY (`typeCompteId`) REFERENCES `typeCompte` (`id`),
   CONSTRAINT `donneeBancaire_FK_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `importOperation`
+--
+
+DROP TABLE IF EXISTS `importOperation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `importOperation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `majeurId` int(11) NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `typeOperationId` int(11) NOT NULL,
+  `nature` int(11) NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `importOperation_FK` (`majeurId`),
+  KEY `importOperation_FK_1` (`userId`),
+  KEY `importOperation_FK_2` (`typeOperationId`),
+  CONSTRAINT `importOperation_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
+  CONSTRAINT `importOperation_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `importOperation_FK_2` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -170,6 +199,7 @@ CREATE TABLE `majeur` (
   `prenom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `adresseId` int(11) NOT NULL,
   `dateNaissance` date NOT NULL,
+  `lieuNaissance` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `numeroSS` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tribunalId` int(11) NOT NULL,
   `parametreMissionId` int(11) NOT NULL,
@@ -212,6 +242,25 @@ CREATE TABLE `nature` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `natureOperation`
+--
+
+DROP TABLE IF EXISTS `natureOperation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `natureOperation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `natureOperation_FK` (`userId`),
+  CONSTRAINT `natureOperation_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `noteDeFrais`
 --
 
@@ -231,7 +280,7 @@ CREATE TABLE `noteDeFrais` (
   KEY `noteDeFrais_FK_1` (`userId`),
   CONSTRAINT `noteDeFrais_FK` FOREIGN KEY (`typeFraisId`) REFERENCES `typeFrais` (`id`),
   CONSTRAINT `noteDeFrais_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -247,23 +296,16 @@ CREATE TABLE `parametreMission` (
   `natureId` int(11) NOT NULL,
   `protectionId` int(11) NOT NULL,
   `lieuVieId` int(11) NOT NULL,
-  `periodeId` int(11) NOT NULL,
-  `prestationSocialeId` int(11) NOT NULL,
-  `ressources` double NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parametreMission_FK_1` (`natureId`),
   KEY `parametreMission_FK_2` (`lieuVieId`),
-  KEY `parametreMission_FK_3` (`protectionId`),
-  KEY `parametreMission_FK_4` (`periodeId`),
-  KEY `parametreMission_FK_5` (`prestationSocialeId`),
   KEY `parametreMission_FK_6` (`userId`),
+  KEY `parametreMission_FK` (`protectionId`),
+  CONSTRAINT `parametreMission_FK` FOREIGN KEY (`protectionId`) REFERENCES `protection` (`id`),
   CONSTRAINT `parametreMission_FK_1` FOREIGN KEY (`natureId`) REFERENCES `nature` (`id`),
   CONSTRAINT `parametreMission_FK_2` FOREIGN KEY (`lieuVieId`) REFERENCES `lieuVie` (`id`),
-  CONSTRAINT `parametreMission_FK_3` FOREIGN KEY (`protectionId`) REFERENCES `protection` (`id`),
-  CONSTRAINT `parametreMission_FK_4` FOREIGN KEY (`periodeId`) REFERENCES `periode` (`id`),
-  CONSTRAINT `parametreMission_FK_5` FOREIGN KEY (`prestationSocialeId`) REFERENCES `prestationSociale` (`id`),
   CONSTRAINT `parametreMission_FK_6` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -360,7 +402,7 @@ CREATE TABLE `typeCompte` (
   PRIMARY KEY (`id`),
   KEY `typeCompte_FK` (`userId`),
   CONSTRAINT `typeCompte_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -393,13 +435,12 @@ CREATE TABLE `typeOperation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `type` int(11) NOT NULL COMMENT '1 pour debit, 0 pour credit',
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `typeOperation_FK` (`userId`),
   CONSTRAINT `typeOperation_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -456,4 +497,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-10 23:36:50
+-- Dump completed on 2020-04-13 23:22:04

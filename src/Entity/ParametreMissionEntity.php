@@ -32,18 +32,18 @@ class ParametreMissionEntity extends BaseUserEntity
      * @ORM\ManyToOne(targetEntity="App\Entity\PeriodeEntity")
      * @ORM\JoinColumn(name="periodeId", referencedColumnName="id", nullable=false)
      */
-    private $periode;
+    // private $periode;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\PrestationSocialeEntity")
      * @ORM\JoinColumn(name="prestationSocialeId", referencedColumnName="id", nullable=false)
      */
-    private $prestationSociale;
+    // private $prestationSociale;
 
     /**
      * @ORM\Column(type="float")
      */
-    private $ressources;
+    // private $ressources;
 
 
     public function getNature(): ?NatureEntity
@@ -78,42 +78,6 @@ class ParametreMissionEntity extends BaseUserEntity
     public function setLieuVie(?LieuVieEntity $lieuVie): self
     {
         $this->lieuVie = $lieuVie;
-
-        return $this;
-    }
-
-    public function getPeriode(): ?PeriodeEntity
-    {
-        return $this->periode;
-    }
-
-    public function setPeriode(?PeriodeEntity $periode): self
-    {
-        $this->periode = $periode;
-
-        return $this;
-    }
-
-    public function getPrestationSociale(): ?PrestationSocialeEntity
-    {
-        return $this->prestationSociale;
-    }
-
-    public function setPrestationSociale(?PrestationSocialeEntity $prestationSociale): self
-    {
-        $this->prestationSociale = $prestationSociale;
-
-        return $this;
-    }
-
-    public function getRessources(): ?float
-    {
-        return $this->ressources;
-    }
-
-    public function setRessources(float $ressources): self
-    {
-        $this->ressources = $ressources;
 
         return $this;
     }

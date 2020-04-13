@@ -1,0 +1,11 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-file-csv" %}
+
+{% block form_content %}
+    {{ form_errors(form) }}
+    {{ form_row(form.majeur) }}
+    {{ form_row(form.libelle) }}
+    {{ form_row(form.typeOperation) }}
+    {{ form_row(form.nature) }}
+{% endblock %}
