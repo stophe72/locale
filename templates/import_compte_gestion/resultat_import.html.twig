@@ -25,9 +25,9 @@
     <tbody>
     {% for compteGestion in comptesGestion %}
         <tr>
-            <td>{{ compteGestion.date|date('m/d/Y') }}</td>
+            <td>{{ compteGestion.date|date('d/m/Y') }}</td>
             <td>{{ compteGestion.typeOperation.libelle }}</td>
-            <td>{{ compteGestion.montant }}</td>
+            <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
         </tr>
     {% endfor %}
     </tbody>
