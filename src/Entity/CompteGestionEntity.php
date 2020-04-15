@@ -22,14 +22,8 @@ class CompteGestionEntity extends BaseUserEntity
     private $date;
 
     /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\NatureOperationEntity")
-     * @ORM\JoinColumn(name="natureOperationId", referencedColumnName="id", nullable=false)
-     */
-    private $natureOperation;
-
-    /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TypeOperationEntity")
-     * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=false)
+     * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=true)
      */
     private $typeOperation;
 
@@ -58,18 +52,6 @@ class CompteGestionEntity extends BaseUserEntity
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
-
-        return $this;
-    }
-
-    public function getNatureOperation(): ?NatureOperationEntity
-    {
-        return $this->natureOperation;
-    }
-
-    public function setNatureOperation(?NatureOperationEntity $natureOperation): self
-    {
-        $this->natureOperation = $natureOperation;
 
         return $this;
     }

@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\CompteGestionEntity;
 use App\Entity\MajeurEntity;
-use App\Entity\NatureOperationEntity;
 use App\Entity\TypeOperationEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -33,17 +32,6 @@ class CompteGestionType extends AbstractType
                 DateType::class,
                 [
                     'widget' => 'single_text',
-                ]
-            )
-            ->add(
-                'natureOperation',
-                EntityType::class,
-                [
-                    'label' => 'Nature de l\'opération',
-                    'class' => NatureOperationEntity::class,
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ]
                 ]
             )
             ->add(

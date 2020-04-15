@@ -7,7 +7,6 @@ use App\Form\CompteGestionFilterType;
 use App\Form\CompteGestionType;
 use App\Models\CompteGestionFilter;
 use App\Repository\CompteGestionRepository;
-use App\Repository\NatureOperationRepository;
 use App\Repository\TypeOperationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,20 +50,17 @@ class CompteGestionController extends AbstractController
         Request $request,
         PaginatorInterface $paginator,
         CompteGestionRepository $compteGestionRepository,
-        NatureOperationRepository $natureOperationRepository,
         TypeOperationRepository $typeOperationRepository
     ) {
         $user = $this->security->getUser();
         $filter = $this->session->get(self::FILTER_COMPTE_GESTION, new CompteGestionFilter());
 
         $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
-        $nos = $natureOperationRepository->findBy([], ['libelle' => 'ASC']);
 
         $form = $this->createForm(
             CompteGestionFilterType::class,
             $filter,
             [
-                'naturesOperation' => $nos,
                 'typesOperation' => $tos,
             ]
         );

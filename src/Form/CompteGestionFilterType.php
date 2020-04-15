@@ -2,7 +2,6 @@
 
 namespace App\Form;
 
-use App\Entity\NatureOperationEntity;
 use App\Entity\TypeOperationEntity;
 use App\Models\CompteGestionFilter;
 use Symfony\Component\Form\AbstractType;
@@ -17,7 +16,6 @@ class CompteGestionFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $natures = $options['naturesOperation'];
         $types = $options['typesOperation'];
 
         $builder
@@ -45,25 +43,6 @@ class CompteGestionFilterType extends AbstractType
                 [
                     'label' => 'Nom',
                     'required' => false,
-                ]
-            )
-            ->add(
-                'natureOperation',
-                ChoiceType::class,
-                [
-                    'choices' => $natures,
-                    'label' => 'Nature d\'opération',
-                    'required' => false,
-                    'placeholder' => 'Sélectionner une nature d\'opération',
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ],
-                    'choice_label' => function (NatureOperationEntity $no) {
-                        return $no->getLibelle();
-                    },
-                    'choice_value' => function (NatureOperationEntity $no = null) {
-                        return $no ? $no->getId() : '';
-                    },
                 ]
             )
             ->add(
@@ -104,7 +83,6 @@ class CompteGestionFilterType extends AbstractType
         ]);
         $resolver->setRequired(
             [
-                'naturesOperation',
                 'typesOperation',
             ]
         );

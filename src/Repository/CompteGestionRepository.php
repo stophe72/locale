@@ -27,7 +27,6 @@ class CompteGestionRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('cg');
         $qb->innerJoin('cg.majeur', 'm')
-            ->innerJoin('cg.natureOperation', 'no')
             ->innerJoin('cg.typeOperation', 'to')
             ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
             ->setParameter('userId', $user->getId());
@@ -49,10 +48,6 @@ class CompteGestionRepository extends ServiceEntityRepository
                 $qb->andWhere('cg.date <= :dateFin')
                     ->setParameter('dateFin', $filter->getDateFin());
             }
-        }
-        if ($filter->getNatureOperation()) {
-            $qb->andWhere('no = :natureOperation')
-                ->setParameter('natureOperation', $filter->getNatureOperation()->getId());
         }
         if ($filter->getTypeOperation()) {
             $qb->andWhere('to = :typeOperation')

@@ -28,7 +28,7 @@
                     <td>{{ io.majeur.nom }} {{ io.majeur.prenom }}</td>
                     <td>{{ io.libelle }}</td>
                     <td>{{ io.typeOperation.libelle }}</td>
-                    <td>{{ io.nature }}</td>
+                    <td>{% if io.nature == 1 %}Crédit{% else %}Débit{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ path('user_importoperation_edit', {'id': io.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer

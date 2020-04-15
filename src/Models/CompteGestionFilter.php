@@ -2,8 +2,6 @@
 
 namespace App\Models;
 
-use App\Entity\MajeurEntity;
-use App\Entity\NatureOperationEntity;
 use App\Entity\TypeOperationEntity;
 use DateTimeInterface;
 
@@ -23,11 +21,6 @@ class CompteGestionFilter
      * @var string
      */
     private $majeurNom;
-
-    /**
-     * @var NatureOperationEntity
-     */
-    private $natureOperation;
 
     /**
      * @var TypeOperationEntity
@@ -84,30 +77,6 @@ class CompteGestionFilter
     public function setDateFin(?DateTimeInterface $dateFin)
     {
         $this->dateFin = $dateFin;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of natureOperation
-     *
-     * @return  NatureOperationEntity
-     */
-    public function getNatureOperation(): ?NatureOperationEntity
-    {
-        return $this->natureOperation;
-    }
-
-    /**
-     * Set the value of natureOperation
-     *
-     * @param  NatureOperationEntity  $natureOperation
-     *
-     * @return  self
-     */
-    public function setNatureOperation(?NatureOperationEntity $natureOperation)
-    {
-        $this->natureOperation = $natureOperation;
 
         return $this;
     }

@@ -18,7 +18,6 @@
                 {{ form_row(form.dateDebut) }}
                 {{ form_row(form.dateFin) }}
                 {{ form_row(form.majeurNom) }}
-                {{ form_row(form.natureOperation) }}
                 {{ form_row(form.typeOperation) }}
                 {{ form_row(form.montant) }}
                 <div class="float-right mt-3">
@@ -39,7 +38,6 @@
                             <th>Id.</th>
                             <th>Majeur</th>
                             <th>Date</th>
-                            <th>Nature de l'opération</th>
                             <th>Type d'opération</th>
                             <th>Montant</th>
                             <th></th>
@@ -50,14 +48,13 @@
                             <td>{{ operation.id }}</td>
                             <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
                             <td>{{ operation.date|date('d/m/Y') }}</td>
-                            <td>{{ operation.natureOperation.libelle }}</td>
                             <td>{{ operation.typeOperation.libelle }}</td>
                             <td class="text-right">{{ operation.montant|format_currency('EUR') }}</td>
                             <td class="text-right">
                                 <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
                                     <i class="fa fa-pen"></i> Editer
                                 </a>
-                                <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.natureOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                                <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.typeOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                                     <i class="fa fa-trash"></i> Supprimer
                                 </a>
                             </td>
