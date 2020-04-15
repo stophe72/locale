@@ -3,15 +3,20 @@
 namespace App\Models;
 
 use App\Entity\MajeurEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ImportCompteGestion
 {
     /**
+     * @Assert\NotNull
+     *
      * @var MajeurEntity
      */
     private $majeur;
 
     /**
+     * @Assert\NotBlank
+     *
      * @var string
      */
     private $nomFichier;

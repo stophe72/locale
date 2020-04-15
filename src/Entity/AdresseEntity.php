@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\AdresseRepository")
@@ -11,7 +12,9 @@ use Doctrine\ORM\Mapping as ORM;
 class AdresseEntity extends BaseUserEntity
 {
     /**
-     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $adresse1;
 
@@ -21,14 +24,19 @@ class AdresseEntity extends BaseUserEntity
     private $adresse2;
 
     /**
-     * @ORM\Column(name="codePostal", type="string", length=10)
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(name="codePostal", type="string", length=10, nullable=false)
      */
     private $codePostal;
 
     /**
-     * @ORM\Column(type="string", length=100)
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $ville;
+
 
     public function getAdresse1(): ?string
     {

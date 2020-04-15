@@ -3,7 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NoteDeFraisRepository")
@@ -12,17 +12,23 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class NoteDeFraisEntity extends BaseUserEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(type="date")
      */
     private $date;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity="App\Entity\TypeFraisEntity", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="typeFraisId", referencedColumnName="id", nullable=false)
      */
     private $typeFrais;
 
     /**
+     * @Assert\Positive
+     *
      * @ORM\Column(type="float")
      */
     private $montant;

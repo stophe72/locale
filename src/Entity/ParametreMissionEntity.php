@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ParametreMissionRepository")
@@ -11,39 +12,29 @@ use Doctrine\ORM\Mapping as ORM;
 class ParametreMissionEntity extends BaseUserEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\NatureEntity")
      * @ORM\JoinColumn(name="natureId", referencedColumnName="id", nullable=false)
      */
     private $nature;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\ProtectionEntity")
      * @ORM\JoinColumn(name="protectionId", referencedColumnName="id", nullable=false)
      */
     private $protection;
 
     /**
+     * @Assert\NotNull
+     *
+
      * @ORM\ManyToOne(targetEntity="App\Entity\LieuVieEntity")
      * @ORM\JoinColumn(name="lieuVieId", referencedColumnName="id", nullable=false)
      */
     private $lieuVie;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PeriodeEntity")
-     * @ORM\JoinColumn(name="periodeId", referencedColumnName="id", nullable=false)
-     */
-    // private $periode;
-
-    /**
-     * @ORM\ManyToOne(targetEntity="App\Entity\PrestationSocialeEntity")
-     * @ORM\JoinColumn(name="prestationSocialeId", referencedColumnName="id", nullable=false)
-     */
-    // private $prestationSociale;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    // private $ressources;
 
 
     public function getNature(): ?NatureEntity

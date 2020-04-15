@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\CompteGestionRepository")
@@ -11,12 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 class CompteGestionEntity extends BaseUserEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity", inversedBy="compteGestionEntities")
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(type="date")
      */
     private $date;
@@ -28,6 +33,8 @@ class CompteGestionEntity extends BaseUserEntity
     private $typeOperation;
 
     /**
+     * @Assert\Positive
+     *
      * @ORM\Column(type="float")
      */
     private $montant;

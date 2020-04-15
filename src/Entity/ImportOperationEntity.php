@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ImportOperationRepository")
@@ -11,12 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 class ImportOperationEntity extends BaseLibelleEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity")
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\TypeOperationEntity")
      * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=false)
      */
@@ -24,6 +29,8 @@ class ImportOperationEntity extends BaseLibelleEntity
 
     /**
      * @var int
+     *
+     * @Assert\NotNull
      *
      * @ORM\Column(name="nature", type="integer", nullable=false)
      */

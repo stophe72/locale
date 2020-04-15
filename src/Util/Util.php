@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Utils;
+namespace App\Util;
 
 use DateTimeInterface;
 
-class Utils
+class Util
 {
     public static function orderDates(DateTimeInterface $date1, DateTimeInterface $date2)
     {

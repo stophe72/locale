@@ -19,6 +19,7 @@ class UserEntity extends BaseEntity implements UserInterface
      * @Assert\Email(
      *     message = "L'adresse email '{{ value }}' n'est pas une adresse valide."
      * )
+     *
      * @ORM\Column(type="string", length=180, unique=true)
      */
     private $email;
@@ -40,6 +41,13 @@ class UserEntity extends BaseEntity implements UserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @Assert\NotNull
+     *
+     * @var AdresseEntity
+     */
+    private $adresse;
 
     /**
      * @var boolean
@@ -140,6 +148,30 @@ class UserEntity extends BaseEntity implements UserInterface
     public function setAdministrateur(?bool $administrateur)
     {
         $this->administrateur = $administrateur;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of adresse
+     *
+     * @return  AdresseEntity
+     */
+    public function getAdresse()
+    {
+        return $this->adresse;
+    }
+
+    /**
+     * Set the value of adresse
+     *
+     * @param  AdresseEntity  $adresse
+     *
+     * @return  self
+     */
+    public function setAdresse(AdresseEntity $adresse)
+    {
+        $this->adresse = $adresse;
 
         return $this;
     }

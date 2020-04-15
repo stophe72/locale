@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\VisiteRepository")
@@ -11,12 +12,16 @@ use Doctrine\ORM\Mapping as ORM;
 class VisiteEntity extends BaseUserEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity")
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(type="date", nullable=false)
      */
     private $date;

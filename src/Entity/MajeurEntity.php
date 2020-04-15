@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MajeurRepository")
@@ -13,11 +14,15 @@ use Doctrine\ORM\Mapping as ORM;
 class MajeurEntity extends BaseUserEntity
 {
     /**
+     * @Assert\NotBlank
+     *
      * @ORM\Column(type="string", length=25, nullable=false)
      */
     private $civilite;
 
     /**
+     * @Assert\NotBlank
+     *
      * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $nom;
@@ -28,6 +33,8 @@ class MajeurEntity extends BaseUserEntity
     private $nomEtatCivil;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $prenom;
@@ -39,48 +46,66 @@ class MajeurEntity extends BaseUserEntity
     private $adresse;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="dateNaissance", type="date", nullable=false)
      */
     private $dateNaissance;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="lieuNaissance", type="string", length=100, nullable=false)
      */
     private $lieuNaissance;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="numeroSS", type="string", length=100, nullable=false)
      */
     private $numeroSS;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="numeroRG", type="string", length=100, nullable=false)
      */
     private $numeroRG;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\TribunalEntity")
      * @ORM\JoinColumn(name="tribunalId", referencedColumnName="id", nullable=false)
      */
     private $tribunal;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity="App\Entity\ParametreMissionEntity")
      * @ORM\JoinColumn(name="parametreMissionId", referencedColumnName="id", nullable=false)
      */
     private $parametreMission;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="dateJugement", type="date", nullable=false)
      */
     private $dateJugement;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="debutMesure", type="date", nullable=false)
      */
     private $debutMesure;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(name="finMesure", type="date", nullable=false)
      */
     private $finMesure;
