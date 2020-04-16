@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\CompteGestionEntity;
 use App\Entity\UserEntity;
 use App\Models\CompteGestionFilter;
-use App\Utils\Utils;
+use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -35,8 +35,12 @@ class CompteGestionRepository extends ServiceEntityRepository
             $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
                 ->setParameter('majeurNom', '%' . $filter->getMajeurNom() . '%');
         }
+        if ($filter->getLibelle()) {
+            $qb->andWhere('LOWER(m.libelle) LIKE LOWER(:libelle)')
+                ->setParameter('libelle', '%' . $filter->getLibelle() . '%');
+        }
         if ($filter->getDateDebut() && $filter->getDateFin()) {
-            $dates = Utils::orderDates($filter->getDateDebut(), $filter->getDateFin());
+            $dates = Util::orderDates($filter->getDateDebut(), $filter->getDateFin());
             $filter->setDateDebut($dates[0]);
             $filter->setDateFin($dates[1]);
         } else {

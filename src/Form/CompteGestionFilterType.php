@@ -46,6 +46,14 @@ class CompteGestionFilterType extends AbstractType
                 ]
             )
             ->add(
+                'libelle',
+                TextType::class,
+                [
+                    'label' => 'Libellé de l\'opération',
+                    'required' => false,
+                ]
+            )
+            ->add(
                 'typeOperation',
                 ChoiceType::class,
                 [

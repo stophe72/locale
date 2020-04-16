@@ -6,13 +6,12 @@ use App\Entity\CompteGestionEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TypeOperationEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class CompteGestionType extends AbstractType
+class CompteGestionType extends BaseLibelleType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {

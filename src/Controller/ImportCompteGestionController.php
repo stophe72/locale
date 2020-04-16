@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\CompteGestionEntity;
 use App\Entity\ImportOperationEntity;
 use App\Entity\MajeurEntity;
-use App\Entity\TypeOperationEntity;
 use App\Form\ImportCompteGestionType;
 use App\Models\ImportCompteGestion;
+use App\Repository\ImportOperationRepository;
 use App\Repository\MajeurRepository;
+use App\Repository\TypeOperationRepository;
+use App\Util\ImportManager;
 use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -35,7 +37,7 @@ class ImportCompteGestionController extends AbstractController
     /**
      * @Route("user/importcomptegestion", name="user_importcomptegestion")
      */
-    public function index(Request $request, MajeurRepository $majeurRepository)
+    public function index(Request $request, MajeurRepository $majeurRepository, ImportOperationRepository $importOperationRepository)
     {
         $import = new ImportCompteGestion();
         $user = $this->security->getUser();
@@ -52,7 +54,8 @@ class ImportCompteGestionController extends AbstractController
             $fichier = $form['nomFichier']->getData();
             if ($fichier) {
                 $file = file($fichier->getPathname());
-                $comptesGestion = $this->parseCsv($import->getMajeur(), $file);
+
+                $comptesGestion = ImportManager::parseCsv($import->getMajeur(), $file, $importOperationRepository);
 
                 return $this->render('import_compte_gestion/resultat_import.html.twig', [
                     'page_title' => 'Résultat import',

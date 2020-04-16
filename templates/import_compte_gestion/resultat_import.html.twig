@@ -18,6 +18,7 @@
     <thead>
         <tr>
             <th>Date</th>
+            <th>Libellé</th>
             <th>Type d'opération</th>
             <th>Montant</th>
         </tr>
@@ -26,7 +27,8 @@
     {% for compteGestion in comptesGestion %}
         <tr>
             <td>{{ compteGestion.date|date('d/m/Y') }}</td>
-            <td>{{ compteGestion.typeOperation.libelle }}</td>
+            <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
+            <td>{% if compteGestion.typeOperation is not null %}{{ compteGestion.typeOperation.libelle }}{% endif %}</td>
             <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
         </tr>
     {% endfor %}

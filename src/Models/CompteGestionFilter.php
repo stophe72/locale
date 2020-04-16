@@ -23,6 +23,11 @@ class CompteGestionFilter
     private $majeurNom;
 
     /**
+     * @var string
+     */
+    private $libelle;
+
+    /**
      * @var TypeOperationEntity
      */
     private $typeOperation;
@@ -151,5 +156,29 @@ class CompteGestionFilter
         $this->montant = $montant;
 
         return $this;
+    }
+
+    /**
+     * Set the value of libelle
+     *
+     * @param  string  $libelle
+     *
+     * @return  self
+     */
+    public function setLibelle(string $libelle)
+    {
+        $this->libelle = $libelle;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of libelle
+     *
+     * @return  string
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
     }
 }
