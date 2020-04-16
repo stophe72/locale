@@ -13,34 +13,85 @@
     {# {{ form_row(form.majeur) }} #}
     {# {{ form_row(form.nomFichier) }} #}
 
-    {{ majeur.nom }} {{ majeur.prenom }}
-    <table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Date</th>
-            <th>Libellé</th>
-            <th>Type d'opération</th>
-            <th>Montant</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for compteGestion in comptesGestion %}
-        <tr>
-            <td>{{ compteGestion.date|date('d/m/Y') }}</td>
-            <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
-            <td>{% if compteGestion.typeOperation is not null %}{{ compteGestion.typeOperation.libelle }}{% endif %}</td>
-            <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-    </table>
+    <h5 class="mb-3">Majeur: {{ majeur.nom }} {{ majeur.prenom }}</h5>
 
+    {% if comptesGestion.ok is not empty %}
+        <div class="alert alert-success">
+            Imports valides <span class="badge badge-success">{{ comptesGestion.ok|length }}</span>
+        </div>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Libellé</th>
+                <th>Type d'opération</th>
+                <th>Crédit</th>
+                <th>Débit</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for compteGestion in comptesGestion.ok %}
+            <tr>
+                <td>{{ compteGestion.date|date('d/m/Y') }}</td>
+                <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
+                <td>{{ compteGestion.typeOperation.libelle }}</td>
+                {% if compteGestion.nature == 1 %} {# credit #}
+                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
+                    <td></td>
+                {% else %}
+                    <td></td>
+                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% endif %}
+    {% if comptesGestion.ko is empty %}
         <div class="row float-right mb-3">
             <div class="col">
                 <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Valider</button>
             </div>
         </div>
+    {% else %}
+        <div class="alert alert-warning">
+            Imports en échec <span class="badge badge-warning">{{ comptesGestion.ko|length }}</span>
+        </div>
+        <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Libellé</th>
+                <th>Type d'opération</th>
+                <th>Débit</th>
+                <th>Crédit</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for compteGestion in comptesGestion.ko %}
+            <tr>
+                <td>{{ compteGestion.date|date('d/m/Y') }}</td>
+                <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
+                <td>{% if compteGestion.typeOperation is not null %}{{ compteGestion.typeOperation.libelle }}{% endif %}</td>
+                {% if compteGestion.typeOperation is not null %}
+                    {% if compteGestion.nature == 1 %} {# credit #}
+                        <td class="text-right">{% if compteGestion.nature == -1 %}{{ compteGestion.montant|format_currency('EUR') }}{% endif %}</td>
+                        <td></td>
+                    {% else %}
+                        <td></td>
+                        <td class="text-right">{% if compteGestion.nature == -1 %}{{ compteGestion.montant|format_currency('EUR') }}{% endif %}</td>
+                    {% endif %}
+                {% else %}
+                    <td></td>
+                    <td></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        </table>
+    {% endif %}
     {# {{ form_end(form) }} #}
+
 {% endblock %}
 
 {% block javascripts %}

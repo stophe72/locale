@@ -39,6 +39,14 @@ class CompteGestionEntity extends BaseLibelleEntity
      */
     private $montant;
 
+    /**
+     * @Assert\Type(type="integer")
+     *
+     * @ORM\Column(type="integer")
+     */
+    private $nature;
+
+
     public function getMajeur(): ?MajeurEntity
     {
         return $this->majeur;
@@ -83,6 +91,18 @@ class CompteGestionEntity extends BaseLibelleEntity
     public function setMontant(float $montant): self
     {
         $this->montant = $montant;
+
+        return $this;
+    }
+
+    public function getNature()
+    {
+        return $this->nature;
+    }
+
+    public function setNature($nature)
+    {
+        $this->nature = $nature;
 
         return $this;
     }

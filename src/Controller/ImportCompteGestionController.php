@@ -55,7 +55,8 @@ class ImportCompteGestionController extends AbstractController
             if ($fichier) {
                 $file = file($fichier->getPathname());
 
-                $comptesGestion = ImportManager::parseCsv($import->getMajeur(), $file, $importOperationRepository);
+                $im = new ImportManager();
+                $comptesGestion = $im->parseCsv($import->getMajeur(), $file, $importOperationRepository);
 
                 return $this->render('import_compte_gestion/resultat_import.html.twig', [
                     'page_title' => 'Résultat import',
@@ -70,29 +71,5 @@ class ImportCompteGestionController extends AbstractController
             'page_title' => 'Import CSV Compte Gestion',
             'form' => $form->createView(),
         ]);
-    }
-
-    private function parseCsv(MajeurEntity $majeur, $file)
-    {
-        $importOperationRepo = $this->getDoctrine()->getRepository(ImportOperationEntity::class);
-        $cgs = [];
-        foreach ($file as $row) {
-            $data = str_getcsv($row);
-
-            $date = DateTime::createFromFormat('d/m/Y', $data['0']);
-            $tos = $importOperationRepo->findByMatchLibelle($data['1']);
-
-            $compteGestion = new CompteGestionEntity();
-            $compteGestion->setDate($date);
-            $compteGestion->setMajeur($majeur);
-            $compteGestion->setMontant($data[2]);
-
-            if (count($tos) == 1) {
-                $compteGestion->setTypeOperation($tos[0]->getTypeOperation());
-            }
-
-            $cgs[] = $compteGestion;
-        }
-        return $cgs;
     }
 }

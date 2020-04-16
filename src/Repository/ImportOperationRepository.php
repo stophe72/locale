@@ -18,14 +18,4 @@ class ImportOperationRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, ImportOperationEntity::class);
     }
-
-    // TODO recuperer tous les libelles pour faire un array contains
-    public function findByMatchLibelle(string $text)
-    {
-        $qb = $this->createQueryBuilder('io');
-        $qb->where('io.libelle LIKE :libelle')
-            ->setParameter('libelle', '%' . $text . '%');
-
-        return $qb->getQuery()->getResult();
-    }
 }
