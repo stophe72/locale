@@ -11,6 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BaseCodeLibelleEntity extends BaseLibelleEntity
 {
     /**
+     * @var string
+     *
      * @Assert\NotBlank
      * @Assert\Length(
      *      min = 1,
@@ -19,13 +21,15 @@ class BaseCodeLibelleEntity extends BaseLibelleEntity
      *      maxMessage = "Le code doit contenir au plus {{ limit }} caractères"
      * )
      *
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=10)
      */
     private $code;
 
 
     /**
-     * Get min = 2,
+     * Get the value of code
+     *
+     * @return  string
      */
     public function getCode()
     {
@@ -33,13 +37,15 @@ class BaseCodeLibelleEntity extends BaseLibelleEntity
     }
 
     /**
-     * Set min = 2,
+     * Set the value of code
+     *
+     * @param  string  $code
      *
      * @return  self
      */
-    public function setCode($code)
+    public function setCode(string $code)
     {
-        $this->code = strtoupper($code);
+        $this->code = $code;
 
         return $this;
     }

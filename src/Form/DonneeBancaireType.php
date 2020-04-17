@@ -2,7 +2,7 @@
 
 namespace App\Form;
 
-use App\Entity\BanqueEntity;
+use App\Entity\AgenceBancaireEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TypeCompteEntity;
@@ -51,10 +51,11 @@ class DonneeBancaireType extends AbstractType
                 ]
             )
             ->add(
-                'banque',
+                'agenceBancaire',
                 EntityType::class,
                 [
-                    'class' => BanqueEntity::class,
+                    'label' => 'Agence bancaire',
+                    'class' => AgenceBancaireEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
                     ]

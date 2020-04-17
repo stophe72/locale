@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DonneeBancaireRepository")
  * @ORM\Table(name="donneeBancaire")
- * @UniqueEntity(fields={"banque", "numeroCompte"})
+ * @UniqueEntity(fields={"agenceBancaire", "numeroCompte"})
  */
 class DonneeBancaireEntity extends BaseUserEntity
 {
@@ -24,10 +24,10 @@ class DonneeBancaireEntity extends BaseUserEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\BanqueEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="banqueId", referencedColumnName="id", nullable=false)
+     * @ORM\OneToOne(targetEntity="App\Entity\AgenceBancaireEntity", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="agenceBancaireId", referencedColumnName="id", nullable=false)
      */
-    private $banque;
+    private $agenceBancaire;
 
     /**
      * @Assert\NotNull
@@ -67,14 +67,14 @@ class DonneeBancaireEntity extends BaseUserEntity
         return $this;
     }
 
-    public function getBanque(): ?BanqueEntity
+    public function getAgenceBancaire(): ?AgenceBancaireEntity
     {
-        return $this->banque;
+        return $this->agenceBancaire;
     }
 
-    public function setBanque(BanqueEntity $banque): self
+    public function setAgenceBancaire(AgenceBancaireEntity $agenceBancaire): self
     {
-        $this->banque = $banque;
+        $this->agenceBancaire = $agenceBancaire;
 
         return $this;
     }
