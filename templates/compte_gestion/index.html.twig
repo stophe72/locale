@@ -37,9 +37,10 @@
                     <thead>
                         <tr>
                             <th>Majeur</th>
+                            <th>Compte bancaire</th>
                             <th>Date</th>
                             <th>Libellé</th>
-                            <th>Type d'opération</th>
+                            {# <th>Type d'opération</th> #}
                             <th>Montant</th>
                             <th></th>
                         </tr>
@@ -47,9 +48,17 @@
                     {% for operation in pagination %}
                         <tr>
                             <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
+                            <td>{{ operation.donneeBancaire }}</td>
                             <td>{{ operation.date|date('d/m/Y') }}</td>
-                            <td>{{ operation.libelle }}</td>
-                            <td>{{ operation.typeOperation.libelle }}</td>
+                            <td>
+                                <div class="row">
+                                    {{ operation.libelle }}
+                                </div>
+                                <div class="row text-secondary">
+                                    <small>{{ operation.typeOperation.libelle }}</small>
+                                </div>
+                            </td>
+                            {# <td>{{ operation.typeOperation.libelle }}</td> #}
                             <td class="text-right">{{ operation.montant|format_currency('EUR') }}</td>
                             <td class="text-right">
                                 <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">

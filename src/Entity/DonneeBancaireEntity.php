@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -53,6 +55,16 @@ class DonneeBancaireEntity extends BaseUserEntity
      * @ORM\Column(name="soldePrecedent", type="float")
      */
     private $soldePrecedent;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="donneeBancaireId")
+     */
+    private $compteGestionEntities;
+
+    public function __construct()
+    {
+        $this->compteGestionEntities = new ArrayCollection();
+    }
 
 
     public function getMajeur(): ?MajeurEntity
@@ -125,5 +137,41 @@ class DonneeBancaireEntity extends BaseUserEntity
         $this->soldePrecedent = $soldePrecedent;
 
         return $this;
+    }
+
+    /**
+     * @return Collection|CompteGestionEntity[]
+     */
+    public function getCompteGestionEntities(): Collection
+    {
+        return $this->compteGestionEntities;
+    }
+
+    public function addCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    {
+        if (!$this->compteGestionEntities->contains($compteGestionEntity)) {
+            $this->compteGestionEntities[] = $compteGestionEntity;
+            $compteGestionEntity->setDonneeBancaire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    {
+        if ($this->compteGestionEntities->contains($compteGestionEntity)) {
+            $this->compteGestionEntities->removeElement($compteGestionEntity);
+            // set the owning side to null (unless already changed)
+            if ($compteGestionEntity->getDonneeBancaire() === $this) {
+                $compteGestionEntity->setDonneeBancaire(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getNumeroCompte();
     }
 }

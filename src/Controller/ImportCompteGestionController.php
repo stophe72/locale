@@ -2,16 +2,11 @@
 
 namespace App\Controller;
 
-use App\Entity\CompteGestionEntity;
-use App\Entity\ImportOperationEntity;
-use App\Entity\MajeurEntity;
 use App\Form\ImportCompteGestionType;
 use App\Models\ImportCompteGestion;
 use App\Repository\ImportOperationRepository;
 use App\Repository\MajeurRepository;
-use App\Repository\TypeOperationRepository;
 use App\Util\ImportManager;
-use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -58,11 +53,17 @@ class ImportCompteGestionController extends AbstractController
                 $im = new ImportManager();
                 $comptesGestion = $im->parseCsv($import->getMajeur(), $file, $importOperationRepository);
 
+                $em = $this->getDoctrine()->getManager();
+                foreach ($comptesGestion['ok'] as $cg) {
+                    $em->persist($cg);
+                }
+                $em->flush();
+
                 return $this->render('import_compte_gestion/resultat_import.html.twig', [
                     'page_title' => 'Résultat import',
                     'majeur' => $import->getMajeur(),
                     'comptesGestion' => $comptesGestion,
-                    // 'form' => $form->createView(),
+                    'url_back' => 'user_comptesgestion',
                 ]);
             }
         }

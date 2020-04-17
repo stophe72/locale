@@ -46,6 +46,12 @@ class CompteGestionEntity extends BaseLibelleEntity
      */
     private $nature;
 
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\DonneeBancaireEntity", inversedBy="compteGestionEntities")
+     * @ORM\JoinColumn(name="donneeBancaireId", referencedColumnName="id", nullable=false)
+     */
+    private $donneeBancaire;
+
 
     public function getMajeur(): ?MajeurEntity
     {
@@ -103,6 +109,18 @@ class CompteGestionEntity extends BaseLibelleEntity
     public function setNature($nature)
     {
         $this->nature = $nature;
+
+        return $this;
+    }
+
+    public function getDonneeBancaire(): ?DonneeBancaireEntity
+    {
+        return $this->donneeBancaire;
+    }
+
+    public function setDonneeBancaire(?DonneeBancaireEntity $donneeBancaire): self
+    {
+        $this->donneeBancaire = $donneeBancaire;
 
         return $this;
     }

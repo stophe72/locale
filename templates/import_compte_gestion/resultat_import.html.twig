@@ -8,16 +8,11 @@
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
 
-    {# {{ form_start(form) }} #}
-    {# {{ form_errors(form) }} #}
-    {# {{ form_row(form.majeur) }} #}
-    {# {{ form_row(form.nomFichier) }} #}
-
     <h5 class="mb-3">Majeur: {{ majeur.nom }} {{ majeur.prenom }}</h5>
 
     {% if comptesGestion.ok is not empty %}
         <div class="alert alert-success">
-            Imports valides <span class="badge badge-success">{{ comptesGestion.ok|length }}</span>
+            Imports effectués <span class="badge badge-success">{{ comptesGestion.ok|length }}</span>
         </div>
         <table class="table table-striped">
         <thead>
@@ -25,8 +20,8 @@
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Type d'opération</th>
-                <th>Crédit</th>
-                <th>Débit</th>
+                <th>Nature</th>
+                <th>Montant</th>
             </tr>
         </thead>
         <tbody>
@@ -35,27 +30,20 @@
                 <td>{{ compteGestion.date|date('d/m/Y') }}</td>
                 <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
                 <td>{{ compteGestion.typeOperation.libelle }}</td>
-                {% if compteGestion.nature == 1 %} {# credit #}
-                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
-                    <td></td>
+                {% if compteGestion.nature == 1 %}
+                    <td class=>Crédit</td>
                 {% else %}
-                    <td></td>
-                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
+                    <td class=>Débit</td>
                 {% endif %}
+                <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
             </tr>
         {% endfor %}
         </tbody>
         </table>
     {% endif %}
-    {% if comptesGestion.ko is empty %}
-        <div class="row float-right mb-3">
-            <div class="col">
-                <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Valider</button>
-            </div>
-        </div>
-    {% else %}
+    {% if comptesGestion.ko is not empty %}
         <div class="alert alert-warning">
-            Imports en échec <span class="badge badge-warning">{{ comptesGestion.ko|length }}</span>
+            Imports non valides <span class="badge badge-warning">{{ comptesGestion.ko|length }}</span>
         </div>
         <table class="table table-striped">
         <thead>
@@ -63,8 +51,8 @@
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Type d'opération</th>
-                <th>Débit</th>
-                <th>Crédit</th>
+                <th>Nature</th>
+                <th>Montant</th>
             </tr>
         </thead>
         <tbody>
@@ -74,13 +62,12 @@
                 <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
                 <td>{% if compteGestion.typeOperation is not null %}{{ compteGestion.typeOperation.libelle }}{% endif %}</td>
                 {% if compteGestion.typeOperation is not null %}
-                    {% if compteGestion.nature == 1 %} {# credit #}
-                        <td class="text-right">{% if compteGestion.nature == -1 %}{{ compteGestion.montant|format_currency('EUR') }}{% endif %}</td>
-                        <td></td>
+                    {% if compteGestion.nature == 1 %}
+                        <td class=>Crédit</td>
                     {% else %}
-                        <td></td>
-                        <td class="text-right">{% if compteGestion.nature == -1 %}{{ compteGestion.montant|format_currency('EUR') }}{% endif %}</td>
+                        <td class=>Débit</td>
                     {% endif %}
+                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
                 {% else %}
                     <td></td>
                     <td></td>
@@ -90,7 +77,12 @@
         </tbody>
         </table>
     {% endif %}
-    {# {{ form_end(form) }} #}
+
+    <div class="row float-right mb-3">
+        <div class="col">
+            <a class="mr-2" href="{{ path(url_back) }}">Retour à la liste</a>
+        </div>
+    </div>
 
 {% endblock %}
 

@@ -32,8 +32,10 @@ class AgenceBancaireController extends AbstractController
      */
     public function index(AgenceBancaireRepository $agenceBancaireRepository)
     {
+        $user = $this->security->getUser();
+
         return $this->render('agence_bancaire/index.html.twig', [
-            'banques' => $agenceBancaireRepository->findBy([], ['libelle' => 'ASC']),
+            'banques' => $agenceBancaireRepository->findBy(['user' => $user->getId(),], ['libelle' => 'ASC']),
             'page_title' => 'Liste des agences bancaires',
         ]);
     }

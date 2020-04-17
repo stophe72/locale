@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use App\Entity\CompteGestionEntity;
+use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TypeOperationEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
@@ -19,6 +20,17 @@ class CompteGestionType extends BaseLibelleType
         parent::buildForm($builder, $options);
 
         $builder
+            ->add(
+                'donneeBancaire',
+                EntityType::class,
+                [
+                    'class' => DonneeBancaireEntity::class,
+                    'label' => 'Compte bancaire',
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ]
+                ]
+            )
             ->add(
                 'majeur',
                 EntityType::class,
