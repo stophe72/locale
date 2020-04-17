@@ -50,6 +50,14 @@ class MajeurEntity extends BaseUserEntity
     private $adresse;
 
     /**
+     * @Assert\NotNull
+     *
+     * @ORM\OneToOne(targetEntity="App\Entity\JugementEntity", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="jugementId", referencedColumnName="id", nullable=false)
+     */
+    private $jugement;
+
+    /**
      * @var ContactEntity
      *
      * @ORM\OneToOne(targetEntity="App\Entity\ContactEntity", cascade={"persist", "remove"})
@@ -79,48 +87,12 @@ class MajeurEntity extends BaseUserEntity
     private $numeroSS;
 
     /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(name="numeroRG", type="string", length=100, nullable=false)
-     */
-    private $numeroRG;
-
-    /**
-     * @Assert\NotNull
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\TribunalEntity")
-     * @ORM\JoinColumn(name="tribunalId", referencedColumnName="id", nullable=false)
-     */
-    private $tribunal;
-
-    /**
      * @Assert\NotNull
      *
      * @ORM\OneToOne(targetEntity="App\Entity\ParametreMissionEntity")
      * @ORM\JoinColumn(name="parametreMissionId", referencedColumnName="id", nullable=false)
      */
     private $parametreMission;
-
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(name="dateJugement", type="date", nullable=false)
-     */
-    private $dateJugement;
-
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(name="debutMesure", type="date", nullable=false)
-     */
-    private $debutMesure;
-
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(name="finMesure", type="date", nullable=false)
-     */
-    private $finMesure;
 
     /**
      * @var Date
@@ -216,74 +188,6 @@ class MajeurEntity extends BaseUserEntity
     public function setNumeroSS(string $numeroSS): self
     {
         $this->numeroSS = strtoupper($numeroSS);
-
-        return $this;
-    }
-
-    public function getTribunal(): ?TribunalEntity
-    {
-        return $this->tribunal;
-    }
-
-    public function setTribunal(?TribunalEntity $tribunal): self
-    {
-        $this->tribunal = $tribunal;
-
-        return $this;
-    }
-
-    public function getDateJugement(): ?\DateTimeInterface
-    {
-        return $this->dateJugement;
-    }
-
-    public function setDateJugement(\DateTimeInterface $dateJugement): self
-    {
-        $this->dateJugement = $dateJugement;
-
-        return $this;
-    }
-
-    public function getDebutMesure(): ?\DateTimeInterface
-    {
-        return $this->debutMesure;
-    }
-
-    public function setDebutMesure(\DateTimeInterface $debutMesure): self
-    {
-        $this->debutMesure = $debutMesure;
-
-        return $this;
-    }
-
-    public function getFinMesure(): ?\DateTimeInterface
-    {
-        return $this->finMesure;
-    }
-
-    public function setFinMesure(\DateTimeInterface $finMesure): self
-    {
-        $this->finMesure = $finMesure;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of numeroRG
-     */
-    public function getNumeroRG(): ?string
-    {
-        return $this->numeroRG;
-    }
-
-    /**
-     * Set the value of numeroRG
-     *
-     * @return  self
-     */
-    public function setNumeroRG(?string $numeroRG)
-    {
-        $this->numeroRG = strtoupper($numeroRG);
 
         return $this;
     }
@@ -452,6 +356,26 @@ class MajeurEntity extends BaseUserEntity
     public function setContact(?ContactEntity $contact)
     {
         $this->contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of jugement
+     */
+    public function getJugement(): ?JugementEntity
+    {
+        return $this->jugement;
+    }
+
+    /**
+     * Set the value of jugement
+     *
+     * @return  self
+     */
+    public function setJugement(?JugementEntity $jugement)
+    {
+        $this->jugement = $jugement;
 
         return $this;
     }

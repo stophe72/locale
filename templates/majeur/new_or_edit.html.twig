@@ -36,30 +36,30 @@
             N° Répertoire Général
         </div>
         <div class="col-sm-4">
-            {{ form_widget(form.numeroRG) }}
+            {{ form_widget(form.jugement.numeroRG) }}
         </div>
         <div class="col-sm-2 col-form-label">
             Date du jugement
         </div>
         <div class="col-sm-4">
-            {{ form_widget(form.dateJugement) }}
+            {{ form_widget(form.jugement.dateJugement) }}
         </div>
     </div>
-    {{ form_row(form.tribunal) }}
+    {{ form_row(form.jugement.tribunal) }}
 
     <h5 class="my-3 text-primary">Mesure</h5>
     <div class="row my-3">
         <div class="col-sm-2 px-0">
-            {{ form_label(form.debutMesure) }}
+            {{ form_label(form.jugement.debutMesure) }}
         </div>
         <div class="col-sm-4">
-            {{ form_widget(form.debutMesure) }}
+            {{ form_widget(form.jugement.debutMesure) }}
         </div>
         <div class="col-sm-2">
-            {{ form_label(form.finMesure) }}
+            {{ form_label(form.jugement.finMesure) }}
         </div>
         <div class="col-sm-4">
-            {{ form_widget(form.finMesure) }}
+            {{ form_widget(form.jugement.finMesure) }}
         </div>
     </div>
     <h5 class="my-3 text-primary">Paramètres de la mission</h5>

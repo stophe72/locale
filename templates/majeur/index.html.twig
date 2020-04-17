@@ -28,8 +28,8 @@
                     <td>{{ majeur.civilite }}</td>
                     <td>{{ majeur.nom }}</td>
                     <td>{{ majeur.prenom }}</td>
-                    <td>{{ majeur.dateJugement|date("d/m/Y") }}</td>
-                    <td>{{ majeur.numeroRG }}</td>
+                    <td>{{ majeur.jugement.dateJugement|date("d/m/Y") }}</td>
+                    <td>{{ majeur.jugement.numeroRG }}</td>
                     <td>
                         <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-info-circle"></i> Détails

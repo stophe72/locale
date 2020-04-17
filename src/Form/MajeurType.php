@@ -65,55 +65,15 @@ class MajeurType extends AbstractType
                 ]
             )
             ->add(
-                'numeroRG',
-                TextType::class,
-                [
-                    'label' => 'N° Répertoire Général',
-                ]
-            )
-            ->add(
                 'nationalite',
                 TextType::class,
                 [
                     'label' => 'Nationalité',
                 ]
             )
-            ->add(
-                'dateJugement',
-                DateType::class,
-                [
-                    'label' => 'Date du jugement',
-                    'widget' => 'single_text',
-                ]
-            )
-            ->add(
-                'debutMesure',
-                DateType::class,
-                [
-                    'label' => 'Début',
-                    'widget' => 'single_text',
-                ]
-            )
-            ->add(
-                'finMesure',
-                DateType::class,
-                [
-                    'label' => 'Fin',
-                    'widget' => 'single_text',
-                ]
-            )
             ->add('adresse', AdresseType::class)
             ->add('contact', ContactType::class)
-            ->add(
-                'tribunal',
-                EntityType::class,
-                [
-                    'class' => TribunalEntity::class,
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ],
-                ]
-            )
+            ->add('jugement', JugementType::class)
             ->add(
                 'parametreMission',
                 ParametreMissionType::class

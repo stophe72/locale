@@ -64,19 +64,19 @@
             </tr>
             <tr>
                 <th>N° de Répertoire Général</th>
-                <td>{{ majeur.numeroRG }}</td>
+                <td>{{ majeur.jugement.numeroRG }}</td>
             </tr>
             <tr>
                 <th>Date de jugement</th>
-                <td>{{ majeur.dateJugement|date('m/d/Y') }}</td>
+                <td>{{ majeur.jugement.dateJugement|date('m/d/Y') }}</td>
             </tr>
             <tr>
                 <th>Tribunal</th>
-                <td>{{ majeur.tribunal.libelle }}</td>
+                <td>{{ majeur.jugement.tribunal.libelle }}</td>
             </tr>
             <tr>
                 <th>Mesure</th>
-                <td>Du {{ majeur.debutMesure|date('m/d/Y') }} au {{ majeur.finMesure|date('m/d/Y') }}</td>
+                <td>Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
             </tr>
             <tr>
                 <th>Nature de la mission</th>
@@ -84,7 +84,7 @@
             </tr>
             <tr>
                 <th>Protection</th>
-                <td>Du {{ majeur.parametreMission.protection.libelle }}</td>
+                <td>{{ majeur.parametreMission.protection.libelle }}</td>
             </tr>
             <tr>
                 <th>Lieu de vie</th>
