@@ -58,6 +58,18 @@
                 <th>Mesure</th>
                 <td>Du {{ majeur.debutMesure|date('m/d/Y') }} au {{ majeur.finMesure|date('m/d/Y') }}</td>
             </tr>
+            <tr>
+                <th>Nature de la mission</th>
+                <td>{{ majeur.parametreMission.nature }}</td>
+            </tr>
+            <tr>
+                <th>Protection</th>
+                <td>Du {{ majeur.parametreMission.protection.libelle }}</td>
+            </tr>
+            <tr>
+                <th>Lieu de vie</th>
+                <td>{{ majeur.parametreMission.lieuVie.libelle }}</td>
+            </tr>
         </table>
     </div>
     <div class="row">
