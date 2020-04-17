@@ -30,7 +30,7 @@ class MajeurEntity extends BaseUserEntity
     private $nom;
 
     /**
-     * @ORM\Column(name="nomEtatCivil", type="string", length=100)
+     * @ORM\Column(name="nomEtatCivil", type="string", length=100, nullable=true)
      */
     private $nomEtatCivil;
 
@@ -59,7 +59,6 @@ class MajeurEntity extends BaseUserEntity
 
     /**
      * @Assert\NotBlank
-     * @Assert\Date
      *
      * @ORM\Column(name="dateNaissance", type="date", nullable=false)
      */
@@ -104,7 +103,6 @@ class MajeurEntity extends BaseUserEntity
 
     /**
      * @Assert\NotBlank
-     * @Assert\Date
      *
      * @ORM\Column(name="dateJugement", type="date", nullable=false)
      */
@@ -112,7 +110,6 @@ class MajeurEntity extends BaseUserEntity
 
     /**
      * @Assert\NotBlank
-     * @Assert\Date
      *
      * @ORM\Column(name="debutMesure", type="date", nullable=false)
      */
@@ -120,7 +117,6 @@ class MajeurEntity extends BaseUserEntity
 
     /**
      * @Assert\NotBlank
-     * @Assert\Date
      *
      * @ORM\Column(name="finMesure", type="date", nullable=false)
      */
@@ -128,8 +124,6 @@ class MajeurEntity extends BaseUserEntity
 
     /**
      * @var Date
-     *
-     *  @Assert\Date
      *
      * @ORM\Column(name="dateFinCMU", type="date", nullable=true)
      */
@@ -395,7 +389,7 @@ class MajeurEntity extends BaseUserEntity
      *
      * @return  Date
      */
-    public function getDateFinCMU(): ?DateTimeInterface
+    public function getDateFinCMU()
     {
         return $this->dateFinCMU;
     }

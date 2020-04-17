@@ -53,7 +53,7 @@ class MajeurType extends AbstractType
                 DateType::class,
                 [
                     'label' => 'Date de naissance',
-                    'widget'   => 'single_text',
+                    'widget' => 'single_text',
                 ]
             )
             ->add('lieuNaissance', TextType::class)
@@ -83,7 +83,7 @@ class MajeurType extends AbstractType
                 DateType::class,
                 [
                     'label' => 'Date du jugement',
-                    'widget'   => 'single_text',
+                    'widget' => 'single_text',
                 ]
             )
             ->add(
@@ -91,7 +91,7 @@ class MajeurType extends AbstractType
                 DateType::class,
                 [
                     'label' => 'Début',
-                    'widget'   => 'single_text',
+                    'widget' => 'single_text',
                 ]
             )
             ->add(
@@ -99,7 +99,7 @@ class MajeurType extends AbstractType
                 DateType::class,
                 [
                     'label' => 'Fin',
-                    'widget'   => 'single_text',
+                    'widget' => 'single_text',
                 ]
             )
             ->add('adresse', AdresseType::class)
@@ -122,8 +122,9 @@ class MajeurType extends AbstractType
                 'dateFinCMU',
                 DateType::class,
                 [
+                    'required' => false,
                     'label' => 'Date de fin C.M.U.',
-                    'widget'   => 'single_text',
+                    'widget' => 'single_text',
                 ]
             );
     }
