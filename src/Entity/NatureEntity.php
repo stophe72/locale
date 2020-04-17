@@ -11,41 +11,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="nature")
  * @UniqueEntity("code")
  */
-class NatureEntity extends BaseLibelleEntity
+class NatureEntity extends BaseCodeLibelleEntity
 {
-    /**
-     * @var string
-     *
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(type="string", length=10, nullable=false)
-     */
-    private $code;
-
-    /**
-     * Get the value of code
-     *
-     * @return  string
-     */
-    public function getCode(): ?string
-    {
-        return $this->code;
-    }
-
-    /**
-     * Set the value of code
-     *
-     * @param  string  $code
-     *
-     * @return  self
-     */
-    public function setCode(string $code)
-    {
-        $this->code = strtoupper($code);
-
-        return $this;
-    }
-
     public function __toString()
     {
         return $this->getCode() . ' - ' . $this->getLibelle();

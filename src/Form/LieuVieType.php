@@ -5,7 +5,7 @@ namespace App\Form;
 use App\Entity\LieuVieEntity;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class LieuVieType extends BaseLibelleType
+class LieuVieType extends BaseCodeLibelleType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
