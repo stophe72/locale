@@ -14,7 +14,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Libellé</th>
                     <th>Téléphone</th>
                     <th>Email</th>
@@ -24,7 +23,6 @@
             </thead>
             {% for banque in banques %}
                 <tr>
-                    <td>{{ banque.id }}</td>
                     <td>{{ banque.libelle }}</td>
                     <td>{{ banque.telephone }}</td>
                     <td>{{ banque.email }}</td>

@@ -14,16 +14,14 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="col-sm-2">Id.</th>
-                    <th class="col-sm-6">Libellé</th>
-                    <th class="col-sm-4"></th>
+                    <th>Libellé</th>
+                    <th></th>
                 </tr>
             </thead>
             {% for prestationsociale in prestation_sociales %}
                 <tr>
-                    <td class="col-sm-2 align-middle">{{ prestationsociale.id }}</td>
-                    <td class="col-sm-6 align-middle">{{ prestationsociale.libelle }}</td>
-                    <td class="col-sm-4 text-right">
+                    <td>{{ prestationsociale.libelle }}</td>
+                    <td class="text-right">
                         <a href="{{ path('user_prestationsociale_edit', {'id': prestationsociale.id}) }}" title="Détails de la période" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>

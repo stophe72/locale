@@ -14,7 +14,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Date</th>
                     <th>Type de frais</th>
                     <th>Montant</th>
@@ -24,8 +23,7 @@
             <tbody>
             {% for ndf in pagination.items %}
                 <tr>
-                    <td>{{ ndf.id }}</td>
-                    <td class="align-right">{{ ndf.date|date('d/m/Y') }}</td>
+                    <td>{{ ndf.date|date('d/m/Y') }}</td>
                     <td>{{ ndf.typeFrais }}</td>
                     <td>{{ ndf.montant }}</td>
                     <td class="col-sm-4 text-right">

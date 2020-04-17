@@ -36,7 +36,6 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Id.</th>
                             <th>Majeur</th>
                             <th>Date</th>
                             <th>Libellé</th>
@@ -47,7 +46,6 @@
                     </thead>
                     {% for operation in pagination %}
                         <tr>
-                            <td>{{ operation.id }}</td>
                             <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
                             <td>{{ operation.date|date('d/m/Y') }}</td>
                             <td>{{ operation.libelle }}</td>

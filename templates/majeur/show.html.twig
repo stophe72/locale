@@ -35,12 +35,32 @@
                 <td>{{ majeur.adresse.  ville }}</td>
             </tr>
             <tr>
+                <th>Téléphone</th>
+                <td>{% if majeur.contact is not null %}{{ majeur.contact.telephone }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Mobile</th>
+                <td>{% if majeur.contact is not null %}{{ majeur.contact.mobile }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th>Email</th>
+                <td>{% if majeur.contact is not null %}{{ majeur.contact.email }}{% endif %}</td>
+            </tr>
+            <tr>
                 <th>Date de naissance</th>
                 <td>{{ majeur.dateNaissance|date('d/m/Y') }}</td>
             </tr>
             <tr>
                 <th>N° de Sécurité Sociale</th>
                 <td>{{ majeur.numeroSS }}</td>
+            </tr>
+            <tr>
+                <th>Date de fin C.M.U.</th>
+                <td>{{ majeur.dateFinCMU|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th>Nationalité</th>
+                <td>{{ majeur.nationalite }}</td>
             </tr>
             <tr>
                 <th>N° de Répertoire Général</th>

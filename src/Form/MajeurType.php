@@ -3,7 +3,6 @@
 namespace App\Form;
 
 use App\Entity\MajeurEntity;
-use App\Entity\ParametreMissionEntity;
 use App\Entity\TribunalEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -61,12 +60,23 @@ class MajeurType extends AbstractType
             ->add(
                 'numeroSS',
                 TextType::class,
-                ['label' => 'N° Sécurité Sociale']
+                [
+                    'label' => 'N° Sécurité Sociale',
+                ]
             )
             ->add(
                 'numeroRG',
                 TextType::class,
-                ['label' => 'N° Répertoire Général']
+                [
+                    'label' => 'N° Répertoire Général',
+                ]
+            )
+            ->add(
+                'nationalite',
+                TextType::class,
+                [
+                    'label' => 'Nationalité',
+                ]
             )
             ->add(
                 'dateJugement',
@@ -93,6 +103,7 @@ class MajeurType extends AbstractType
                 ]
             )
             ->add('adresse', AdresseType::class)
+            ->add('contact', ContactType::class)
             ->add(
                 'tribunal',
                 EntityType::class,
@@ -106,6 +117,14 @@ class MajeurType extends AbstractType
             ->add(
                 'parametreMission',
                 ParametreMissionType::class
+            )
+            ->add(
+                'dateFinCMU',
+                DateType::class,
+                [
+                    'label' => 'Date de fin C.M.U.',
+                    'widget'   => 'single_text',
+                ]
             );
     }
 

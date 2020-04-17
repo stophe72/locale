@@ -14,9 +14,8 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Majeur</th>
-                    <th>Banque</th>
+                    <th>Agence bancaire</th>
                     <th>Type de compte</th>
                     <th>Numéro de compte</th>
                     <th>Solde courant</th>
@@ -26,9 +25,8 @@
             </thead>
             {% for donneebancaire in donneebancaires %}
                 <tr>
-                    <td>{{ donneebancaire.id }}</td>
                     <td>{{ donneebancaire.majeur.nom }} {{ donneebancaire.majeur.prenom }}</td>
-                    <td>{{ donneebancaire.banque }}</td>
+                    <td>{{ donneebancaire.agenceBancaire }}</td>
                     <td>{{ donneebancaire.typeCompte.libelle }}</td>
                     <td>{{ donneebancaire.numeroCompte }}</td>
                     <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>

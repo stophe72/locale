@@ -8,15 +8,34 @@ use App\Repository\DonneeBancaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class DonneeBancaireController extends AbstractController
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * Constructeur
+     *
+     * @param $session SessionInterface
+     */
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     /**
      * @Route("user/donneebancaires", name="user_donneebancaires")
      */
     public function index(DonneeBancaireRepository $donneeBancaireRepository)
     {
-        $dbs = $donneeBancaireRepository->findAll();
+        $user = $this->security->getUser();
+
+        $dbs = $donneeBancaireRepository->findBy(['user' => $user->getId()]);
+
         return $this->render('donnee_bancaire/index.html.twig', [
             'donneebancaires' => $dbs,
             'page_title' => 'Liste des données bancaires',
@@ -57,7 +76,9 @@ class DonneeBancaireController extends AbstractController
         $form = $this->createForm(DonneeBancaireType::class, $donneeBancaire);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        $user = $this->security->getUser();
+
+        if ($donneeBancaire->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($donneeBancaire);
             $em->flush();

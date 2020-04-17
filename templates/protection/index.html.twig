@@ -14,16 +14,14 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th class="col-sm-2">Id.</th>
-                    <th class="col-sm-6">Libellé</th>
-                    <th class="col-sm-4"></th>
+                    <th>Libellé</th>
+                    <th></th>
                 </tr>
             </thead>
             {% for protection in protections %}
                 <tr>
-                    <td class="col-sm-2 align-middle">{{ protection.id }}</td>
-                    <td class="col-sm-6 align-middle">{{ protection.libelle }}</td>
-                    <td class="col-sm-4 text-right">
+                    <td>{{ protection.libelle }}</td>
+                    <td class="text-right">
                         <a href="{{ path('user_protection_edit', {'id': protection.id}) }}" title="Détails de la protection" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>

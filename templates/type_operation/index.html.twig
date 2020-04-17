@@ -14,14 +14,12 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Libellé</th>
                     <th></th>
                 </tr>
             </thead>
             {% for typeOperation in typeOperations %}
                 <tr>
-                    <td>{{ typeOperation.id }}</td>
                     <td>{{ typeOperation.libelle }}</td>
                     <td class="text-right">
                         <a href="{{ path('user_typeoperation_edit', {'id': typeOperation.id}) }}" title="Détails du type d'opération" class="btn btn-outline-primary btn-sm mr-2">

@@ -14,7 +14,6 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Majeur</th>
                     <th>Libellé</th>
                     <th>Type d'opération</th>
@@ -24,7 +23,6 @@
             </thead>
             {% for io in importsOperation %}
                 <tr>
-                    <td>{{ io.id }}</td>
                     <td>{{ io.majeur.nom }} {{ io.majeur.prenom }}</td>
                     <td>{{ io.libelle }}</td>
                     <td>{{ io.typeOperation.libelle }}</td>

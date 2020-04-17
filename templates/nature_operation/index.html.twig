@@ -14,14 +14,12 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Id.</th>
                     <th>Libellé</th>
                     <th></th>
                 </tr>
             </thead>
             {% for natureOperation in naturesOperation %}
                 <tr>
-                    <td>{{ natureOperation.id }}</td>
                     <td>{{ natureOperation.libelle }}</td>
                     <td class="text-right">
                         <a href="{{ path('user_natureoperation_edit', {'id': natureOperation.id}) }}" title="Détails de la nature opération" class="btn btn-outline-primary btn-sm mr-2">

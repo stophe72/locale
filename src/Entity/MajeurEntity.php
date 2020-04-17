@@ -2,10 +2,12 @@
 
 namespace App\Entity;
 
+use DateTimeInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MajeurRepository")
@@ -33,41 +35,52 @@ class MajeurEntity extends BaseUserEntity
     private $nomEtatCivil;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      *
      * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $prenom;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity="App\Entity\AdresseEntity", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="adresseId", referencedColumnName="id", nullable=false)
      */
     private $adresse;
 
     /**
-     * @Assert\NotNull
+     * @var ContactEntity
+     *
+     * @ORM\OneToOne(targetEntity="App\Entity\ContactEntity", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="contactId", referencedColumnName="id", nullable=true)
+     */
+    private $contact;
+
+    /**
+     * @Assert\NotBlank
+     * @Assert\Date
      *
      * @ORM\Column(name="dateNaissance", type="date", nullable=false)
      */
     private $dateNaissance;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      *
      * @ORM\Column(name="lieuNaissance", type="string", length=100, nullable=false)
      */
     private $lieuNaissance;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      *
      * @ORM\Column(name="numeroSS", type="string", length=100, nullable=false)
      */
     private $numeroSS;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
      *
      * @ORM\Column(name="numeroRG", type="string", length=100, nullable=false)
      */
@@ -90,25 +103,46 @@ class MajeurEntity extends BaseUserEntity
     private $parametreMission;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
+     * @Assert\Date
      *
      * @ORM\Column(name="dateJugement", type="date", nullable=false)
      */
     private $dateJugement;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
+     * @Assert\Date
      *
      * @ORM\Column(name="debutMesure", type="date", nullable=false)
      */
     private $debutMesure;
 
     /**
-     * @Assert\NotNull
+     * @Assert\NotBlank
+     * @Assert\Date
      *
      * @ORM\Column(name="finMesure", type="date", nullable=false)
      */
     private $finMesure;
+
+    /**
+     * @var Date
+     *
+     *  @Assert\Date
+     *
+     * @ORM\Column(name="dateFinCMU", type="date", nullable=true)
+     */
+    private $dateFinCMU;
+
+    /**
+     * @var string
+     *
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(name="nationalite", type="string", length=100, nullable=false)
+     */
+    private $nationalite;
 
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="majeur")
@@ -352,6 +386,78 @@ class MajeurEntity extends BaseUserEntity
     public function setLieuNaissance($lieuNaissance)
     {
         $this->lieuNaissance = $lieuNaissance;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of dateFinCMU
+     *
+     * @return  Date
+     */
+    public function getDateFinCMU(): ?DateTimeInterface
+    {
+        return $this->dateFinCMU;
+    }
+
+    /**
+     * Set the value of dateFinCMU
+     *
+     * @param  Date  $dateFinCMU
+     *
+     * @return  self
+     */
+    public function setDateFinCMU(?DateTimeInterface $dateFinCMU)
+    {
+        $this->dateFinCMU = $dateFinCMU;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nationalite
+     *
+     * @return  string
+     */
+    public function getNationalite(): ?string
+    {
+        return $this->nationalite;
+    }
+
+    /**
+     * Set the value of nationalite
+     *
+     * @param  string  $nationalite
+     *
+     * @return  self
+     */
+    public function setNationalite(?string $nationalite)
+    {
+        $this->nationalite = $nationalite;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of contact
+     *
+     * @return  ContactEntity
+     */
+    public function getContact(): ?ContactEntity
+    {
+        return $this->contact;
+    }
+
+    /**
+     * Set the value of contact
+     *
+     * @param  ContactEntity  $contact
+     *
+     * @return  self
+     */
+    public function setContact(?ContactEntity $contact)
+    {
+        $this->contact = $contact;
 
         return $this;
     }
