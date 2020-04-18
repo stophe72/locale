@@ -62,7 +62,7 @@ class ProtectionController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle protection',
                 'baseEntity' => $protection,
-                'url_back'    => 'user_protections',
+                'url_back'    => $this->generateUrl('user_protections'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class ProtectionController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une protection',
                 'baseEntity' => $protection,
-                'url_back'    => 'user_protections',
+                'url_back'    => $this->generateUrl('user_protections'),
             ]
         );
     }

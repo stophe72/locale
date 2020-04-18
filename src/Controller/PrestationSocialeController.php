@@ -62,7 +62,7 @@ class PrestationSocialeController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle prestation sociale',
                 'baseEntity' => $prestationSociale,
-                'url_back'    => 'user_prestationsociales',
+                'url_back'    => $this->generateUrl('user_prestationsociales'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class PrestationSocialeController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une prestation_sociale',
                 'baseEntity' => $prestationSociale,
-                'url_back'    => 'user_prestationsociales',
+                'url_back'    => $this->generateUrl('user_prestationsociales'),
             ]
         );
     }

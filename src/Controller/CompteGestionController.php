@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\CompteGestionEntity;
+use App\Entity\DonneeBancaireEntity;
 use App\Form\CompteGestionFilterType;
 use App\Form\CompteGestionType;
 use App\Models\CompteGestionFilter;
@@ -44,9 +45,10 @@ class CompteGestionController extends AbstractController
     }
 
     /**
-     * @Route("user/comptegestions", name="user_comptesgestion")
+     * @Route("user/comptegestions/{id}", name="user_comptesgestion")
      */
     public function index(
+        DonneeBancaireEntity $donneeBancaire,
         Request $request,
         PaginatorInterface $paginator,
         CompteGestionRepository $compteGestionRepository,
@@ -56,6 +58,16 @@ class CompteGestionController extends AbstractController
         $filter = $this->session->get(self::FILTER_COMPTE_GESTION, new CompteGestionFilter());
 
         $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
+
+        $cgs = $compteGestionRepository->findBy(
+            [
+                'user' => $user->getId(),
+                'donneeBancaire' => $donneeBancaire->getId(),
+            ],
+            [
+                'date' => 'DESC',
+            ]
+        );
 
         $form = $this->createForm(
             CompteGestionFilterType::class,
@@ -73,9 +85,10 @@ class CompteGestionController extends AbstractController
         }
 
         $pagination = $paginator->paginate(
-            $compteGestionRepository->getFromFilter($user, $filter),
+            // $cgs,
+            $compteGestionRepository->getFromFilter($user, $donneeBancaire, $filter),
             $startPage,
-            12,
+            10,
             [
                 'defaultSortFieldName' => 'cg.date',
                 'defaultSortDirection' => 'desc'
@@ -85,16 +98,18 @@ class CompteGestionController extends AbstractController
         return $this->render('compte_gestion/index.html.twig', [
             'form' => $form->createView(),
             'pagination' => $pagination,
-            'page_title' => 'Comptes gestion - Liste des opérations',
+            'page_title' => 'Comptes gestion - ' . $donneeBancaire->getMajeur()->__toString() . ' - ' . $donneeBancaire->getNumeroCompte(),
+            'donneeBancaire' => $donneeBancaire,
         ]);
     }
 
     /**
-     * @Route("user/comptegestion/add", name="user_comptegestion_add")
+     * @Route("user/comptegestion/add/{donneeBancaire}", name="user_comptegestion_add")
      */
-    public function add(Request $request)
+    public function add(DonneeBancaireEntity $donneeBancaire, Request $request)
     {
         $compteGestion = new CompteGestionEntity();
+        $compteGestion->setDonneeBancaire($donneeBancaire);
 
         $form = $this->createForm(CompteGestionType::class, $compteGestion);
         $form->handleRequest($request);
@@ -104,7 +119,7 @@ class CompteGestionController extends AbstractController
             $em->persist($compteGestion);
             $em->flush();
 
-            return $this->redirectToRoute('user_comptesgestion');
+            return $this->redirectToRoute('user_comptesgestion', ['id' => $compteGestion->getDonneeBancaire()->getId()]);
         }
 
         return $this->render(
@@ -113,7 +128,12 @@ class CompteGestionController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle opération',
                 'baseEntity' => $compteGestion,
-                'url_back'    => 'user_comptesgestion',
+                'url_back'    => $this->generateUrl(
+                    'user_comptesgestion',
+                    [
+                        'id' => $compteGestion->getDonneeBancaire()->getId(),
+                    ]
+                ),
             ]
         );
     }
@@ -131,7 +151,7 @@ class CompteGestionController extends AbstractController
         if ($compteGestion->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('user_comptesgestion', ['id' => $compteGestion->getMajeur()->getId()]);
+            return $this->redirectToRoute('user_comptesgestion', ['id' => $compteGestion->getDonneeBancaire()->getId()]);
         }
 
         return $this->render(
@@ -140,7 +160,12 @@ class CompteGestionController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une opération',
                 'baseEntity' => $compteGestion,
-                'url_back'    => 'user_comptesgestion',
+                'url_back'    => $this->generateUrl(
+                    'user_comptesgestion',
+                    [
+                        'id' => $compteGestion->getDonneeBancaire()->getId(),
+                    ]
+                ),
             ]
         );
     }

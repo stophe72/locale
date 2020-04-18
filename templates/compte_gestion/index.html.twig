@@ -9,7 +9,7 @@
             <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
         </div>
         <div class="col-sm-2 text-right">
-            <a href="{{ path("user_comptegestion_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_comptegestion_add", { "donneeBancaire": donneeBancaire.id }) }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -17,7 +17,6 @@
             {{ form_start(form) }}
                 {{ form_row(form.dateDebut) }}
                 {{ form_row(form.dateFin) }}
-                {{ form_row(form.majeurNom) }}
                 {{ form_row(form.libelle) }}
                 {{ form_row(form.typeOperation) }}
                 {{ form_row(form.montant) }}
@@ -36,19 +35,14 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            {# <th>Majeur</th> #}
-                            <th>Compte bancaire</th>
                             <th>Date</th>
                             <th>Libellé</th>
-                            {# <th>Type d'opération</th> #}
                             <th>Montant</th>
                             <th></th>
                         </tr>
                     </thead>
                     {% for operation in pagination %}
                         <tr>
-                            {# <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td> #}
-                            <td>{{ operation.donneeBancaire }}</td>
                             <td>{{ operation.date|date('d/m/Y') }}</td>
                             <td>
                                 <div class="row">
@@ -62,8 +56,7 @@
                                     </div>
                                 </div>
                             </td>
-                            {# <td>{{ operation.typeOperation.libelle }}</td> #}
-                            <td class="text-right">{{ operation.montant|format_currency('EUR') }}</td>
+                            <td class="text-right">{% if operation.nature == 1 %}+{% else %}-{% endif %}{{ operation.montant|format_currency('EUR') }}</td>
                             <td class="text-right">
                                 <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
                                     <i class="fa fa-pen"></i> Editer
@@ -75,8 +68,13 @@
                         </tr>
                     {% endfor %}
                 </table>
-                <div class="pagination justify-content-center pt-3">
-                    {{ knp_pagination_render(pagination) }}
+                <div class="row align-items-center">
+                    <div class="col-sm-8 offset-2 pagination justify-content-center pt-3">
+                        {{ knp_pagination_render(pagination) }}
+                    </div>
+                    <div class="col-sm-2 text-right">
+                        <a class="mr-2 align-self-center" href="{{ path("user_majeurs")}}">Retour à la liste</a>
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -139,7 +137,7 @@
 
             success: function (reponse)
             {
-                window.location.href = "{{ path('user_comptesgestion') }}";
+                window.location.href = "{{ path("user_comptesgestion", { "id": donneeBancaire.id }) }}";
             },
         });
     });

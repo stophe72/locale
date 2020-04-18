@@ -81,7 +81,7 @@ class NoteDeFraisController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Nouvelle note de frais',
                 'baseEntity' => $noteDeFrais,
-                'url_back' => 'user_notesdefrais',
+                'url_back' => $this->generateUrl('user_notesdefrais'),
             ]
         );
     }
@@ -91,9 +91,12 @@ class NoteDeFraisController extends AbstractController
      */
     public function edit(
         NoteDeFraisEntity $noteDeFrais,
-        Request $request
+        Request $request,
+        TypeFraisRepository $typeFraisRepository
     ) {
-        $form = $this->createForm(NoteDeFraisType::class, $noteDeFrais);
+        $typesFrais = $typeFraisRepository->findBy([], ['libelle' => 'ASC']);
+
+        $form = $this->createForm(NoteDeFraisType::class, $noteDeFrais, ['typesFrais' => $typesFrais]);
         $form->handleRequest($request);
 
         $user = $this->security->getUser();
@@ -110,7 +113,7 @@ class NoteDeFraisController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Modifier une note de frais',
                 'baseEntity' => $noteDeFrais,
-                'url_back' => 'user_notesdefrais',
+                'url_back' => $this->generateUrl('user_notesdefrais'),
             ]
         );
     }

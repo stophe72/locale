@@ -62,7 +62,7 @@ class TribunalController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouveau tribunal',
                 'baseEntity' => $tribunal,
-                'url_back'    => 'user_tribunaux',
+                'url_back'    => $this->generateUrl('user_tribunaux'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class TribunalController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier un tribunal',
                 'baseEntity' => $tribunal,
-                'url_back'    => 'user_tribunaux',
+                'url_back'    => $this->generateUrl('user_tribunaux'),
             ]
         );
     }

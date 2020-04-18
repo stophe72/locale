@@ -7,7 +7,7 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_donneebancaire_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_donneebancaire_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -16,7 +16,6 @@
                 <tr>
                     <th>Majeur</th>
                     <th>Agence bancaire</th>
-                    <th>Type de compte</th>
                     <th>Numéro de compte</th>
                     <th>Solde courant</th>
                     <th>Solde précédent</th>
@@ -26,9 +25,30 @@
             {% for donneebancaire in donneebancaires %}
                 <tr>
                     <td>{{ donneebancaire.majeur.nom }} {{ donneebancaire.majeur.prenom }}</td>
-                    <td>{{ donneebancaire.agenceBancaire }}</td>
-                    <td>{{ donneebancaire.typeCompte.libelle }}</td>
-                    <td>{{ donneebancaire.numeroCompte }}</td>
+                    <td>
+                        <div class="row">
+                            <div class="col">
+                                {{ donneebancaire.agenceBancaire }}
+                            </div>
+                        </div>
+                        <div class="row text-secondary">
+                            <div class="col">
+                                <small>{{ donneebancaire.agenceBancaire.codeBanque }}</small>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="row">
+                            <div class="col">
+                                {{ donneebancaire.numeroCompte }}
+                            </div>
+                        </div>
+                        <div class="row text-secondary">
+                            <div class="col">
+                                <small>{{ donneebancaire.typeCompte.libelle }}</small>
+                            </div>
+                        </div>
+                    </td>
                     <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>
                     <td class="text-right">{{ donneebancaire.soldePrecedent|format_currency('EUR') }}</td>
                     <td class="text-right">

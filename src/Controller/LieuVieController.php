@@ -62,7 +62,7 @@ class LieuVieController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouveau lieu de vie',
                 'baseEntity' => $lieuVie,
-                'url_back'    => 'user_lieu_vies',
+                'url_back'    => $this->generateUrl('user_lieu_vies'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class LieuVieController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier un lieu de vie',
                 'baseEntity' => $lieuVie,
-                'url_back'    => 'user_lieu_vies',
+                'url_back'    => $this->generateUrl('user_lieu_vies'),
             ]
         );
     }

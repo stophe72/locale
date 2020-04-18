@@ -105,7 +105,7 @@ class VisiteController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Nouvelle visite',
                 'baseEntity' => $visite,
-                'url_back' => 'user_visites',
+                'url_back' => $this->generateUrl('user_visites'),
             ]
         );
     }
@@ -135,7 +135,7 @@ class VisiteController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Modifier une visite',
                 'baseEntity' => $visite,
-                'url_back' => 'user_visites',
+                'url_back' => $this->generateUrl('user_visites'),
             ]
         );
     }

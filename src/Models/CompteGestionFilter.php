@@ -20,11 +20,6 @@ class CompteGestionFilter
     /**
      * @var string
      */
-    private $majeurNom;
-
-    /**
-     * @var string
-     */
     private $libelle;
 
     /**
@@ -111,30 +106,6 @@ class CompteGestionFilter
     }
 
     /**
-     * Get the value of majeurNom
-     *
-     * @return string
-     */
-    public function getMajeurNom(): ?string
-    {
-        return $this->majeurNom;
-    }
-
-    /**
-     * Set the value of majeurNom
-     *
-     * @param  string $majeurNom
-     *
-     * @return  self
-     */
-    public function setMajeurNom(?string $majeurNom)
-    {
-        $this->majeurNom = $majeurNom;
-
-        return $this;
-    }
-
-    /**
      * Get the value of montant
      *
      * @return  float
@@ -165,7 +136,7 @@ class CompteGestionFilter
      *
      * @return  self
      */
-    public function setLibelle(string $libelle)
+    public function setLibelle(?string $libelle)
     {
         $this->libelle = $libelle;
 
@@ -177,7 +148,7 @@ class CompteGestionFilter
      *
      * @return  string
      */
-    public function getLibelle()
+    public function getLibelle(): ?string
     {
         return $this->libelle;
     }

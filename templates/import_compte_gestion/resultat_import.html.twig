@@ -3,12 +3,10 @@
 {% block title %}Hello ImportCompteGestionController!{% endblock %}
 
 {% block content %}
-    <div class="row mt-4 col-sm-6 mb-4">
-        <h3 class="text-primary"><i class="fas fa-file-csv"></i> {{ page_title }}</h3>
+    <div class="row mt-4 mb-4">
+        <h3 class="text-primary"><i class="fas fa-file-csv"></i> {{ page_title }} - {{ donneeBancaire.majeur.nom }} {{ donneeBancaire.majeur.prenom }} - Compte n° {{ donneeBancaire.numeroCompte }}</h3>
         <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
     </div>
-
-    <h5 class="mb-3">Majeur: {{ majeur.nom }} {{ majeur.prenom }}</h5>
 
     {% if comptesGestion.ok is not empty %}
         <div class="alert alert-success">
@@ -20,7 +18,6 @@
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Type d'opération</th>
-                <th>Nature</th>
                 <th>Montant</th>
             </tr>
         </thead>
@@ -30,12 +27,7 @@
                 <td>{{ compteGestion.date|date('d/m/Y') }}</td>
                 <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
                 <td>{{ compteGestion.typeOperation.libelle }}</td>
-                {% if compteGestion.nature == 1 %}
-                    <td class=>Crédit</td>
-                {% else %}
-                    <td class=>Débit</td>
-                {% endif %}
-                <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
+                <td class="text-right">{% if compteGestion.nature == 1 %}+{% else %}-{% endif %}{{ compteGestion.montant|format_currency('EUR') }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -51,7 +43,6 @@
                 <th>Date</th>
                 <th>Libellé</th>
                 <th>Type d'opération</th>
-                <th>Nature</th>
                 <th>Montant</th>
             </tr>
         </thead>
@@ -62,14 +53,8 @@
                 <td>{{ compteGestion.libelle|length > 50 ? compteGestion.libelle|slice(0, 50) ~ '...' : compteGestion.libelle }}</td>
                 <td>{% if compteGestion.typeOperation is not null %}{{ compteGestion.typeOperation.libelle }}{% endif %}</td>
                 {% if compteGestion.typeOperation is not null %}
-                    {% if compteGestion.nature == 1 %}
-                        <td class=>Crédit</td>
-                    {% else %}
-                        <td class=>Débit</td>
-                    {% endif %}
-                    <td class="text-right">{{ compteGestion.montant|format_currency('EUR') }}</td>
+                    <td class="text-right">{% if compteGestion.nature == 1 %}+{% else %}-{% endif %}{{ compteGestion.montant|format_currency('EUR') }}</td>
                 {% else %}
-                    <td></td>
                     <td></td>
                 {% endif %}
             </tr>
@@ -80,7 +65,7 @@
 
     <div class="row float-right mb-3">
         <div class="col">
-            <a class="mr-2" href="{{ path(url_back) }}">Retour à la liste</a>
+            <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
         </div>
     </div>
 

@@ -63,7 +63,7 @@ class TypeOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouveau type d\'opération',
                 'baseEntity' => $typeOperation,
-                'url_back'    => 'user_typesoperation',
+                'url_back'    => $this->generateUrl('user_typesoperation'),
             ]
         );
     }
@@ -90,7 +90,7 @@ class TypeOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier un type d\'opération',
                 'baseEntity' => $typeOperation,
-                'url_back'    => 'user_typesoperation',
+                'url_back'    => $this->generateUrl('user_typesoperation'),
             ]
         );
     }

@@ -64,7 +64,7 @@ class FamilleCompteController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Nouvelle famille de comptes',
                 'baseEntity' => $familleCompte,
-                'url_back' => 'user_famillecomptes',
+                'url_back' => $this->generateUrl('user_famillecomptes'),
             ]
         );
     }
@@ -91,7 +91,7 @@ class FamilleCompteController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une famille de comptes',
                 'baseEntity' => $familleCompte,
-                'url_back'    => 'user_famillecomptes',
+                'url_back'    => $this->generateUrl('user_famillecomptes'),
             ]
         );
     }

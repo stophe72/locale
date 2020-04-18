@@ -64,7 +64,7 @@ class DonneeBancaireController extends AbstractController
             'page_title' => 'Ajouter une donnée bancaire',
             'form' => $form->createView(),
             'baseEntity' => $db,
-            'url_back' => 'user_donneebancaires',
+            'url_back' => $this->generateUrl('user_donneebancaires'),
         ]);
     }
 
@@ -90,7 +90,7 @@ class DonneeBancaireController extends AbstractController
             'page_title' => 'Editer une donnée bancaire',
             'form' => $form->createView(),
             'baseEntity' => $donneeBancaire,
-            'url_back' => 'user_donneebancaires',
+            'url_back' => $this->generateUrl('user_donneebancaires'),
         ]);
     }
 }

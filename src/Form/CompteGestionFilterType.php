@@ -38,14 +38,6 @@ class CompteGestionFilterType extends AbstractType
                 ]
             )
             ->add(
-                'majeurNom',
-                TextType::class,
-                [
-                    'label' => 'Nom',
-                    'required' => false,
-                ]
-            )
-            ->add(
                 'libelle',
                 TextType::class,
                 [

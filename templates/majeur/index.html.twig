@@ -7,7 +7,7 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_majeur_add") }}" class="btn btn-primary">Ajouter</a>
+            <a href="{{ path("user_majeur_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -17,7 +17,6 @@
                     <th>Civilité</th>
                     <th>Nom</th>
                     <th>Prénom</th>
-                    <th>Date jugement</th>
                     <th>N° R.G.</th>
                     <th></th>
                 </tr>
@@ -28,23 +27,34 @@
                     <td>{{ majeur.civilite }}</td>
                     <td>{{ majeur.nom }}</td>
                     <td>{{ majeur.prenom }}</td>
-                    <td>{{ majeur.jugement.dateJugement|date("d/m/Y") }}</td>
                     <td>{{ majeur.jugement.numeroRG }}</td>
-                    <td>
-                        <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-info-circle"></i> Détails
-                        </a>
-                        <div class="btn-group">
-                            <a class="btn btn-outline-primary btn-sm" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
-                                <i class="fa fa-pen"></i> Editer
-                            </a>
-                            <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <div class="dropdown-menu">
-                                <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
-                                    <i class="fa fa-trash"></i> Supprimer
+                    <td class="col-sm-3">
+                        <div class="row float-right pr-4">
+                            <div class="btn-group mr-3">
+                                <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-primary">
+                                    <i class="fa fa-info-circle"></i> Détails
                                 </a>
+                                <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <div class="dropdown-menu">
+                                    <a class="dropdown-item" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
+                                        <i class="fa fa-pen"></i> Editer
+                                    </a>
+                                    <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
+                                        <i class="fa fa-trash"></i> Supprimer
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-wallet"></i> Comptes
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    {% for db in majeur.donneeBancaireEntities %}
+                                        <a class="dropdown-item" href="{{ path("user_comptesgestion", { 'id': db.id }) }}">{{ db }}</a>
+                                    {% endfor %}
+                                </div>
                             </div>
                         </div>
                     </td>

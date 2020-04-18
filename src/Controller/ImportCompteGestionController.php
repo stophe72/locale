@@ -59,12 +59,20 @@ class ImportCompteGestionController extends AbstractController
                 }
                 $em->flush();
 
-                return $this->render('import_compte_gestion/resultat_import.html.twig', [
-                    'page_title' => 'Résultat import',
-                    'majeur' => $import->getMajeur(),
-                    'comptesGestion' => $comptesGestion,
-                    'url_back' => 'user_comptesgestion',
-                ]);
+                return $this->render(
+                    'import_compte_gestion/resultat_import.html.twig',
+                    [
+                        'page_title' => 'Résultat import',
+                        'comptesGestion' => $comptesGestion,
+                        'donneeBancaire' => $import->getDonneeBancaire(),
+                        'url_back' => $this->generateUrl(
+                            'user_comptesgestion',
+                            [
+                                'id' => $import->getDonneeBancaire(),
+                            ]
+                        )
+                    ]
+                );
             }
         }
 

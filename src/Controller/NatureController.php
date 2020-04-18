@@ -62,7 +62,7 @@ class NatureController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle nature de mission',
                 'baseEntity' => $nature,
-                'url_back'    => 'user_natures',
+                'url_back'    => $this->generateUrl('user_natures'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class NatureController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une nature de mission',
                 'baseEntity' => $nature,
-                'url_back'    => 'user_natures',
+                'url_back'    => $this->generateUrl('user_natures'),
             ]
         );
     }

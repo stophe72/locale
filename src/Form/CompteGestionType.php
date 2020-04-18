@@ -32,16 +32,6 @@ class CompteGestionType extends BaseLibelleType
                 ]
             )
             ->add(
-                'majeur',
-                EntityType::class,
-                [
-                    'class' => MajeurEntity::class,
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ]
-                ]
-            )
-            ->add(
                 'date',
                 DateType::class,
                 [

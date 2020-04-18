@@ -111,13 +111,14 @@ class MajeurEntity extends BaseUserEntity
     private $nationalite;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="majeur")
+     * @ORM\OneToMany(targetEntity="App\Entity\DonneeBancaireEntity", mappedBy="majeur")
      */
-    private $compteGestionEntities;
+    private $donneeBancaireEntities;
+
 
     public function __construct()
     {
-        $this->compteGestionEntities = new ArrayCollection();
+        $this->donneeBancaireEntities = new ArrayCollection();
     }
 
     public function getCivilite(): ?string
@@ -233,30 +234,30 @@ class MajeurEntity extends BaseUserEntity
     }
 
     /**
-     * @return Collection|CompteGestionEntity[]
+     * @return Collection|DonneeBancaireEntity[]
      */
-    public function getCompteGestionEntities(): Collection
+    public function getDonneeBancaireEntities(): Collection
     {
-        return $this->compteGestionEntities;
+        return $this->donneeBancaireEntities;
     }
 
-    public function addCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    public function addDonneeBancaireEntity(DonneeBancaireEntity $donneeBancaireEntity): self
     {
-        if (!$this->compteGestionEntities->contains($compteGestionEntity)) {
-            $this->compteGestionEntities[] = $compteGestionEntity;
-            $compteGestionEntity->setMajeur($this);
+        if (!$this->donneeBancaireEntities->contains($donneeBancaireEntity)) {
+            $this->donneeBancaireEntities[] = $donneeBancaireEntity;
+            $donneeBancaireEntity->setMajeur($this);
         }
 
         return $this;
     }
 
-    public function removeCompteGestionEntity(CompteGestionEntity $compteGestionEntity): self
+    public function removeDonneeBancaireEntity(DonneeBancaireEntity $donneeBancaireEntity): self
     {
-        if ($this->compteGestionEntities->contains($compteGestionEntity)) {
-            $this->compteGestionEntities->removeElement($compteGestionEntity);
+        if ($this->donneeBancaireEntities->contains($donneeBancaireEntity)) {
+            $this->donneeBancaireEntities->removeElement($donneeBancaireEntity);
             // set the owning side to null (unless already changed)
-            if ($compteGestionEntity->getMajeur() === $this) {
-                $compteGestionEntity->setMajeur(null);
+            if ($donneeBancaireEntity->getMajeur() === $this) {
+                $donneeBancaireEntity->setMajeur(null);
             }
         }
 

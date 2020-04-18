@@ -172,6 +172,6 @@ class DonneeBancaireEntity extends BaseUserEntity
 
     public function __toString()
     {
-        return $this->getNumeroCompte();
+        return $this->getAgenceBancaire()->getCodeBanque() . ' - ' . $this->getNumeroCompte() . ' (' . $this->getTypeCompte()->getLibelle() . ')';
     }
 }

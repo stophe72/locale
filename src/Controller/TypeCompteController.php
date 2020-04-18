@@ -62,7 +62,7 @@ class TypeCompteController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouveau type de compte',
                 'baseEntity' => $typeCompte,
-                'url_back'    => 'user_typecomptes',
+                'url_back'    => $this->generateUrl('user_typecomptes'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class TypeCompteController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier un type de compte',
                 'baseEntity' => $typeCompte,
-                'url_back'    => 'user_typecomptes',
+                'url_back'    => $this->generateUrl('user_typecomptes'),
             ]
         );
     }

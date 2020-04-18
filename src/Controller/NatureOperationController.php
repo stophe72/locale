@@ -62,7 +62,7 @@ class NatureOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle nature d\'operation',
                 'baseEntity' => $nature,
-                'url_back'    => 'user_naturesoperation',
+                'url_back'    => $this->generateUrl('user_naturesoperation'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class NatureOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une nature d\'opération',
                 'baseEntity' => $nature,
-                'url_back'    => 'user_naturesoperation',
+                'url_back'    => $this->generateUrl('user_naturesoperation'),
             ]
         );
     }

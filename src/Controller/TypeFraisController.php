@@ -62,7 +62,7 @@ class TypeFraisController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Nouveau type de frais',
                 'baseEntity' => $typeFrais,
-                'url_back' => 'user_typesfrais',
+                'url_back' => $this->generateUrl('user_typesfrais'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class TypeFraisController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Modifier un type de frais',
                 'baseEntity' => $typeFrais,
-                'url_back' => 'user_typesfrais',
+                'url_back' => $this->generateUrl('user_typesfrais'),
             ]
         );
     }

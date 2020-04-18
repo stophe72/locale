@@ -28,6 +28,13 @@ class AgenceBancaireEntity extends BaseLibelleEntity
     private $contact;
 
     /**
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(name="codeBanque", type="string", length=30, nullable=false)
+     */
+    private $codeBanque;
+
+    /**
      * @Assert\Email(
      *     message = "L'adresse email '{{ value }}' n'est une adresse valide."
      * )
@@ -99,5 +106,25 @@ class AgenceBancaireEntity extends BaseLibelleEntity
     public function __toString()
     {
         return $this->getLibelle();
+    }
+
+    /**
+     * Get the value of codeBanque
+     */
+    public function getCodeBanque()
+    {
+        return $this->codeBanque;
+    }
+
+    /**
+     * Set the value of codeBanque
+     *
+     * @return  self
+     */
+    public function setCodeBanque($codeBanque)
+    {
+        $this->codeBanque = strtoupper($codeBanque);
+
+        return $this;
     }
 }

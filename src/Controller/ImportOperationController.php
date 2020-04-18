@@ -75,7 +75,7 @@ class ImportOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvel import d\'opération',
                 'baseEntity' => $importOperation,
-                'url_back'    => 'user_importoperations',
+                'url_back'    => $this->generateUrl('user_importoperations'),
             ]
         );
     }
@@ -109,7 +109,7 @@ class ImportOperationController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une import d\'opération',
                 'baseEntity' => $importOperation,
-                'url_back'    => 'user_importoperations',
+                'url_back'    => $this->generateUrl('user_importoperations'),
             ]
         );
     }

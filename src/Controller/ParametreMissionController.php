@@ -60,7 +60,7 @@ class ParametreMissionController extends AbstractController
             'page_title' => 'Paramètres de la mission',
             'form' => $form->createView(),
             'baseEntity' => $pm,
-            'url_back' => 'user_majeurs',
+            'url_back' => $this->generateUrl('user_majeurs'),
         ]);
     }
 
@@ -77,7 +77,7 @@ class ParametreMissionController extends AbstractController
         return $this->render('parametre_mission/show.html.twig', [
             'page_title' => 'Détails du paramètre de la mission',
             'parametreMission' => $parametreMission,
-            'url_back' => 'user_majeurs',
+            'url_back' => $this->generateUrl('user_majeurs'),
         ]);
     }
 }

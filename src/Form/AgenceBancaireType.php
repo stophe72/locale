@@ -22,6 +22,13 @@ class AgenceBancaireType extends BaseLibelleType
                 ]
             )
             ->add(
+                'codeBanque',
+                TextType::class,
+                [
+                    'label' => 'Code banque',
+                ]
+            )
+            ->add(
                 'email',
                 TextType::class
             )

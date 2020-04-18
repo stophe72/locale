@@ -64,7 +64,7 @@ class AgenceBancaireController extends AbstractController
                 'form' => $form->createView(),
                 'page_title' => 'Nouvelle agence bancaire',
                 'baseEntity' => $agenceBancaire,
-                'url_back' => 'user_agencebancaires',
+                'url_back' => $this->generateUrl('user_agencebancaires'),
             ]
         );
     }
@@ -91,7 +91,7 @@ class AgenceBancaireController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une agence bancaire',
                 'baseEntity' => $agenceBancaire,
-                'url_back'    => 'user_agencebancaires',
+                'url_back'    => $this->generateUrl('user_agencebancaires'),
             ]
         );
     }

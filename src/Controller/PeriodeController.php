@@ -62,7 +62,7 @@ class PeriodeController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouvelle période',
                 'baseEntity' => $periode,
-                'url_back'    => 'user_periodes',
+                'url_back'    => $this->generateUrl('user_periodes'),
             ]
         );
     }
@@ -89,7 +89,7 @@ class PeriodeController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Modifier une période',
                 'baseEntity' => $periode,
-                'url_back'    => 'user_periodes',
+                'url_back'    => $this->generateUrl('user_periodes'),
             ]
         );
     }

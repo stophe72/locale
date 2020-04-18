@@ -36,8 +36,11 @@ class MajeurController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
+        $majeurs = $majeurRepository->findBy([], ['nom' => 'ASC']);
+
+
         return $this->render('majeur/index.html.twig', [
-            'majeurs' => $majeurRepository->findBy([], ['nom' => 'ASC']),
+            'majeurs' => $majeurs,
             'page_title' => 'Liste des majeurs',
         ]);
     }
@@ -66,7 +69,7 @@ class MajeurController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Nouveau majeur',
                 'baseEntity' => $majeur,
-                'url_back'    => 'user_majeurs',
+                'url_back'    => $this->generateUrl('user_majeurs'),
             ]
         );
     }
@@ -93,7 +96,7 @@ class MajeurController extends AbstractController
                 'form'        => $form->createView(),
                 'page_title'  => 'Editer un majeur',
                 'baseEntity' => $majeur,
-                'url_back'    => 'user_majeurs',
+                'url_back'    => $this->generateUrl('user_majeurs'),
             ]
         );
     }
