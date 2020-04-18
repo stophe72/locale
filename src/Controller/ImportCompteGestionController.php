@@ -51,7 +51,7 @@ class ImportCompteGestionController extends AbstractController
                 $file = file($fichier->getPathname());
 
                 $im = new ImportManager();
-                $comptesGestion = $im->parseCsv($import->getMajeur(), $file, $importOperationRepository);
+                $comptesGestion = $im->parseCsv($import->getDonneeBancaire(), $file, $importOperationRepository);
 
                 $em = $this->getDoctrine()->getManager();
                 foreach ($comptesGestion['ok'] as $cg) {

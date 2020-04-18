@@ -11,6 +11,7 @@
     {{ form_start(form) }}
     {{ form_errors(form) }}
     {{ form_row(form.majeur) }}
+    {{ form_row(form.donneeBancaire) }}
     {{ form_row(form.nomFichier) }}
         <div class="row float-right mb-3">
             <div class="col">
@@ -28,6 +29,26 @@
     $('.custom-file-input').on('change', function() {
     let fileName = $(this).val().split('\\').pop();
        $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    let majeurs = $('#import_compte_gestion_majeur');
+
+    majeurs.change(function () {
+        let form = $(this).closest('form');
+      // Simulate form data, but only include the selected variete value.
+        let data = {};
+        data[majeurs.attr('name')] = majeurs.val();
+
+        $.ajax({
+            url : form.attr('action'),
+            type: form.attr('method'),
+            data : data,
+            success: function(html) {
+                $("#import_compte_gestion_donneeBancaire").replaceWith(
+                    $(html).find("#import_compte_gestion_donneeBancaire")
+                );
+            }
+        });
     });
 </script>
 {% endblock %}

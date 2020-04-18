@@ -14,14 +14,6 @@ class CompteGestionEntity extends BaseLibelleEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity", inversedBy="compteGestionEntities")
-     * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
-     */
-    private $majeur;
-
-    /**
-     * @Assert\NotNull
-     *
      * @ORM\Column(type="date")
      */
     private $date;
@@ -52,18 +44,6 @@ class CompteGestionEntity extends BaseLibelleEntity
      */
     private $donneeBancaire;
 
-
-    public function getMajeur(): ?MajeurEntity
-    {
-        return $this->majeur;
-    }
-
-    public function setMajeur(?MajeurEntity $majeur): self
-    {
-        $this->majeur = $majeur;
-
-        return $this;
-    }
 
     public function getDate(): ?\DateTimeInterface
     {

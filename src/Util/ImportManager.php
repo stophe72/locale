@@ -3,67 +3,85 @@
 namespace App\Util;
 
 use App\Entity\CompteGestionEntity;
-use App\Entity\MajeurEntity;
+use App\Entity\DonneeBancaireEntity;
+use App\Form\DonneeBancaireType;
 use App\Repository\ImportOperationRepository;
 use DateTime;
 
 class ImportManager
 {
-    public function parseCsv(MajeurEntity $majeur, array $file, ImportOperationRepository $importOperationRepository)
+    const DEFAULT_DATE = '01/01/1970';
+    const DEFAULT_LIBELLE = '--- indeterminé ---';
+
+    public function parseCsv(DonneeBancaireEntity $donneeBancaire, array $file, ImportOperationRepository $importOperationRepository)
     {
         $ios = $importOperationRepository->findAll();
         $cgs = [];
         $cgsKo = [];
-        $result = [];
         foreach ($file as $row) {
-            $invalide = false;
             $data = str_getcsv($row);
 
-            $compteGestion = new CompteGestionEntity();
-            $compteGestion->setMajeur($majeur);
+            $compteGestion = $this->getNewWithDefaults($donneeBancaire);
 
             if ($this->isDateValide($data[0])) {
                 $date = DateTime::createFromFormat('d/m/Y', $data[0]);
                 $compteGestion->setDate($date);
-            } else {
-                $invalide = true;
-                $compteGestion->setDate(new DateTime('01/01/1970'));
             }
 
             $libelle = trim($data[1]);
-            if (empty($libelle)) {
-                $invalide = true;
-                $compteGestion->setLibelle('--- vide ---');
-            } else {
+            if (!empty($libelle)) {
                 $compteGestion->setLibelle($libelle);
             }
 
             if (is_numeric($data[2])) {
                 $compteGestion->setMontant($data[2]);
-            } else {
-                $invalide = true;
             }
 
-            $toFound = false;
-            foreach ($ios as $io) {
-                if (strpos($data[1], $io->getLibelle()) !== false) {
-                    $compteGestion->setTypeOperation($io->getTypeOperation());
-                    $compteGestion->setNature($io->getNature());
-                    $toFound = true;
-                    break;
-                }
-            }
+            $this->setTypeOperation($compteGestion, $ios, $libelle);
 
-            if ($invalide || !$toFound) {
-                $cgsKo[] = $compteGestion;
-            } else {
+            if ($this->isCompteOperationValide($compteGestion)) {
                 $cgs[] = $compteGestion;
+            } else {
+                $cgsKo[] = $compteGestion;
             }
         }
-        $result['ok'] = $cgs;
-        $result['ko'] = $cgsKo;
 
-        return $result;
+        return [
+            'ok' => $cgs,
+            'ko' => $cgsKo,
+        ];
+    }
+
+    private function getNewWithDefaults(DonneeBancaireEntity $donneeBancaire)
+    {
+        $date = DateTime::createFromFormat('d/m/Y', self::DEFAULT_DATE);
+
+        $compteGestion = new CompteGestionEntity();
+        $compteGestion->setDonneeBancaire($donneeBancaire);
+        $compteGestion->setDate($date);
+        $compteGestion->setLibelle(self::DEFAULT_LIBELLE);
+        $compteGestion->setMontant(0);
+
+        return $compteGestion;
+    }
+
+    private function isCompteOperationValide(CompteGestionEntity $compteGestion)
+    {
+        return $compteGestion->getDate() != new DateTime('01/01/1970')
+            && $compteGestion->getTypeOperation() != null
+            && $compteGestion->getLibelle() != '--- indéterminé ---';
+    }
+
+    private function setTypeOperation(CompteGestionEntity $compteGestion, array $ios, string $libelle)
+    {
+        foreach ($ios as $io) {
+            if (strpos($libelle, $io->getLibelle()) !== false) {
+                $compteGestion->setTypeOperation($io->getTypeOperation());
+                $compteGestion->setNature($io->getNature());
+
+                return;
+            }
+        }
     }
 
     private function isDateValide($dateString)

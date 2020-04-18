@@ -26,15 +26,14 @@ class CompteGestionRepository extends ServiceEntityRepository
     public function getFromFilter(UserEntity $user, CompteGestionFilter $filter)
     {
         $qb = $this->createQueryBuilder('cg');
-        $qb->innerJoin('cg.majeur', 'm')
-            ->innerJoin('cg.typeOperation', 'to')
+        $qb->innerJoin('cg.typeOperation', 'to')
             ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
             ->setParameter('userId', $user->getId());
 
-        if ($filter->getMajeurNom()) {
-            $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
-                ->setParameter('majeurNom', '%' . $filter->getMajeurNom() . '%');
-        }
+        // if ($filter->getMajeurNom()) {
+        // $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
+        // ->setParameter('majeurNom', '%' . $filter->getMajeurNom() . '%');
+        // }
         if ($filter->getLibelle()) {
             $qb->andWhere('LOWER(m.libelle) LIKE LOWER(:libelle)')
                 ->setParameter('libelle', '%' . $filter->getLibelle() . '%');

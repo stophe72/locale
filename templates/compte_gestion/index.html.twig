@@ -36,7 +36,7 @@
                 <table class="table table-striped">
                     <thead>
                         <tr>
-                            <th>Majeur</th>
+                            {# <th>Majeur</th> #}
                             <th>Compte bancaire</th>
                             <th>Date</th>
                             <th>Libellé</th>
@@ -47,15 +47,19 @@
                     </thead>
                     {% for operation in pagination %}
                         <tr>
-                            <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td>
+                            {# <td>{{ operation.majeur.nom }} {{ operation.majeur.prenom }}</td> #}
                             <td>{{ operation.donneeBancaire }}</td>
                             <td>{{ operation.date|date('d/m/Y') }}</td>
                             <td>
                                 <div class="row">
-                                    {{ operation.libelle }}
+                                    <div class="col">
+                                        {{ operation.libelle }}
+                                    </div>
                                 </div>
                                 <div class="row text-secondary">
-                                    <small>{{ operation.typeOperation.libelle }}</small>
+                                    <div class="col">
+                                        <small>{{ operation.typeOperation.libelle }}</small>
+                                    </div>
                                 </div>
                             </td>
                             {# <td>{{ operation.typeOperation.libelle }}</td> #}
