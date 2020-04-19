@@ -1,0 +1,86 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 col-sm-6">
+        <h3 class="text-primary"><i class="fa fa-user"></i> {{ page_title }}</h3>
+    </div>
+    <div class="row my-3">
+        <div class="col text-right px-0">
+            <a href="{{ path('admin_user_add') }}" class="btn btn-primary"><i class="fa fa-plus-circle"></i> Ajouter</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Email</th>
+                    <th>Nom</th>
+                    <th>Rôles</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for user in users %}
+                <tr>
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.email }}</td>
+                    <td>{{ user.nom }} {{ user.prenom }}</td>
+                    <td>{{ user.roles|join(', ', ' et ') }} </td>
+                    <td class="text-right">
+                        <a href="{{ path("admin_user_show", { "id": user.id}) }}" title="Détails d'un utilisateur" class="btn btn-outline-primary btn-sm">
+                            <i class="fa fa-info-circle"></i> Détails
+                        </a>
+                        <a href="{{ path('admin_user_edit', {'id': user.id}) }}" title="Editer un utilisateur" class="btn btn-outline-primary btn-sm mx-2">
+                            <i class="fa fa-pen"></i> Editer
+                        </a>
+                        <a href="#" class="btn btn-sm btn-outline-danger" onclick='del_confirm({{ user.id }}, "{{ user.email }}")'>
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog"
+        tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer l'utilisateur et les données associées ?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary" id="btn_delete" type="button">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $("#btn_delete").on("click", function (e) {
+        const el = document.querySelector('#btn_delete');
+        const id = el.dataset.userId;
+
+        var url = "{{ path('admin_user_delete', {'id': 0}) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
+    });
+
+    function del_confirm(id, email) {
+        document.getElementById('btn_delete').dataset.userId = id;
+
+        var dialog = $('#exampleModal');
+        dialog.find('.modal-body').text("Supprimer l'utilisateur \"" + email + "\" ?");
+        dialog.modal('show');
+    }
+</script>
+{% endblock %}

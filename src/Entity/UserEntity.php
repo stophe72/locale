@@ -16,11 +16,25 @@ class UserEntity extends BaseEntity implements UserInterface
 {
     /**
      * @Assert\NotBlank
+     *
+     * @ORM\Column(name="nom", type="string", length=100, nullable=false)
+     */
+    private $nom;
+
+    /**
+     * @Assert\NotBlank
+     *
+     * @ORM\Column(name="prenom", type="string", length=100, nullable=false)
+     */
+    private $prenom;
+
+    /**
+     * @Assert\NotBlank
      * @Assert\Email(
      *     message = "L'adresse email '{{ value }}' n'est pas une adresse valide."
      * )
      *
-     * @ORM\Column(type="string", length=180, unique=true)
+     * @ORM\Column(name="email", type="string", length=255, nullable=false, unique=true)
      */
     private $email;
 
@@ -34,7 +48,7 @@ class UserEntity extends BaseEntity implements UserInterface
      *
      * @Assert\Length(
      *      min = 6,
-     *      max = 30,
+     *      max = 255,
      *      minMessage = "Le mot de passe doit contenir au moins {{ limit }} caractères",
      *      maxMessage = "Le mot de passe peut contenir au plus {{ limit }} caractères"
      * )
@@ -45,7 +59,8 @@ class UserEntity extends BaseEntity implements UserInterface
     /**
      * @Assert\NotNull
      *
-     * @var AdresseEntity
+     * @ORM\OneToOne(targetEntity="App\Entity\AdresseEntity", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="adresseId", referencedColumnName="id", nullable=false)
      */
     private $adresse;
 
@@ -157,7 +172,7 @@ class UserEntity extends BaseEntity implements UserInterface
      *
      * @return  AdresseEntity
      */
-    public function getAdresse()
+    public function getAdresse(): ?AdresseEntity
     {
         return $this->adresse;
     }
@@ -172,6 +187,46 @@ class UserEntity extends BaseEntity implements UserInterface
     public function setAdresse(AdresseEntity $adresse)
     {
         $this->adresse = $adresse;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nom
+     */
+    public function getNom()
+    {
+        return $this->nom;
+    }
+
+    /**
+     * Set the value of nom
+     *
+     * @return  self
+     */
+    public function setNom($nom)
+    {
+        $this->nom = strtoupper($nom);
+
+        return $this;
+    }
+
+    /**
+     * Get the value of prenom
+     */
+    public function getPrenom()
+    {
+        return $this->prenom;
+    }
+
+    /**
+     * Set the value of prenom
+     *
+     * @return  self
+     */
+    public function setPrenom($prenom)
+    {
+        $this->prenom = ucfirst($prenom);
 
         return $this;
     }

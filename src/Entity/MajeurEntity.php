@@ -284,7 +284,7 @@ class MajeurEntity extends BaseUserEntity
      */
     public function setLieuNaissance($lieuNaissance)
     {
-        $this->lieuNaissance = $lieuNaissance;
+        $this->lieuNaissance = strtoupper($lieuNaissance);
 
         return $this;
     }
