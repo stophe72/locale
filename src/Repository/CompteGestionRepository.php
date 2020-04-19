@@ -31,7 +31,8 @@ class CompteGestionRepository extends ServiceEntityRepository
             ->innerJoin('cg.donneeBancaire', 'db', Join::WITH, $qb->expr()->eq('db', ':donneeBancaireId'))
             ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
             ->setParameter('donneeBancaireId', $donneeBancaire->getId())
-            ->setParameter('userId', $user->getId());
+            ->setParameter('userId', $user->getId())
+            ->addOrderBy('cg.date', 'DESC');
 
         if ($filter->getLibelle()) {
             $qb->andWhere('LOWER(m.libelle) LIKE LOWER(:libelle)')

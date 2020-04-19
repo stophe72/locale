@@ -3,6 +3,8 @@
 {% set icone = "fas fa-tasks" %}
 
 {% block form_content %}
+    <div class="alert alert-primary">Majeur: {{ baseEntity.donneeBancaire.majeur }}</div>
+
     {{ form_errors(form) }}
     {{ form_row(form.donneeBancaire) }}
     {{ form_row(form.date) }}

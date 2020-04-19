@@ -10,59 +10,57 @@
             <a href="{{ path("user_donneebancaire_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
-    <div class="row">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Majeur</th>
-                    <th>Agence bancaire</th>
-                    <th>Numéro de compte</th>
-                    <th>Solde courant</th>
-                    <th>Solde précédent</th>
-                    <th></th>
-                </tr>
-            </thead>
-            {% for donneebancaire in donneebancaires %}
-                <tr>
-                    <td>{{ donneebancaire.majeur.nom }} {{ donneebancaire.majeur.prenom }}</td>
-                    <td>
-                        <div class="row">
-                            <div class="col">
-                                {{ donneebancaire.agenceBancaire }}
-                            </div>
+    <div class="alert alert-primary">Majeur: {{ majeur }}</div>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Agence bancaire</th>
+                <th>Numéro de compte</th>
+                <th>Solde courant</th>
+                <th>Solde précédent</th>
+                <th></th>
+            </tr>
+        </thead>
+        {% for donneebancaire in donneebancaires %}
+            <tr>
+                <td>
+                    <div class="row">
+                        <div class="col">
+                            {{ donneebancaire.agenceBancaire }}
                         </div>
-                        <div class="row text-secondary">
-                            <div class="col">
-                                <small>{{ donneebancaire.agenceBancaire.codeBanque }}</small>
-                            </div>
+                    </div>
+                    <div class="row text-secondary">
+                        <div class="col">
+                            <small>{{ donneebancaire.agenceBancaire.codeBanque }}</small>
                         </div>
-                    </td>
-                    <td>
-                        <div class="row">
-                            <div class="col">
-                                {{ donneebancaire.numeroCompte }}
-                            </div>
+                    </div>
+                </td>
+                <td>
+                    <div class="row">
+                        <div class="col">
+                            {{ donneebancaire.numeroCompte }}
                         </div>
-                        <div class="row text-secondary">
-                            <div class="col">
-                                <small>{{ donneebancaire.typeCompte.libelle }}</small>
-                            </div>
+                    </div>
+                    <div class="row text-secondary">
+                        <div class="col">
+                            <small>{{ donneebancaire.typeCompte.libelle }}</small>
                         </div>
-                    </td>
-                    <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>
-                    <td class="text-right">{{ donneebancaire.soldePrecedent|format_currency('EUR') }}</td>
-                    <td class="text-right">
-                        <a href="{{ path('user_donneebancaire_edit', {'id': donneebancaire.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
-                            <i class="fa fa-pen"></i> Editer
-                        </a>
-                        <a href="#" onclick='del_confirm({{ donneebancaire.id }}, "{{ donneebancaire.numeroCompte }}")' type="button" class="btn btn-sm btn-outline-danger">
-                            <i class="fa fa-trash"></i> Supprimer
-                        </a>
-                    </td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+                    </div>
+                </td>
+                <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>
+                <td class="text-right">{{ donneebancaire.soldePrecedent|format_currency('EUR') }}</td>
+                <td class="text-right">
+                    <a href="{{ path('user_donneebancaire_edit', {'id': donneebancaire.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
+                        <i class="fa fa-pen"></i> Editer
+                    </a>
+                    <a href="#" onclick='del_confirm({{ donneebancaire.id }}, "{{ donneebancaire.numeroCompte }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <i class="fa fa-trash"></i> Supprimer
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">

@@ -58,7 +58,7 @@
                             </td>
                             <td class="text-right">{% if operation.nature == 1 %}+{% else %}-{% endif %}{{ operation.montant|format_currency('EUR') }}</td>
                             <td class="text-right">
-                                <a href="{{ path('user_comptegestion_edit', {'id': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
+                                <a href="{{ path('user_comptegestion_edit', {'compteGestion': operation.id}) }}" title="Détails de la operation" class="btn btn-outline-primary btn-sm mr-2">
                                     <i class="fa fa-pen"></i> Editer
                                 </a>
                                 <a href="#" onclick='del_confirm({{ operation.id }}, "{{ operation.typeOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">

@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\DonneeBancaireEntity;
+use App\Entity\MajeurEntity;
 use App\Form\DonneeBancaireType;
 use App\Repository\DonneeBancaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,16 +29,22 @@ class DonneeBancaireController extends AbstractController
     }
 
     /**
-     * @Route("user/donneebancaires", name="user_donneebancaires")
+     * @Route("user/donneebancaires/{majeur}", name="user_donneebancaires")
      */
-    public function index(DonneeBancaireRepository $donneeBancaireRepository)
+    public function index(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository)
     {
         $user = $this->security->getUser();
 
-        $dbs = $donneeBancaireRepository->findBy(['user' => $user->getId()]);
+        $dbs = $donneeBancaireRepository->findBy(
+            [
+                'user' => $user->getId(),
+                'majeur' => $majeur->getId(),
+            ]
+        );
 
         return $this->render('donnee_bancaire/index.html.twig', [
             'donneebancaires' => $dbs,
+            'majeur' => $majeur,
             'page_title' => 'Liste des données bancaires',
         ]);
     }

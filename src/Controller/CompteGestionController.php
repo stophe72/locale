@@ -59,16 +59,6 @@ class CompteGestionController extends AbstractController
 
         $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
 
-        $cgs = $compteGestionRepository->findBy(
-            [
-                'user' => $user->getId(),
-                'donneeBancaire' => $donneeBancaire->getId(),
-            ],
-            [
-                'date' => 'DESC',
-            ]
-        );
-
         $form = $this->createForm(
             CompteGestionFilterType::class,
             $filter,
@@ -139,7 +129,7 @@ class CompteGestionController extends AbstractController
     }
 
     /**
-     * @Route("user/comptegestion/edit/{id}", name="user_comptegestion_edit")
+     * @Route("user/comptegestion/edit/{compteGestion}", name="user_comptegestion_edit")
      */
     public function edit(CompteGestionEntity $compteGestion, Request $request)
     {
