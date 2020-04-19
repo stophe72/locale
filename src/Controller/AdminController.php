@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\AdresseEntity;
 use App\Entity\UserEntity;
 use App\Form\UserType;
 use App\Repository\AdresseRepository;
