@@ -1,0 +1,98 @@
+<html>
+<h3 class="align-center text-info">RAPPORT ANNUEL / EXERCICE DE LA MESURE DE PROTECTION (AD/MJPM)</h3>
+
+<div class="row">
+    <div class="col-sm-3">
+        <strong>N° de dossier</strong>
+    </div>
+    <div class="col-sm-3">
+        {{ majeur.numeroRG }}
+    </div>
+    <div class="col-sm-3">
+        TRIBUNAL D'INSTANCE DE
+    </div>
+    <div class="col-sm-3">
+        {{ majeur.jugement.tribunal.libelle }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <strong>Nom du Majeur</strong>
+    </div>
+    <div class="col-sm-3">
+        {{ majeur }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <strong>Nom du Mandataire</strong>
+    </div>
+    <div class="col-sm-3">
+        {{ user }}
+    </div>
+    <div class="col-sm-3">
+        Services des Majeurs Protégés
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-3">
+        <strong>Adresse</strong>
+    </div>
+    <div class="col-sm-3">
+        {{ user.adresse.adresse1 }}
+    </div>
+    <div class="col-sm-3">
+        C.S.
+    </div>
+    <div class="col-sm-3">
+        C.S. ???
+    </div>
+</div>
+{% if user.adresse2 is not empty %}
+    <div class="row">
+        <div class="col-sm-3">
+        </div>
+        <div class="col-sm-3">
+            {{ user.adresse.adresse2 }}
+        </div>
+    </div>
+{% endif %}
+<div class="row">
+    <div class="col-sm-3">
+    </div>
+    <div class="col-sm-3">
+        {{ user.adresse.codePostal }} {{ user.adresse.ville }}
+    </div>
+</div>
+<div class="row">
+    <div class="offset-9 col-sm-3">
+        {{ "now"|date("d/m/Y") }}
+    </div>
+</div>
+
+<p> Madame, Monsieur Le Juge,</p>
+<p>
+Je vous prie de trouver ci-joint le compte rendu annuel de gestion de l'année,
+ainsi qu'un rapport concernant l'exercice de la mesure de protection :
+</p>
+<p>
+{{ compteRendu.texteLibre }}
+</p>
+{% if visites is not empty %}
+    <h3>Planning des visites</h3>
+    <table>
+        <thead>
+            <tr>
+                <td>Dates</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for visite in visites %}
+            <tr>
+                <td>{{ visite.date|date('d/m/Y') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endif %}
+</html>

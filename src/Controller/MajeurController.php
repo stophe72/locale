@@ -36,8 +36,9 @@ class MajeurController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $majeurs = $majeurRepository->findBy([], ['nom' => 'ASC']);
+        $user = $this->security->getUser();
 
+        $majeurs = $majeurRepository->findBy(['user' => $user->getId()], ['nom' => 'ASC']);
 
         return $this->render('majeur/index.html.twig', [
             'majeurs' => $majeurs,

@@ -1,0 +1,85 @@
+<html>
+<h3 class="align-center text-info"><img src="mjpm.png" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL {{ annee }}</h3>
+<h4 class="align-center text-info">EXERCICE DU {{ debut }} au {{ fin }}</h4>
+
+<div class="row">
+    <div class="col-sm-4">
+        <strong>NOM Prénom du majeur :</strong>
+    </div>
+    <div class="col-sm-4">
+        {{ majeur.nom }} {{ majeur.prenom }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <strong>DOSSIER N° :</strong>
+    </div>
+    <div class="col-sm-4">
+        {{ majeur.numeroRG }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <strong>Adresse du majeur protégé* :</strong>
+    </div>
+    <div class="col-sm-4">
+        {{ majeur.adresse.adresse1 }}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        <small>A réactualiser chaque année</small>>
+    </div>
+    <div class="col-sm-4">
+        {% if majeur.adresse.adresse2 is not null %}
+            {{ majeur.adresse.adresse2 }}
+        {% else %}
+            {{ majeur.adresse.cp }} {{ majeur.adresse.ville }}
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-4">
+        {% if majeur.adresse.adresse2 is null %}
+            {{ majeur.adresse.cp }} {{ majeur.adresse.ville }}
+        {% endif %}
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+    </div>
+    <div class="col-sm-4">
+        <strong></strong>TRIBUNAL D'INSTANCE DE{{ majeur.tribunal.libelle }}</strong>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        A préciser :
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-4">
+        {{ majeur.parametreMission.nature.libelle }}
+    </div>
+</div>
+<p>J'ai l'honneur de vous rappeler que, conformément  aux dispositions des art. 472, 510 à 513 du Code Civil,
+le MJPM tuteur ou curateur doit soumettre chaque année le compte de gestion, accompagné des pièces justificatives,
+en vue de sa vérification, au greffier en chef.</p>
+<p>A cet effet, vous voudrez bien compléter et le faire du présent document, accompagné des pièces justificatives suivantes :
+copie du relevé de compte courant, début et fin d'exercice, copies des avoirs financiers de fin d'exercice, copie de justificatif
+de la ressource principale (1er compte rendu), copie de la participation financière du MP, copies des justificatifs des dépenses importantes.</p>
+
+<hr class="my-3">
+
+<h3>I. Situation du patrimoine  au dernier jour  de l'exercice précédent</h3>
+<table>
+    {% for famille in familles %}
+    <tr>
+        <td>{{ famille.libelle }}</td>
+        <td>{{ famille.solde }}</td>
+    </tr>
+    {% endfor %}
+</table>
+</html>
