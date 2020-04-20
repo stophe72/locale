@@ -50,11 +50,12 @@ class DonneeBancaireController extends AbstractController
     }
 
     /**
-     * @Route("user/donneebancaire/add", name="user_donneebancaire_add")
+     * @Route("user/donneebancaire/add/{majeur}", name="user_donneebancaire_add")
      */
-    public function add(Request $request)
+    public function add(MajeurEntity $majeur, Request $request)
     {
         $db = new DonneeBancaireEntity();
+        $db->setMajeur($majeur);
 
         $form = $this->createForm(DonneeBancaireType::class, $db);
         $form->handleRequest($request);
@@ -64,14 +65,24 @@ class DonneeBancaireController extends AbstractController
             $em->persist($db);
             $em->flush();
 
-            return $this->redirectToRoute('user_donneebancaires');
+            return $this->redirectToRoute(
+                'user_donneebancaires',
+                [
+                    'majeur' => $majeur,
+                ]
+            );
         }
 
         return $this->render('donnee_bancaire/new_or_edit.html.twig', [
             'page_title' => 'Ajouter une donnée bancaire',
             'form' => $form->createView(),
             'baseEntity' => $db,
-            'url_back' => $this->generateUrl('user_donneebancaires'),
+            'url_back' => $this->generateUrl(
+                'user_donneebancaires',
+                [
+                    'majeur' => $majeur,
+                ]
+            ),
         ]);
     }
 
@@ -90,14 +101,24 @@ class DonneeBancaireController extends AbstractController
             $em->persist($donneeBancaire);
             $em->flush();
 
-            return $this->redirectToRoute('user_donneebancaires');
+            return $this->redirectToRoute(
+                'user_donneebancaires',
+                [
+                    'majeur' => $donneeBancaire->getMajeur(),
+                ]
+            );
         }
 
         return $this->render('donnee_bancaire/new_or_edit.html.twig', [
             'page_title' => 'Editer une donnée bancaire',
             'form' => $form->createView(),
             'baseEntity' => $donneeBancaire,
-            'url_back' => $this->generateUrl('user_donneebancaires'),
+            'url_back' => $this->generateUrl(
+                'user_donneebancaires',
+                [
+                    'majeur' => $donneeBancaire->getMajeur(),
+                ]
+            ),
         ]);
     }
 }

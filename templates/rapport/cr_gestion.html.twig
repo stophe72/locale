@@ -1,6 +1,13 @@
-<html>
-<h3 class="align-center text-info"><img src="mjpm.png" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL {{ annee }}</h3>
-<h4 class="align-center text-info">EXERCICE DU {{ debut }} au {{ fin }}</h4>
+{% extends 'base.html.twig' %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+<h4 class="align-center text-primary"><img src="{{ asset("images/mjpm.png") }}" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL {{ annee }}</h4>
+<h5 class="align-center text-primary">EXERCICE DU {{ debut }} au {{ fin }}</h5>
 
 <div class="row">
     <div class="col-sm-4">
@@ -10,12 +17,13 @@
         {{ majeur.nom }} {{ majeur.prenom }}
     </div>
 </div>
+
 <div class="row">
     <div class="col-sm-4">
         <strong>DOSSIER N° :</strong>
     </div>
     <div class="col-sm-4">
-        {{ majeur.numeroRG }}
+        {{ majeur.jugement.numeroRG }}
     </div>
 </div>
 <div class="row">
@@ -28,7 +36,7 @@
 </div>
 <div class="row">
     <div class="col-sm-4">
-        <small>A réactualiser chaque année</small>>
+        <small>A réactualiser chaque année</small>
     </div>
     <div class="col-sm-4">
         {% if majeur.adresse.adresse2 is not null %}
@@ -51,7 +59,7 @@
     <div class="col-sm-4">
     </div>
     <div class="col-sm-4">
-        <strong></strong>TRIBUNAL D'INSTANCE DE{{ majeur.tribunal.libelle }}</strong>
+        <strong></strong>TRIBUNAL D'INSTANCE DE{{ majeur.jugement.tribunal.libelle }}</strong>
     </div>
 </div>
 <div class="row">
@@ -74,6 +82,7 @@ de la ressource principale (1er compte rendu), copie de la participation financi
 <hr class="my-3">
 
 <h3>I. Situation du patrimoine  au dernier jour  de l'exercice précédent</h3>
+{#
 <table>
     {% for famille in familles %}
     <tr>
@@ -82,4 +91,5 @@ de la ressource principale (1er compte rendu), copie de la participation financi
     </tr>
     {% endfor %}
 </table>
-</html>
+#}
+{% endblock %}
