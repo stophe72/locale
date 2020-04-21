@@ -68,7 +68,7 @@ class DonneeBancaireController extends AbstractController
             return $this->redirectToRoute(
                 'user_donneebancaires',
                 [
-                    'majeur' => $majeur,
+                    'majeur' => $majeur->getId(),
                 ]
             );
         }
@@ -80,7 +80,7 @@ class DonneeBancaireController extends AbstractController
             'url_back' => $this->generateUrl(
                 'user_donneebancaires',
                 [
-                    'majeur' => $majeur,
+                    'majeur' => $majeur->getId(),
                 ]
             ),
         ]);
@@ -104,7 +104,7 @@ class DonneeBancaireController extends AbstractController
             return $this->redirectToRoute(
                 'user_donneebancaires',
                 [
-                    'majeur' => $donneeBancaire->getMajeur(),
+                    'majeur' => $donneeBancaire->getMajeur()->getId(),
                 ]
             );
         }
@@ -116,7 +116,7 @@ class DonneeBancaireController extends AbstractController
             'url_back' => $this->generateUrl(
                 'user_donneebancaires',
                 [
-                    'majeur' => $donneeBancaire->getMajeur(),
+                    'majeur' => $donneeBancaire->getMajeur()->getId(),
                 ]
             ),
         ]);

@@ -16,6 +16,7 @@
         <thead>
             <tr>
                 <th>Agence bancaire</th>
+                <th>Type de compte</th>
                 <th>Numéro de compte</th>
                 <th>Solde courant</th>
                 <th>Solde précédent</th>
@@ -38,16 +39,10 @@
                     </div>
                 </td>
                 <td>
-                    <div class="row">
-                        <div class="col">
-                            {{ donneebancaire.numeroCompte }}
-                        </div>
-                    </div>
-                    <div class="row text-secondary">
-                        <div class="col">
-                            <small>{{ donneebancaire.typeCompte.libelle }}</small>
-                        </div>
-                    </div>
+                    {{ donneebancaire.typeCompte.libelle }}
+                </td>
+                <td>
+                    {{ donneebancaire.numeroCompte }}
                 </td>
                 <td class="text-right">{{ donneebancaire.soldeCourant|format_currency('EUR') }}</td>
                 <td class="text-right">{{ donneebancaire.soldePrecedent|format_currency('EUR') }}</td>
