@@ -68,7 +68,7 @@ class ImportCompteGestionController extends AbstractController
                         'url_back' => $this->generateUrl(
                             'user_comptesgestion',
                             [
-                                'id' => $import->getDonneeBancaire(),
+                                'id' => $import->getDonneeBancaire()->getId(),
                             ]
                         )
                     ]
