@@ -39,10 +39,10 @@
         <small>A réactualiser chaque année</small>
     </div>
     <div class="col-sm-4">
-        {% if majeur.adresse.adresse2 is not null %}
-            {{ majeur.adresse.adresse2 }}
+        {% if majeur.adresse.adresse2 is empty %}
+            {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
         {% else %}
-            {{ majeur.adresse.cp }} {{ majeur.adresse.ville }}
+            {{ majeur.adresse.adresse2 }}
         {% endif %}
     </div>
 </div>
@@ -50,8 +50,8 @@
     <div class="col-sm-4">
     </div>
     <div class="col-sm-4">
-        {% if majeur.adresse.adresse2 is null %}
-            {{ majeur.adresse.cp }} {{ majeur.adresse.ville }}
+        {% if majeur.adresse.adresse2 is not empty %}
+            {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
         {% endif %}
     </div>
 </div>
@@ -59,7 +59,7 @@
     <div class="col-sm-4">
     </div>
     <div class="col-sm-4">
-        <strong></strong>TRIBUNAL D'INSTANCE DE{{ majeur.jugement.tribunal.libelle }}</strong>
+        <strong>TRIBUNAL D'INSTANCE DE {{ majeur.jugement.tribunal.libelle }}</strong>
     </div>
 </div>
 <div class="row">
@@ -69,15 +69,16 @@
 </div>
 <div class="row">
     <div class="col-sm-4">
-        {{ majeur.parametreMission.nature.libelle }}
+        {{ majeur.parametreMission.protection.libelle }}
     </div>
 </div>
-<p>J'ai l'honneur de vous rappeler que, conformément  aux dispositions des art. 472, 510 à 513 du Code Civil,
+<p>J'ai l'honneur de vous rappeler que, conformément aux dispositions des art. 472 , 510 à et 513 du Civil,
 le MJPM tuteur ou curateur doit soumettre chaque année le compte de gestion, accompagné des pièces justificatives,
-en vue de sa vérification, au greffier en chef.</p>
-<p>A cet effet, vous voudrez bien compléter et le faire du présent document, accompagné des pièces justificatives suivantes :
-copie du relevé de compte courant, début et fin d'exercice, copies des avoirs financiers de fin d'exercice, copie de justificatif
-de la ressource principale (1er compte rendu), copie de la participation financière du MP, copies des justificatifs des dépenses importantes.</p>
+en vue de sa vérification, au greffier en chef.
+<p>A cet effet, vous voudrez bien compléter et me faire retour du présent document,
+accompagné des pièces justificatives suivantes : copie du relevé de compte courant, début et fin d'exercice,
+copies des avoirs financiers de fin d'exercice, copie du justificatif de la ressource principale (1er compte rendu),
+copie de la fiche de  participation financière du MP, copie des justificatifs des dépenses importantes.</p>
 
 <hr class="my-3">
 
