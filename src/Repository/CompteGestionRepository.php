@@ -61,6 +61,6 @@ class CompteGestionRepository extends ServiceEntityRepository
                 ->setParameter('montant', $filter->getMontant());
         }
 
-        return $qb->getQuery()->getResult();
+        return $qb;
     }
 }

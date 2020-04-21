@@ -75,14 +75,9 @@ class CompteGestionController extends AbstractController
         }
 
         $pagination = $paginator->paginate(
-            // $cgs,
             $compteGestionRepository->getFromFilter($user, $donneeBancaire, $filter),
             $startPage,
-            10,
-            [
-                'defaultSortFieldName' => 'cg.date',
-                'defaultSortDirection' => 'desc'
-            ]
+            10
         );
 
         return $this->render('compte_gestion/index.html.twig', [
