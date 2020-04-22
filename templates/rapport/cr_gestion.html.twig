@@ -6,91 +6,115 @@
 {% endblock %}
 
 {% block body %}
-<h4 class="align-center text-primary"><img src="{{ asset("images/mjpm.png") }}" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL {{ annee }}</h4>
-<h5 class="align-center text-primary">EXERCICE DU {{ debut }} au {{ fin }}</h5>
+<div class="container-fluid p-5">
+    <h4 class="align-center text-primary"><img class="mx-5" src="{{ asset("images/mjpm.png") }}" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL {{ annee }}</h4>
+    <h5 class="align-center text-primary my-3">EXERCICE DU {{ debut|date("d/m/Y") }} au {{ fin|date("d/m/Y") }}</h5>
 
-<div class="row">
-    <div class="col-sm-4">
-        <strong>NOM Prénom du majeur :</strong>
+    <div class="row">
+        <div class="col-sm-4">
+            <strong>NOM Prénom du majeur :</strong>
+        </div>
+        <div class="col-sm-4">
+            {{ majeur.nom }} {{ majeur.prenom }}
+        </div>
     </div>
-    <div class="col-sm-4">
-        {{ majeur.nom }} {{ majeur.prenom }}
-    </div>
-</div>
 
-<div class="row">
-    <div class="col-sm-4">
-        <strong>DOSSIER N° :</strong>
+    <div class="row">
+        <div class="col-sm-4">
+            <strong>DOSSIER N° :</strong>
+        </div>
+        <div class="col-sm-4">
+            {{ majeur.jugement.numeroRG }}
+        </div>
     </div>
-    <div class="col-sm-4">
-        {{ majeur.jugement.numeroRG }}
+    <div class="row">
+        <div class="col-sm-4">
+            <strong>Adresse du majeur protégé* :</strong>
+        </div>
+        <div class="col-sm-4">
+            {{ majeur.adresse.adresse1 }}
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
-        <strong>Adresse du majeur protégé* :</strong>
+    <div class="row">
+        <div class="col-sm-4">
+            <small>A réactualiser chaque année</small>
+        </div>
+        <div class="col-sm-4">
+            {% if majeur.adresse.adresse2 is empty %}
+                {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
+            {% else %}
+                {{ majeur.adresse.adresse2 }}
+            {% endif %}
+        </div>
     </div>
-    <div class="col-sm-4">
-        {{ majeur.adresse.adresse1 }}
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-4">
+            {% if majeur.adresse.adresse2 is not empty %}
+                {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
+            {% endif %}
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
-        <small>A réactualiser chaque année</small>
+    <div class="row">
+        <div class="col-sm-4">
+        </div>
+        <div class="col-sm-4">
+            <strong>TRIBUNAL D'INSTANCE DE {{ majeur.jugement.tribunal.libelle }}</strong>
+        </div>
     </div>
-    <div class="col-sm-4">
-        {% if majeur.adresse.adresse2 is empty %}
-            {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
-        {% else %}
-            {{ majeur.adresse.adresse2 }}
-        {% endif %}
+    <div class="row">
+        <div class="col-sm-4">
+            A préciser :
+        </div>
     </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
+    <div class="row">
+        <div class="col-sm-4">
+            {{ majeur.parametreMission.protection.libelle }}
+        </div>
     </div>
-    <div class="col-sm-4">
-        {% if majeur.adresse.adresse2 is not empty %}
-            {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
-        {% endif %}
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
-    </div>
-    <div class="col-sm-4">
-        <strong>TRIBUNAL D'INSTANCE DE {{ majeur.jugement.tribunal.libelle }}</strong>
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
-        A préciser :
-    </div>
-</div>
-<div class="row">
-    <div class="col-sm-4">
-        {{ majeur.parametreMission.protection.libelle }}
-    </div>
-</div>
-<p>J'ai l'honneur de vous rappeler que, conformément aux dispositions des art. 472 , 510 à et 513 du Civil,
-le MJPM tuteur ou curateur doit soumettre chaque année le compte de gestion, accompagné des pièces justificatives,
-en vue de sa vérification, au greffier en chef.
-<p>A cet effet, vous voudrez bien compléter et me faire retour du présent document,
-accompagné des pièces justificatives suivantes : copie du relevé de compte courant, début et fin d'exercice,
-copies des avoirs financiers de fin d'exercice, copie du justificatif de la ressource principale (1er compte rendu),
-copie de la fiche de  participation financière du MP, copie des justificatifs des dépenses importantes.</p>
+    <p class="mt-5">J'ai l'honneur de vous rappeler que, conformément aux dispositions des art. 472 , 510 à et 513 du Civil,
+    le MJPM tuteur ou curateur doit soumettre chaque année le compte de gestion, accompagné des pièces justificatives,
+    en vue de sa vérification, au greffier en chef.
+    <p>A cet effet, vous voudrez bien compléter et me faire retour du présent document,
+    accompagné des pièces justificatives suivantes : copie du relevé de compte courant, début et fin d'exercice,
+    copies des avoirs financiers de fin d'exercice, copie du justificatif de la ressource principale (1er compte rendu),
+    copie de la fiche de  participation financière du MP, copie des justificatifs des dépenses importantes.</p>
 
-<hr class="my-3">
 
-<h3>I. Situation du patrimoine  au dernier jour  de l'exercice précédent</h3>
-{#
-<table>
-    {% for famille in familles %}
-    <tr>
-        <td>{{ famille.libelle }}</td>
-        <td>{{ famille.solde }}</td>
-    </tr>
+    <h4 class="mt-5">I. Situation du patrimoine au dernier jour de l'exercice précédent</h4>
+
+    {% if comptesPrecedents is not empty %}
+        <table class="table table-bordered">
+            {% for compte in comptesPrecedents %}
+            <tr>
+                <td class="col-sm-9">{{ compte.typeCompte }}</td>
+                <td class="col-sm-3 text-right">{{ compte.solde|format_currency('EUR') }}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td class="col-sm-9"><strong>Total</strong></td>
+                <td class="col-sm-3 text-right"><strong>{{ totalPrecedent|format_currency('EUR') }}</strong></td>
+            </tr>
+        </table>
+    {% else %}
+        Aucune information à présenter
+    {% endif %}
+
+
+    <h4 class="mt-5">IV. Situation du patrimoine au dernier jour de l'exercice</h4>
+
+    <table class="table table-bordered">
+    {% for compte in comptesCourants %}
+        <tr>
+            <td class="col-sm-9">{{ compte.typeCompte }}</td>
+            <td class="col-sm-3 text-right">{{ compte.solde|format_currency('EUR') }}</td>
+        </tr>
     {% endfor %}
-</table>
-#}
+        <tr>
+            <td class="col-sm-9"><strong>Total</strong></td>
+            <td class="col-sm-3 text-right"><strong>{{ totalCourant|format_currency('EUR') }}</strong></td>
+        </tr>
+    </table>
+</div>
 {% endblock %}

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Repository\CompteGestionRepository;
 use App\Repository\MajeurRepository;
+use DateTime;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,8 +19,44 @@ class RapportController extends AbstractController
     {
         $majeur = $majeurRepository->find(1);
 
-        // $familles = $compteGestionRepository->findBy('')
+        // A partir du 01/01/2020, on présente les comptes de 2019 ?
+        $anneeCourante = date("Y");
+        $anneeCourante--;
+        $anneePrecedente = $anneeCourante - 1;
 
+        $debut = new DateTime();
+        $fin = new DateTime();
+        $debut->setDate($anneeCourante, 1, 1);
+        $fin->setDate($anneeCourante, 12, 31);
+
+        $comptesCourants = $compteGestionRepository->getSoldes($majeur, $anneeCourante);
+        $comptesPrecedents = $compteGestionRepository->getSoldes($majeur, $anneePrecedente);
+
+        $totalPrecedent = 0;
+        foreach ($comptesPrecedents as $compte) {
+            $totalPrecedent += $compte['solde'];
+        }
+        $totalCourant = 0;
+        foreach ($comptesCourants as $compte) {
+            $totalCourant += $compte['solde'];
+        }
+
+        return $this->render(
+            'rapport/cr_gestion.html.twig',
+            [
+                'majeur' => $majeur,
+                'annee' => $anneeCourante,
+                'debut' => $debut,
+                'fin' => $fin,
+                'comptesCourants' => $comptesCourants,
+                'comptesPrecedents' => $comptesPrecedents,
+                'totalPrecedent' => $totalPrecedent,
+                'totalCourant' => $totalCourant,
+                'page_title' => 'Compte rendu',
+            ]
+        );
+
+        /*
         $pdfOptions = new Options();
         $pdfOptions->set('defaultFont', 'Arial');
 
@@ -31,13 +68,15 @@ class RapportController extends AbstractController
             'rapport/cr_gestion.html.twig',
             [
                 'majeur' => $majeur,
-                'annee' => date('Y'),
+                'annee' => $anneeCourante,
                 'debut' => date('m/d/Y'),
                 'fin' => date('m/d/Y'),
+                'totalPrecedent' => $totalPrecedent,
+                'totalCourant' => $totalCourant,
                 'page_title' => 'Compte rendu',
             ]
         );
-        /*
+
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -52,16 +91,7 @@ class RapportController extends AbstractController
             "Attachment" => true
         ]);
 */
-        return $this->render(
-            'rapport/cr_gestion.html.twig',
-            [
-                'majeur' => $majeur,
-                'annee' => date('Y'),
-                'debut' => date('m/d/Y'),
-                'fin' => date('m/d/Y'),
-                'page_title' => 'Compte rendu',
-            ]
-        );
+
 
         // return $this->render('rapport/index.html.twig', [
         //     'controller_name' => 'RapportController',

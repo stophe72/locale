@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
+use App\Entity\MajeurEntity;
 use App\Entity\UserEntity;
 use App\Models\CompteGestionFilter;
 use App\Util\Util;
@@ -62,5 +63,30 @@ class CompteGestionRepository extends ServiceEntityRepository
         }
 
         return $qb;
+    }
+
+    public function getSoldes(MajeurEntity $majeur, int $annee)
+    {
+        $from   = $annee . '-01-01';
+        $to     = $annee . '-12-31';
+
+        $q = 'SELECT tc.libelle typeCompte, SUM(montant * nature) solde'
+            . ' FROM compteGestion cg'
+            . ' INNER JOIN donneeBancaire db ON db.id = cg.donneeBancaireId'
+            . ' INNER JOIN typeCompte tc ON tc.id = db.typeCompteId'
+            . ' WHERE db.majeurId = :majeurId'
+            . ' AND cg.date BETWEEN :from and :to'
+            . ' GROUP BY tc.libelle';
+
+        $params = [
+            'to'     => $to,
+            'from'   => $from,
+            'majeurId' => $majeur->getId(),
+        ];
+        $conn = $this->getEntityManager()->getConnection();
+        $stmt = $conn->prepare($q);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll();
     }
 }
