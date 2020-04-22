@@ -16,6 +16,7 @@
                     <th>Id</th>
                     <th>Email</th>
                     <th>Nom</th>
+                    <th>Groupe</th>
                     <th>Rôles</th>
                     <th></th>
                 </tr>
@@ -26,6 +27,7 @@
                     <td>{{ user.id }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.nom }} {{ user.prenom }}</td>
+                    <td>{{ user.groupe }}</td>
                     <td>{{ user.roles|join(', ', ' et ') }} </td>
                     <td class="text-right">
                         <a href="{{ path("admin_user_show", { "id": user.id}) }}" title="Détails d'un utilisateur" class="btn btn-outline-primary btn-sm">

@@ -65,6 +65,14 @@ class UserEntity extends BaseEntity implements UserInterface
     private $adresse;
 
     /**
+     * @Assert\NotNull
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\UserGroupeEntity")
+     * @ORM\JoinColumn(name="groupeId", referencedColumnName="id", nullable=false)
+     */
+    private $groupe;
+
+    /**
      * @var boolean
      */
     private $administrateur;
@@ -234,5 +242,25 @@ class UserEntity extends BaseEntity implements UserInterface
     public function __toString()
     {
         return $this->getNom() . ' ' . $this->getPrenom();
+    }
+
+    /**
+     * Get the value of groupe
+     */
+    public function getGroupe(): ?UserGroupeEntity
+    {
+        return $this->groupe;
+    }
+
+    /**
+     * Set the value of groupe
+     *
+     * @return  self
+     */
+    public function setGroupe(?UserGroupeEntity $groupe)
+    {
+        $this->groupe = $groupe;
+
+        return $this;
     }
 }

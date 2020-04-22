@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Entity\UserEntity;
+use App\Entity\UserGroupeEntity;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
@@ -44,6 +46,16 @@ class UserType extends AbstractType
                 [
                     'mapped' => false,
                     'label'  => 'Mot de passe',
+                ]
+            )
+            ->add(
+                'groupe',
+                EntityType::class,
+                [
+                    'class' => UserGroupeEntity::class,
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ]
                 ]
             )
             ->add('adresse', AdresseType::class);
