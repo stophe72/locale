@@ -4,7 +4,6 @@ namespace App\Form;
 
 use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
-use App\Entity\MajeurEntity;
 use App\Entity\TypeOperationEntity;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
