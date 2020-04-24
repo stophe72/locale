@@ -11,7 +11,7 @@
     <h5 class="align-center text-primary my-3">EXERCICE DU {{ debut|date("d/m/Y") }} au {{ fin|date("d/m/Y") }}</h5>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <strong>NOM Prénom du majeur :</strong>
         </div>
         <div class="col-sm-4">
@@ -20,7 +20,7 @@
     </div>
 
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <strong>DOSSIER N° :</strong>
         </div>
         <div class="col-sm-4">
@@ -28,7 +28,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <strong>Adresse du majeur protégé* :</strong>
         </div>
         <div class="col-sm-4">
@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             <small>A réactualiser chaque année</small>
         </div>
         <div class="col-sm-4">
@@ -48,7 +48,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
         </div>
         <div class="col-sm-4">
             {% if majeur.adresse.adresse2 is not empty %}
@@ -57,14 +57,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
         </div>
         <div class="col-sm-4">
             <strong>TRIBUNAL D'INSTANCE DE {{ majeur.jugement.tribunal.libelle }}</strong>
         </div>
     </div>
     <div class="row">
-        <div class="col-sm-4">
+        <div class="col-sm-3">
             A préciser :
         </div>
     </div>
@@ -101,6 +101,33 @@
         Aucune information à présenter
     {% endif %}
 
+    <h4 class="mt-5">II. Recettes de l'exercice</h4>
+    <table class="table table-bordered">
+        {% for recette in recettes %}
+        <tr>
+            <td class="col-sm-9">{{ recette.libelle }}</td>
+            <td class="col-sm-3 text-right">{{ recette.montant|format_currency('EUR') }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td class="col-sm-9"><strong>Total</strong></td>
+            <td class="col-sm-3 text-right"><strong>{{ totalRecettes|format_currency('EUR') }}</strong></td>
+        </tr>
+    </table>
+
+    <h4 class="mt-5">III. Dépenses de l'exercice</h4>
+    <table class="table table-bordered">
+        {% for depense in depenses %}
+        <tr>
+            <td class="col-sm-9">{{ depense.libelle }}</td>
+            <td class="col-sm-3 text-right">{{ depense.montant|format_currency('EUR') }}</td>
+        </tr>
+        {% endfor %}
+        <tr>
+            <td class="col-sm-9"><strong>Total</strong></td>
+            <td class="col-sm-3 text-right"><strong>{{ totalDepenses|format_currency('EUR') }}</strong></td>
+        </tr>
+    </table>
 
     <h4 class="mt-5">IV. Situation du patrimoine au dernier jour de l'exercice</h4>
 

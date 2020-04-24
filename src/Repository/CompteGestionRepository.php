@@ -5,10 +5,13 @@ namespace App\Repository;
 use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
+use App\Entity\TypeCompteEntity;
+use App\Entity\TypeOperationEntity;
 use App\Entity\UserEntity;
 use App\Models\CompteGestionFilter;
 use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -67,26 +70,47 @@ class CompteGestionRepository extends ServiceEntityRepository
 
     public function getSoldes(MajeurEntity $majeur, int $annee)
     {
-        $from   = $annee . '-01-01';
-        $to     = $annee . '-12-31';
+        $qb = $this->createQueryBuilder('cg');
+        $qb->select('tc.libelle AS typeCompte, SUM(cg.montant * cg.nature) AS solde')
+            ->innerJoin('cg.donneeBancaire', 'db')
+            ->innerJoin(TypeCompteEntity::class, 'tc', Join::WITH, 'tc.id = db.typeCompte')
+            ->andWhere('db.majeur = :majeurId')
+            ->andWhere('cg.date BETWEEN :from AND :to')
+            ->groupBy('tc.id')
+            ->setParameter('majeurId', $majeur->getId())
+            ->setParameter('from', $annee . '-01-01')
+            ->setParameter('to', $annee . '-12-31')
+            ->addOrderBy('tc.libelle', 'ASC');
 
-        $q = 'SELECT tc.libelle typeCompte, SUM(montant * nature) solde'
-            . ' FROM compteGestion cg'
-            . ' INNER JOIN donneeBancaire db ON db.id = cg.donneeBancaireId'
-            . ' INNER JOIN typeCompte tc ON tc.id = db.typeCompteId'
-            . ' WHERE db.majeurId = :majeurId'
-            . ' AND cg.date BETWEEN :from and :to'
-            . ' GROUP BY tc.libelle';
+        return $qb->getQuery()->getResult();
+    }
 
-        $params = [
-            'to'     => $to,
-            'from'   => $from,
-            'majeurId' => $majeur->getId(),
-        ];
-        $conn = $this->getEntityManager()->getConnection();
-        $stmt = $conn->prepare($q);
-        $stmt->execute($params);
+    public function getRecettesParTypeOperation(MajeurEntity $majeur, int $annee)
+    {
+        return $this->getMontantsParTypeOperation($majeur, $annee);
+    }
 
-        return $stmt->fetchAll();
+    public function getDepensesParTypeOperation(MajeurEntity $majeur, int $annee)
+    {
+        return $this->getMontantsParTypeOperation($majeur, $annee, -1);
+    }
+
+    private function getMontantsParTypeOperation(MajeurEntity $majeur, int $annee, int $nature = 1)
+    {
+        $qb = $this->createQueryBuilder('cg');
+        $qb->select('ope.libelle AS libelle, SUM(cg.montant * cg.nature) AS montant')
+            ->innerJoin('cg.typeOperation', 'ope')
+            ->innerJoin('cg.donneeBancaire', 'db')
+            ->andWhere('db.majeur = :majeurId')
+            ->andWhere('cg.date BETWEEN :from AND :to')
+            ->andWhere('cg.nature = :nature')
+            ->groupBy('ope.id')
+            ->setParameter('majeurId', $majeur->getId())
+            ->setParameter('from', $annee . '-01-01')
+            ->setParameter('to', $annee . '-12-31')
+            ->setParameter('nature', $nature)
+            ->addOrderBy('ope.libelle', 'ASC');
+
+        return $qb->getQuery()->getResult();
     }
 }

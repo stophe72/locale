@@ -41,6 +41,18 @@ class RapportController extends AbstractController
             $totalCourant += $compte['solde'];
         }
 
+        $depenses = $compteGestionRepository->getDepensesParTypeOperation($majeur, $anneeCourante);
+        $recettes = $compteGestionRepository->getRecettesParTypeOperation($majeur, $anneeCourante);
+
+        $totalRecettes = 0;
+        foreach ($recettes as $recette) {
+            $totalRecettes += $recette['montant'];
+        }
+        $totalDepenses = 0;
+        foreach ($depenses as $depense) {
+            $totalDepenses += $depense['montant'];
+        }
+
         return $this->render(
             'rapport/cr_gestion.html.twig',
             [
@@ -52,6 +64,10 @@ class RapportController extends AbstractController
                 'comptesPrecedents' => $comptesPrecedents,
                 'totalPrecedent' => $totalPrecedent,
                 'totalCourant' => $totalCourant,
+                'totalRecettes' => $totalRecettes,
+                'totalDepenses' => $totalDepenses,
+                'recettes' => $recettes,
+                'depenses' => $depenses,
                 'page_title' => 'Compte rendu',
             ]
         );
