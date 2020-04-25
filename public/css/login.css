@@ -25,8 +25,3 @@ body {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
-
-.cd-card-header h5 {
-	font-size    : 20rem;
-    background   : rgba(0, 97, 153, 0.15);
-}
