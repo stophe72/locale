@@ -5,13 +5,20 @@ namespace App\Controller;
 use App\Repository\CompteGestionRepository;
 use App\Repository\MajeurRepository;
 use DateTime;
-use Dompdf\Dompdf;
-use Dompdf\Options;
+use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
+use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 
 class RapportController extends AbstractController
 {
+    private $snappyPdf;
+
+    public function __construct(Pdf $pdf)
+    {
+        $this->snappyPdf = $pdf;
+    }
+
     /**
      * @Route("user/rapports", name="user_rapports")
      */
@@ -71,13 +78,48 @@ class RapportController extends AbstractController
                 'page_title' => 'Compte rendu',
             ]
         );
+    }
 
-        /*
-        $pdfOptions = new Options();
-        $pdfOptions->set('defaultFont', 'Arial');
+    /**
+     * @Route("user/rapports2", name="user_rapports2")
+     */
+    public function pdfRapport(MajeurRepository $majeurRepository, CompteGestionRepository $compteGestionRepository)
+    {
+        $majeur = $majeurRepository->find(1);
 
-        $dompdf = new Dompdf($pdfOptions);
-        $dompdf->set_base_path("/public/css/");
+        // A partir du 01/01/2020, on présente les comptes de 2019 ?
+        $anneeCourante = date("Y");
+        $anneeCourante--;
+        $anneePrecedente = $anneeCourante - 1;
+
+        $debut = new DateTime();
+        $fin = new DateTime();
+        $debut->setDate($anneeCourante, 1, 1);
+        $fin->setDate($anneeCourante, 12, 31);
+
+        $comptesCourants = $compteGestionRepository->getSoldes($majeur, $anneeCourante);
+        $comptesPrecedents = $compteGestionRepository->getSoldes($majeur, $anneePrecedente);
+
+        $totalPrecedent = 0;
+        foreach ($comptesPrecedents as $compte) {
+            $totalPrecedent += $compte['solde'];
+        }
+        $totalCourant = 0;
+        foreach ($comptesCourants as $compte) {
+            $totalCourant += $compte['solde'];
+        }
+
+        $depenses = $compteGestionRepository->getDepensesParTypeOperation($majeur, $anneeCourante);
+        $recettes = $compteGestionRepository->getRecettesParTypeOperation($majeur, $anneeCourante);
+
+        $totalRecettes = 0;
+        foreach ($recettes as $recette) {
+            $totalRecettes += $recette['montant'];
+        }
+        $totalDepenses = 0;
+        foreach ($depenses as $depense) {
+            $totalDepenses += $depense['montant'];
+        }
 
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView(
@@ -85,14 +127,25 @@ class RapportController extends AbstractController
             [
                 'majeur' => $majeur,
                 'annee' => $anneeCourante,
-                'debut' => date('m/d/Y'),
-                'fin' => date('m/d/Y'),
+                'debut' => $debut,
+                'fin' => $fin,
+                'comptesCourants' => $comptesCourants,
+                'comptesPrecedents' => $comptesPrecedents,
                 'totalPrecedent' => $totalPrecedent,
                 'totalCourant' => $totalCourant,
+                'totalRecettes' => $totalRecettes,
+                'totalDepenses' => $totalDepenses,
+                'recettes' => $recettes,
+                'depenses' => $depenses,
                 'page_title' => 'Compte rendu',
             ]
         );
 
+        return new PdfResponse(
+            $this->snappyPdf->getOutputFromHtml($html),
+            'rapport_' . $majeur->getNom() . '_' . $majeur->getPrenom() . '-' . $anneeCourante . '.pdf'
+        );
+        /*
         // Load HTML to Dompdf
         $dompdf->loadHtml($html);
 
@@ -103,14 +156,12 @@ class RapportController extends AbstractController
         $dompdf->render();
 
         // Output the generated PDF to Browser (force download)
-        $dompdf->stream("mypdf.pdf", [
-            "Attachment" => true
-        ]);
-*/
-
-
-        // return $this->render('rapport/index.html.twig', [
-        //     'controller_name' => 'RapportController',
-        // ]);
+        $dompdf->stream(
+            'rapport_' . $majeur->getNom() . '_' . $majeur->getPrenom() . '-' . $anneeCourante . '.pdf',
+            [
+                "Attachment" => true
+            ]
+        );
+        */
     }
 }
