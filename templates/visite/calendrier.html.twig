@@ -1,0 +1,182 @@
+{% extends 'layout_fluid.html.twig' %}
+
+{% form_theme form 'bootstrap_4_layout.html.twig' %}
+
+{% block content %}
+    <div class="row my-4">
+        <div class="col-sm-6 offset-2">
+            <h3 class="text-primary"><i class="fa fa-handshake"></i> {{ page_title }}</h3>
+        </div>
+    </div>
+    <div class="row">
+         <div class="col-sm-2 mt-2">
+            {{ form_start(form) }}
+                {{ form_row(form.annee) }}
+                {{ form_row(form.majeurNom) }}
+                <div class="float-right mt-3">
+                    <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
+                        <i class="fa fa-filter"></i> Appliquer</button>
+                    <button id="btnClearFilters" type="button" class="btn btn-outline-secondary">
+                        <i class="fas fa-times"></i></button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+        <div class="col-sm-8">
+            <div class="row">
+            {% for mois, jours in calendrier %}
+                <div class="col-sm-3">
+                    <div class="row">
+                        <div class="col text-center">
+                            {{ mois }}
+                        </div>
+                    </div>
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr class="bg-info">
+                                <th class="text-center text-light">L</th>
+                                <th class="text-center text-light">M</th>
+                                <th class="text-center text-light">M</th>
+                                <th class="text-center text-light">J</th>
+                                <th class="text-center text-light">V</th>
+                                <th class="text-center text-light">S</th>
+                                <th class="text-center text-light">D</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                            {% for key, jour in jours %}
+                                <td class="text-center{% if jour.visite %} bg-secondary text-light{% endif %}">{{ jour.numero }}</td>
+                                {% if loop.index is divisible by (7) %}
+                                    </tr>
+                                    <tr>
+                                {% endif %}
+                            {% endfor %}
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                {% if loop.index is divisible by (4) %}
+                    </div>
+                    <div class="row">
+                {% endif %}
+            {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la visite ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La visite "<span id="typeFrais_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    let majeurName = $("#visite_filter_majeurNom");
+    majeurName.autocomplete({
+        debounce: 500,
+        source: function(request, response) {
+            $.ajax({
+                url: "{{ path('ajax_majeurs_get_by_name') }}",
+                type: "post",
+                dataType: "json",
+                data: {
+                    name: request.term
+                },
+                success: function(data) {
+                    response(data);
+                }
+            });
+        },
+        select: function(event, ui) {
+            event.preventDefault();
+            majeurName.val(ui.item.label);
+
+            return false;
+        }
+    });
+
+    $('#btnClearFilters').on('click', function(e) {
+        $.ajax({
+            url: "{{ path('ajax_visite_clear_filter') }}",
+            dataType: "json",
+            data: {
+                clearVisiteFilter: 1
+            },
+
+            success: function (reponse)
+            {
+                window.location.href = "{{ path('user_visites') }}";
+            },
+        });
+    });
+
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.typeFraisId;
+
+        window.location.href = "user/visite/delete/" + id;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.typeFraisId = id;
+
+        $.ajax({
+            url: "#", {#"{{ path('ajaxCanDeleteTypeFrais') }}",#}
+            dataType: "json",
+            data: {
+                "typeFraisId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#exampleModal');
+
+                    dialog.find('.modal-body').text("Supprimer la visite " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#typeFrais_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
+{% endblock %}

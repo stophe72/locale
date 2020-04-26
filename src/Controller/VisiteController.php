@@ -3,11 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\VisiteEntity;
+use App\Form\CalendrierFilterType;
 use App\Form\VisiteFilterType;
 use App\Form\VisiteType;
+use App\Models\CalendrierVisiteFilter;
 use App\Models\VisiteFilter;
 use App\Repository\MajeurRepository;
 use App\Repository\VisiteRepository;
+use App\Util\Calendrier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -16,9 +19,11 @@ use Symfony\Component\Security\Core\Security;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
 class VisiteController extends AbstractController
 {
     const FILTER_VISITE = 'session_filter_visite';
+    const FILTER_CALENDRIER = 'session_filter_calendrier';
 
     /**
      * @var Security
@@ -139,6 +144,37 @@ class VisiteController extends AbstractController
             ]
         );
     }
+
+    /**
+     * @Route("user/visites/calendrier", name="user_visites_cal")
+     */
+    public function calendrier(Request $request, VisiteRepository $visiteRepository)
+    {
+        $user = $this->security->getUser();
+        $filter = $this->session->get(self::FILTER_CALENDRIER, new CalendrierVisiteFilter());
+
+        $visites = $visiteRepository->getFromCalendrierFilter($user, $filter);
+        $calendrier = new Calendrier($visites, $filter->getAnnee());
+
+        $form = $this->createForm(CalendrierFilterType::class, $filter);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->session->set(self::FILTER_CALENDRIER, $filter);
+        }
+
+        return $this->render(
+            'visite/calendrier.html.twig',
+            [
+                'form' => $form->createView(),
+                // 'baseEntity' => $visite,
+                'page_title' => 'Calendrier des visites',
+                'calendrier' => $calendrier->generate(),
+                // 'url_back' => $this->generateUrl('user_visites'),
+            ]
+        );
+    }
+
     /**
      * @Route("user/culture/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
      */

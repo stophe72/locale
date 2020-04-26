@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\UserEntity;
 use App\Entity\VisiteEntity;
+use App\Models\CalendrierVisiteFilter;
 use App\Models\VisiteFilter;
 use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -49,6 +50,25 @@ class VisiteRepository extends ServiceEntityRepository
         if ($visiteFilter->getDateFin()) {
             $qb->andWhere('v.date <= :dateFin')
                 ->setParameter('dateFin', $visiteFilter->getDateFin());
+        }
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getFromCalendrierFilter(UserEntity $user, CalendrierVisiteFilter $visiteFilter)
+    {
+        $qb = $this->createQueryBuilder('v');
+        $qb->innerJoin('v.majeur', 'm')
+            ->innerJoin('v.user', 'u', Join::WITH, $qb->expr()->eq('v.user', ':userId'))
+            ->setParameter('userId', $user->getId());
+
+        if ($visiteFilter->getMajeurNom()) {
+            $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
+                ->setParameter('majeurNom', '%' . $visiteFilter->getMajeurNom() . '%');
+        }
+        if ($visiteFilter->getAnnee()) {
+            $qb->andWhere('YEAR(v.date) = :annee')
+                ->setParameter('annee', $visiteFilter->getAnnee());
         }
 
         return $qb->getQuery()->getResult();
