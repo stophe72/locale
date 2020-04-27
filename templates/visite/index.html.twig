@@ -18,6 +18,7 @@
                 {{ form_row(form.dateDebut) }}
                 {{ form_row(form.dateFin) }}
                 {{ form_row(form.majeurNom) }}
+                {{ form_row(form.majeurId) }}
                 <div class="float-right mt-3">
                     <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
                         <i class="fa fa-filter"></i> Appliquer</button>
@@ -101,6 +102,8 @@
 {% block javascripts %}
 <script type="text/javascript">
     let majeurName = $("#visite_filter_majeurNom");
+    let majeurId = $("#visite_filter_majeurId");
+
     majeurName.autocomplete({
         debounce: 500,
         source: function(request, response) {
@@ -116,9 +119,14 @@
                 }
             });
         },
+        focus: function(event, ui) {
+            event.preventDefault();
+            majeurName.val(ui.item.label);
+        },
         select: function(event, ui) {
             event.preventDefault();
             majeurName.val(ui.item.label);
+            majeurId.val(ui.item.value);
 
             return false;
         }

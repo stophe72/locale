@@ -21,6 +21,9 @@ class VisiteFilter
      */
     private $majeurNom;
 
+    private $majeurId;
+
+
     /**
      * Get the value of dateDebut
      *
@@ -89,6 +92,26 @@ class VisiteFilter
     public function setMajeurNom(?string $majeurNom)
     {
         $this->majeurNom = $majeurNom;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of majeurId
+     */
+    public function getMajeurId()
+    {
+        return $this->majeurId;
+    }
+
+    /**
+     * Set the value of majeurId
+     *
+     * @return  self
+     */
+    public function setMajeurId($majeurId)
+    {
+        $this->majeurId = $majeurId;
 
         return $this;
     }

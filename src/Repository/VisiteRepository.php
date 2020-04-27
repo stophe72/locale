@@ -29,15 +29,14 @@ class VisiteRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('v');
         $qb->innerJoin('v.majeur', 'm')
             ->innerJoin('v.user', 'u', Join::WITH, $qb->expr()->eq('v.user', ':userId'))
+            ->andWhere('m = :majeurId')
             ->setParameter('userId', $user->getId())
+            ->setParameter('majeurId', $visiteFilter->getMajeurId())
             ->orderBy('v.date', 'DESC')
             ->addOrderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC');
 
-        if ($visiteFilter->getMajeurNom()) {
-            $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
-                ->setParameter('majeurNom', '%' . $visiteFilter->getMajeurNom() . '%');
-        }
+
         if ($visiteFilter->getDateDebut() && $visiteFilter->getDateFin()) {
             $dates = Util::orderDates($visiteFilter->getDateDebut(), $visiteFilter->getDateFin());
             $visiteFilter->setDateDebut($dates[0]);

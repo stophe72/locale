@@ -33,20 +33,24 @@
                     </div>
                     <table class="table table-bordered table-sm">
                         <thead>
-                            <tr class="bg-info">
-                                <th class="text-center text-light">L</th>
-                                <th class="text-center text-light">M</th>
-                                <th class="text-center text-light">M</th>
-                                <th class="text-center text-light">J</th>
-                                <th class="text-center text-light">V</th>
-                                <th class="text-center text-light">S</th>
-                                <th class="text-center text-light">D</th>
+                            <tr class="bg-light">
+                                <th class="text-center text-secondary">L</th>
+                                <th class="text-center text-secondary">M</th>
+                                <th class="text-center text-secondary">M</th>
+                                <th class="text-center text-secondary">J</th>
+                                <th class="text-center text-secondary">V</th>
+                                <th class="text-center text-secondary">S</th>
+                                <th class="text-center text-secondary">D</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                             {% for key, jour in jours %}
-                                <td class="text-center{% if jour.visite %} bg-secondary text-light{% endif %}">{{ jour.numero }}</td>
+                                {% if jour.visite %}
+                                    <td class="text-center bg-success text-light"><strong>{{ jour.numero }}</strong></td>
+                                {% else %}
+                                    <td class="text-center">{{ jour.numero }}</td>
+                                {% endif %}
                                 {% if loop.index is divisible by (7) %}
                                     </tr>
                                     <tr>
@@ -123,6 +127,11 @@
                 }
             });
         },
+        focus: function(event, ui) {
+            event.preventDefault();
+            majeurName.val(ui.item.label);
+            majeurId.val(ui.item.value);
+        },
         select: function(event, ui) {
             {# event.preventDefault(); #}
             majeurName.val(ui.item.label);
@@ -139,7 +148,6 @@
             data: {
                 clearCalendrierFilter: 1
             },
-
             success: function (reponse)
             {
                 window.location.href = "{{ path('user_visites_calendrier') }}";
