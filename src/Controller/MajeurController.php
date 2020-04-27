@@ -116,7 +116,7 @@ class MajeurController extends AbstractController
         foreach ($majeurs as $majeur) {
             $a[] = [
                 'value' => $majeur->getId(),
-                'label' => $majeur->getNom(),
+                'label' => $majeur->getNom() . ' ' . $majeur->getPrenom(),
             ];
         }
         return new JsonResponse($a);

@@ -2,9 +2,10 @@
 
 namespace App\Form;
 
-use App\Models\VisiteFilter;
+use App\Models\CalendrierVisiteFilter;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -32,7 +33,8 @@ class CalendrierFilterType extends AbstractType
                     'label' => 'Nom',
                     'required' => false,
                 ]
-            );
+            )
+            ->add('majeurId', HiddenType::class);
     }
 
 
@@ -46,7 +48,7 @@ class CalendrierFilterType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'class' => VisiteFilter::class,
+            'class' => CalendrierVisiteFilter::class,
         ]);
     }
 }

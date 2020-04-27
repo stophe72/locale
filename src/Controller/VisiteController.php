@@ -146,18 +146,18 @@ class VisiteController extends AbstractController
     }
 
     /**
-     * @Route("user/visites/calendrier", name="user_visites_cal")
+     * @Route("user/visites/calendrier", name="user_visites_calendrier")
      */
     public function calendrier(Request $request, VisiteRepository $visiteRepository)
     {
         $user = $this->security->getUser();
         $filter = $this->session->get(self::FILTER_CALENDRIER, new CalendrierVisiteFilter());
 
-        $visites = $visiteRepository->getFromCalendrierFilter($user, $filter);
-        $calendrier = new Calendrier($visites, $filter->getAnnee());
-
         $form = $this->createForm(CalendrierFilterType::class, $filter);
         $form->handleRequest($request);
+
+        $visites = $visiteRepository->getFromCalendrierFilter($user, $filter);
+        $calendrier = new Calendrier($visites, $filter->getAnnee());
 
         if ($form->isSubmitted() && $form->isValid()) {
             $this->session->set(self::FILTER_CALENDRIER, $filter);
@@ -176,12 +176,27 @@ class VisiteController extends AbstractController
     }
 
     /**
-     * @Route("user/culture/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
+     * @Route("user/visite/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
      */
     public function ajaxVisiteClearFilter(Request $request)
     {
         if ($request->get('clearVisiteFilter', 0)) {
             $this->session->remove(self::FILTER_VISITE);
+        }
+        return new JsonResponse(
+            [
+                'success' => 1,
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/visite/ajaxCalendrierClearFilter", name="ajax_calendrier_clear_filter")
+     */
+    public function ajaxCalendrierClearFilter(Request $request)
+    {
+        if ($request->get('clearCalendrierFilter', 0)) {
+            $this->session->remove(self::FILTER_CALENDRIER);
         }
         return new JsonResponse(
             [

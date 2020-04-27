@@ -6,6 +6,8 @@ class CalendrierVisiteFilter
 {
     private $annee;
 
+    private $majeurId;
+
     /**
      * @var string
      */
@@ -51,6 +53,26 @@ class CalendrierVisiteFilter
     public function setAnnee($annee)
     {
         $this->annee = $annee;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of majeurId
+     */
+    public function getMajeurId()
+    {
+        return $this->majeurId;
+    }
+
+    /**
+     * Set the value of majeurId
+     *
+     * @return  self
+     */
+    public function setMajeurId($majeurId)
+    {
+        $this->majeurId = $majeurId;
 
         return $this;
     }

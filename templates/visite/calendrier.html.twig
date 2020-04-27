@@ -13,6 +13,7 @@
             {{ form_start(form) }}
                 {{ form_row(form.annee) }}
                 {{ form_row(form.majeurNom) }}
+                {{ form_row(form.majeurId) }}
                 <div class="float-right mt-3">
                     <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
                         <i class="fa fa-filter"></i> Appliquer</button>
@@ -104,7 +105,9 @@
 
 {% block javascripts %}
 <script type="text/javascript">
-    let majeurName = $("#visite_filter_majeurNom");
+    let majeurName = $("#calendrier_filter_majeurNom");
+    let majeurId = $("#calendrier_filter_majeurId");
+
     majeurName.autocomplete({
         debounce: 500,
         source: function(request, response) {
@@ -121,8 +124,9 @@
             });
         },
         select: function(event, ui) {
-            event.preventDefault();
+            {# event.preventDefault(); #}
             majeurName.val(ui.item.label);
+            majeurId.val(ui.item.value);
 
             return false;
         }
@@ -130,15 +134,15 @@
 
     $('#btnClearFilters').on('click', function(e) {
         $.ajax({
-            url: "{{ path('ajax_visite_clear_filter') }}",
+            url: "{{ path('ajax_calendrier_clear_filter') }}",
             dataType: "json",
             data: {
-                clearVisiteFilter: 1
+                clearCalendrierFilter: 1
             },
 
             success: function (reponse)
             {
-                window.location.href = "{{ path('user_visites') }}";
+                window.location.href = "{{ path('user_visites_calendrier') }}";
             },
         });
     });

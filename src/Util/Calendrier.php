@@ -67,7 +67,7 @@ class Calendrier
             case 6:
                 return  'Juin';
             case 7:
-                return  'Juiller';
+                return  'Juillet';
             case 8:
                 return  'Août';
             case 9:

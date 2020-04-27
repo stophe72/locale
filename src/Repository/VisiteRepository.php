@@ -59,17 +59,12 @@ class VisiteRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('v');
         $qb->innerJoin('v.majeur', 'm')
-            ->innerJoin('v.user', 'u', Join::WITH, $qb->expr()->eq('v.user', ':userId'))
-            ->setParameter('userId', $user->getId());
-
-        if ($visiteFilter->getMajeurNom()) {
-            $qb->andWhere('LOWER(m.nom) LIKE LOWER(:majeurNom)')
-                ->setParameter('majeurNom', '%' . $visiteFilter->getMajeurNom() . '%');
-        }
-        if ($visiteFilter->getAnnee()) {
-            $qb->andWhere('YEAR(v.date) = :annee')
-                ->setParameter('annee', $visiteFilter->getAnnee());
-        }
+            ->innerJoin('v.user', 'u', Join::WITH, 'v.user = :userId')
+            ->andWhere('m = :majeurId')
+            ->andWhere('YEAR(v.date) = :annee')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('majeurId', $visiteFilter->getMajeurId())
+            ->setParameter('annee', $visiteFilter->getAnnee());
 
         return $qb->getQuery()->getResult();
     }
