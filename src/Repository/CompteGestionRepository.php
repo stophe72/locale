@@ -6,12 +6,10 @@ use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TypeCompteEntity;
-use App\Entity\TypeOperationEntity;
 use App\Entity\UserEntity;
 use App\Models\CompteGestionFilter;
 use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Query\Expr;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -39,7 +37,7 @@ class CompteGestionRepository extends ServiceEntityRepository
             ->addOrderBy('cg.date', 'DESC');
 
         if ($filter->getLibelle()) {
-            $qb->andWhere('LOWER(m.libelle) LIKE LOWER(:libelle)')
+            $qb->andWhere('LOWER(cg.libelle) LIKE LOWER(:libelle)')
                 ->setParameter('libelle', '%' . $filter->getLibelle() . '%');
         }
         if ($filter->getDateDebut() && $filter->getDateFin()) {
