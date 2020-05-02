@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\PatrimoineRepository")
  * @ORM\Table(name="patrimoine")
  */
-class PatrimoineEntity extends BaseUserEntity
+class PatrimoineEntity extends BaseLibelleEntity
 {
     /**
      * @ORM\Column(type="date")
