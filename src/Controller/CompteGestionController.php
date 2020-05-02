@@ -8,6 +8,7 @@ use App\Form\CompteGestionFilterType;
 use App\Form\CompteGestionType;
 use App\Models\CompteGestionFilter;
 use App\Repository\CompteGestionRepository;
+use App\Repository\FamilleTypeOperationRepository;
 use App\Repository\TypeOperationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -51,19 +52,22 @@ class CompteGestionController extends AbstractController
         DonneeBancaireEntity $donneeBancaire,
         Request $request,
         PaginatorInterface $paginator,
-        CompteGestionRepository $compteGestionRepository,
-        TypeOperationRepository $typeOperationRepository
+        TypeOperationRepository $typeOperationRepository,
+        FamilleTypeOperationRepository $familleTypeOperationRepository,
+        CompteGestionRepository $compteGestionRepository
     ) {
         $user = $this->security->getUser();
         $filter = $this->session->get(self::FILTER_COMPTE_GESTION, new CompteGestionFilter());
 
         $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
+        $ftos = $familleTypeOperationRepository->findBy([], ['libelle' => 'ASC']);
 
         $form = $this->createForm(
             CompteGestionFilterType::class,
             $filter,
             [
-                'typesOperation' => $tos,
+                'typeOperations' => $tos,
+                'familleTypeOperations' => $ftos,
             ]
         );
         $form->handleRequest($request);

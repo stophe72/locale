@@ -1,0 +1,21 @@
+<div class="row">
+    <div class="col">
+        <div class="row">
+            <div class="col">
+                {{ adresse.adresse1 }}
+            </div>
+        </div>
+        {% if adresse.adresse2 is not empty %}
+            <div class="row">
+                <div class="col">
+                    {{ adresse.adresse2 }}
+                </div>
+            </div>
+        {% endif %}
+        <div class="row">
+            <div class="col">
+                {{ adresse.codePostal }} {{ adresse.ville }}
+            </div>
+        </div>
+    </div>
+</div>

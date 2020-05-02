@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\TypeOperationEntity;
 use App\Form\TypeOperationType;
 use App\Repository\TypeOperationRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -30,15 +31,28 @@ class TypeOperationController extends AbstractController
     /**
      * @Route("user/typesoperation", name="user_typesoperation")
      */
-    public function index(TypeOperationRepository $typeOperationRepository)
-    {
-        $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
+    public function index(
+        Request $request,
+        TypeOperationRepository $typeOperationRepository,
+        PaginatorInterface $paginator
+    ) {
+        $user = $this->security->getUser();
+        $pagination = $paginator->paginate(
+            $typeOperationRepository->getQueryBuilder($user),
+            $request->get('page', 1),
+            12,
+            [
+                'defaultSortFieldName' => 'ope.libelle',
+                'defaultSortDirection' => 'ASC'
+            ]
+        );
 
         return $this->render('type_operation/index.html.twig', [
             'page_title' => 'Liste des types d\'opération',
-            'typeOperations' => $tos,
+            'pagination' => $pagination,
         ]);
     }
+
     /**
      * @Route("user/typeoperation/add", name="user_typeoperation_add")
      */

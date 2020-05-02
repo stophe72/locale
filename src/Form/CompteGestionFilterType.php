@@ -2,6 +2,7 @@
 
 namespace App\Form;
 
+use App\Entity\FamilleTypeOperationEntity;
 use App\Entity\TypeOperationEntity;
 use App\Models\CompteGestionFilter;
 use Symfony\Component\Form\AbstractType;
@@ -16,7 +17,8 @@ class CompteGestionFilterType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $types = $options['typesOperation'];
+        $typeOperations = $options['typeOperations'];
+        $typeFamilleOperations = $options['familleTypeOperations'];
 
         $builder
             ->add(
@@ -49,7 +51,7 @@ class CompteGestionFilterType extends AbstractType
                 'typeOperation',
                 ChoiceType::class,
                 [
-                    'choices' => $types,
+                    'choices' => $typeOperations,
                     'label' => 'Type d\'opération',
                     'required' => false,
                     'placeholder' => 'Sélectionner un type d\'opération',
@@ -60,6 +62,25 @@ class CompteGestionFilterType extends AbstractType
                         return $to->getLibelle();
                     },
                     'choice_value' => function (TypeOperationEntity $to = null) {
+                        return $to ? $to->getId() : '';
+                    },
+                ]
+            )
+            ->add(
+                'familleTypeOperation',
+                ChoiceType::class,
+                [
+                    'choices' => $typeFamilleOperations,
+                    'label' => 'Famille de types d\'opération',
+                    'required' => false,
+                    'placeholder' => 'Sélectionner une famille de types d\'opération',
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
+                    'choice_label' => function (FamilleTypeOperationEntity $to) {
+                        return $to->getLibelle();
+                    },
+                    'choice_value' => function (FamilleTypeOperationEntity $to = null) {
                         return $to ? $to->getId() : '';
                     },
                 ]
@@ -83,7 +104,8 @@ class CompteGestionFilterType extends AbstractType
         ]);
         $resolver->setRequired(
             [
-                'typesOperation',
+                'typeOperations',
+                'familleTypeOperations',
             ]
         );
     }

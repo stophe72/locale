@@ -1,11 +1,10 @@
 {% extends 'generic/new_or_edit.html.twig' %}
 
-{% set icone = "fas fa-balance-scale" %}
+{% set icone = "fas fa-list-alt" %}
 
 {% block form_content %}
     {{ form_errors(form) }}
     {{ form_row(form.libelle) }}
     {{ form_row(form.libelleRapport) }}
-    {{ form_row(form.familleTypeOperation) }}
-    {{ form_row(form.checkable) }}
+    {{ form_row(form.ordreAffichage) }}
 {% endblock %}

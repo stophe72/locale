@@ -31,6 +31,7 @@ class CompteGestionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('cg');
         $qb->innerJoin('cg.typeOperation', 'to')
             ->innerJoin('cg.donneeBancaire', 'db', Join::WITH, $qb->expr()->eq('db', ':donneeBancaireId'))
+            ->innerJoin('to.familleTypeOperation', 'fto')
             ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
             ->setParameter('donneeBancaireId', $donneeBancaire->getId())
             ->setParameter('userId', $user->getId())
@@ -53,10 +54,13 @@ class CompteGestionRepository extends ServiceEntityRepository
             $qb->andWhere('cg.date <= :dateFin')
                 ->setParameter('dateFin', $filter->getDateFin());
         }
-
         if ($filter->getTypeOperation()) {
             $qb->andWhere('to = :typeOperation')
                 ->setParameter('typeOperation', $filter->getTypeOperation()->getId());
+        }
+        if ($filter->getFamilleTypeOperation()) {
+            $qb->andWhere('fto = :familleTypeOperationId')
+                ->setParameter('familleTypeOperationId', $filter->getFamilleTypeOperation()->getId());
         }
         if ($filter->getMontant()) {
             $qb->andWhere('cg.montant = :montant')

@@ -7,40 +7,35 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_typeoperation_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+            <a href="{{ path("user_familletypeoperation_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>{{ knp_pagination_sortable(pagination, "Libellé", "ope.libelle") }}</th>
-                    <th>{{ knp_pagination_sortable(pagination, "Libellé rapport", "ope.libelleRapport") }}</th>
-                    <th>{{ knp_pagination_sortable(pagination, "Famille de types d'opération", "fto.libelle") }}</th>
-                    <th>{{ knp_pagination_sortable(pagination, "Cochable", "ope.checkable") }}</th>
+                    <th>Libellé</th>
+                    <th>Libellé rapport</th>
+                    <th>Ordre d'affichage</th>
                     <th></th>
                 </tr>
             </thead>
-            {% for typeOperation in pagination %}
+            {% for familleTypeOperation in familleTypeOperations %}
                 <tr>
-                    <td>{{ typeOperation.libelle }}</td>
-                    <td>{{ typeOperation.libelleRapport }}</td>
-                    <td>{{ typeOperation.familleTypeOperation }}</td>
-                    <td>{% if typeOperation.checkable %}<i class="fas fa-check text-success"></i>{% endif %}</td>
+                    <td>{{ familleTypeOperation.libelle }}</td>
+                    <td>{{ familleTypeOperation.libelleRapport }}</td>
+                    <td>{{ familleTypeOperation.ordreAffichage }}</td>
                     <td class="text-right">
-                        <a href="{{ path('user_typeoperation_edit', {'id': typeOperation.id}) }}" title="Détails du type d'opération" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('user_familletypeoperation_edit', {'id': familleTypeOperation.id}) }}" title="Détails de la famille de comptes" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ typeOperation.id }}, "{{ typeOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ familleTypeOperation.id }}, "{{ familleTypeOperation.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
                 </tr>
             {% endfor %}
         </table>
-    </div>
-    <div class="pagination justify-content-center pt-3">
-        {{ knp_pagination_render(pagination) }}
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -50,7 +45,7 @@
                     <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer le type d'opération ?
+                    Supprimer la famille de types d'opération ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -71,7 +66,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>Le type d'opération "<span id="typeOperation_name"></span>" est utilisé.</p>
+                    <p>La familleTypeOperation "<span id="familletypeoperation_name"></span>" est utilisée.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -85,19 +80,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.typeOperationId;
+        const id = el.dataset.familleTypeOperationId;
 
-        window.location.href = "/typeOperation/delete/" + id;
+        window.location.href = "/familleTypeOperation/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.typeOperationId = id;
+        document.getElementById('btn_delete').dataset.familleTypeOperationId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "typeOperationId": id
+                "familleTypeOperationId": id
             },
 
             success: function (reponse)
@@ -105,10 +100,10 @@
                 if (reponse['data']) {
                     var dialog = $('#exampleModal');
 
-                    dialog.find('.modal-body').text("Supprimer le type d'opération " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer la famille de types d'opération " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#typeOperation_name").html(name);
+                    $("#familleTypeOperation_name").html(name);
                     $("#myModal").modal();
                 }
             },

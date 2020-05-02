@@ -14,72 +14,70 @@
 
 {% block body %}
 <div class="container-fluid p-5">
-    <h4 class="align-center text-primary"><img class="mx-5" src="{{ absolute_url(asset("images/mjpm.png")) }}" width="64" height="64">COMPTE RENDU DE GESTION ANNUEL</h4>
-    <h5 class="align-center text-primary my-4">EXERCICE DU {{ debut|date("d/m/Y") }} au {{ fin|date("d/m/Y") }}</h5>
-
-    <div class="row">
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <div class="row mt-5">
         <div class="col-6">
             <strong>NOM Prénom du majeur :</strong>
         </div>
-        <div class="col-6">
-            {{ majeur.nom }} {{ majeur.prenom }}
+        <div class="col-3">
+            <strong>TRIBUNAL D'INSTANCE DE</strong>
+        </div>
+        <div class="col-3">
+            {{ majeur.jugement.tribunal.libelle }}
         </div>
     </div>
 
     <div class="row">
-        <div class="col-4">
-            <strong>DOSSIER N° :</strong>
+        <div class="col-6">
+            {{ majeur.nom }} {{ majeur.prenom }}
         </div>
-        <div class="col-4">
+        <div class="col-3">
+            <strong>DOSSIER n°</strong>
+        </div>
+        <div class="col-3">
             {{ majeur.jugement.numeroRG }}
         </div>
     </div>
+
     <div class="row">
-        <div class="col-4">
-            <strong>Adresse du majeur protégé* :</strong>
+        <div class="offset-6 col-3">
+            <strong>Nature</strong>
         </div>
-        <div class="col-4">
-            {{ majeur.adresse.adresse1 }}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            <small>A réactualiser chaque année</small>
-        </div>
-        <div class="col-4">
-            {% if majeur.adresse.adresse2 is empty %}
-                {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
-            {% else %}
-                {{ majeur.adresse.adresse2 }}
-            {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-        </div>
-        <div class="col-4">
-            {% if majeur.adresse.adresse2 is not empty %}
-                {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}
-            {% endif %}
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-        </div>
-        <div class="col-4">
-            <strong>TRIBUNAL D'INSTANCE DE {{ majeur.jugement.tribunal.libelle }}</strong>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
-            A préciser :
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-4">
+        <div class="col-3">
             {{ majeur.parametreMission.protection.libelle }}
         </div>
     </div>
+
+    <div class="row mt-4">
+        <div class="col-6">
+            <strong>Adresse du majeur protégé :</strong>
+        </div>
+        <div class="col-6">
+            <strong>Dossier confié par le Juge des Tutelles à :</strong>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            {% include 'generic/adresse.html.twig' with
+                {
+                    'adresse': majeur.adresse
+                }
+            %}
+        </div>
+        <div class="col-6">
+            {% include 'generic/adresse.html.twig' with
+                {
+                    'adresse': majeur.adresse
+                }
+            %}
+        </div>
+    </div>
+
     <p class="mt-5">J'ai l'honneur de vous rappeler que, conformément aux dispositions des art. 472 , 510 à et 513 du Civil,
     le MJPM tuteur ou curateur doit soumettre chaque année le compte de gestion, accompagné des pièces justificatives,
     en vue de sa vérification, au greffier en chef.
@@ -89,18 +87,24 @@
     copie de la fiche de  participation financière du MP, copie des justificatifs des dépenses importantes.</p>
 
 <p class="new-page">&nbsp;</p>
-    <h4 class="mt-5">I. Situation du patrimoine au dernier jour de l'exercice précédent</h4>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">I. Situation du patrimoine au dernier jour de l'exercice précédent</h4>
 
     {% if comptesPrecedents is not empty %}
         <table class="table table-bordered">
             {% for compte in comptesPrecedents %}
             <tr>
-                <td class="col-9">{{ compte.typeCompte }}</td>
+                <td class="col-8">{{ compte.typeCompte }}</td>
                 <td class="col-4 text-right">{{ compte.solde|format_currency('EUR') }}</td>
             </tr>
             {% endfor %}
-            <tr>
-                <td class="col-9"><strong>Total</strong></td>
+            <tr class="bg-light">
+                <td class="col-8"><strong>Total</strong></td>
                 <td class="col-4 text-right"><strong>{{ totalPrecedent|format_currency('EUR') }}</strong></td>
             </tr>
         </table>
@@ -109,49 +113,93 @@
     {% endif %}
 
 <p class="new-page mt-5">&nbsp;</p>
-    <h4 class="mt-5">II. Recettes de l'exercice</h4>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">II. Recettes de l'exercice</h4>
     <table class="table table-bordered">
         {% for recette in recettes %}
         <tr>
-            <td class="col-9">{{ recette.libelle }}</td>
+            <td>{{ recette.libelle }}</td>
             <td class="col-4 text-right">{{ recette.montant|format_currency('EUR') }}</td>
         </tr>
         {% endfor %}
-        <tr>
-            <td class="col-9"><strong>Total</strong></td>
+        <tr class="bg-light">
+            <td class="col-8"><strong>Total</strong></td>
             <td class="col-4 text-right"><strong>{{ totalRecettes|format_currency('EUR') }}</strong></td>
         </tr>
     </table>
 
 <p class="new-page mt-5">&nbsp;</p>
-    <h4 class="mt-5">III. Dépenses de l'exercice</h4>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">III. Dépenses de l'exercice</h4>
     <table class="table table-bordered table-condensed">
         {% for depense in depenses %}
         <tr>
-            <td class="col-9">{{ depense.libelle }}</td>
+            <td class="col-8">{{ depense.libelle }}</td>
             <td class="col-4 text-right">{{ depense.montant|format_currency('EUR') }}</td>
         </tr>
         {% endfor %}
-        <tr>
-            <td class="col-9"><strong>Total</strong></td>
+        <tr class="bg-light">
+            <td class="col-8"><strong>Total</strong></td>
             <td class="col-4 text-right"><strong>{{ totalDepenses|format_currency('EUR') }}</strong></td>
         </tr>
     </table>
 
 <p class="new-page mt-5">&nbsp;</p>
-    <h4 class="mt-5">IV. Situation du patrimoine au dernier jour de l'exercice</h4>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">IV. Balance de trésorerie</h4>
+
+<p class="new-page mt-5">&nbsp;</p>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">V. Mouvements du patrimoine de l'exercice</h4>
+
+<p class="new-page mt-5">&nbsp;</p>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">VI. Situation du patrimoine au dernier jour de l'exercice</h4>
 
     <table class="table table-bordered">
     {% for compte in comptesCourants %}
         <tr>
-            <td class="col-9">{{ compte.typeCompte }}</td>
+            <td class="col-8">{{ compte.typeCompte }}</td>
             <td class="col-4 text-right">{{ compte.solde|format_currency('EUR') }}</td>
         </tr>
     {% endfor %}
-        <tr>
-            <td class="col-9"><strong>Total</strong></td>
+        <tr class="bg-light">
+            <td class="col-8"><strong>Total</strong></td>
             <td class="col-4 text-right"><strong>{{ totalCourant|format_currency('EUR') }}</strong></td>
         </tr>
     </table>
+<p class="new-page mt-5">&nbsp;</p>
+    {% include 'rapport/entete.html.twig' with
+        {
+            'debut': debut,
+            'fin': fin
+        }
+    %}
+    <h4 class="mt-5 mb-3">VII. Rapport annuel / Exercice de la mesure de protection (AD / MJPM)</h4>
 </div>
 {% endblock %}

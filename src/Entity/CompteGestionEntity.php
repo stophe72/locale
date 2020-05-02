@@ -19,26 +19,30 @@ class CompteGestionEntity extends BaseLibelleEntity
     private $date;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\TypeOperationEntity")
-     * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=true)
+     * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=false)
      */
     private $typeOperation;
 
     /**
      * @Assert\Positive
      *
-     * @ORM\Column(type="float")
+     * @ORM\Column(type="decimal", precision=10, scale=2)
      */
     private $montant;
 
     /**
      * @Assert\Type(type="integer")
      *
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="smallint")
      */
     private $nature;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\DonneeBancaireEntity", inversedBy="compteGestionEntities")
      * @ORM\JoinColumn(name="donneeBancaireId", referencedColumnName="id", nullable=false)
      */
@@ -69,24 +73,24 @@ class CompteGestionEntity extends BaseLibelleEntity
         return $this;
     }
 
-    public function getMontant(): ?float
+    public function getMontant(): ?string
     {
         return $this->montant;
     }
 
-    public function setMontant(float $montant): self
+    public function setMontant(string $montant): self
     {
         $this->montant = $montant;
 
         return $this;
     }
 
-    public function getNature()
+    public function getNature(): ?int
     {
         return $this->nature;
     }
 
-    public function setNature($nature)
+    public function setNature(int $nature): self
     {
         $this->nature = $nature;
 

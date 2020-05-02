@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Entity\FamilleTypeOperationEntity;
 use App\Entity\TypeOperationEntity;
 use DateTimeInterface;
 
@@ -26,6 +27,11 @@ class CompteGestionFilter
      * @var TypeOperationEntity
      */
     private $typeOperation;
+
+    /**
+     * @var FamilleTypeOperationEntity
+     */
+    private $familleTypeOperation;
 
     /**
      * @var float
@@ -151,5 +157,29 @@ class CompteGestionFilter
     public function getLibelle(): ?string
     {
         return $this->libelle;
+    }
+
+    /**
+     * Get the value of familleTypeOperation
+     *
+     * @return  FamilleTypeOperationEntity
+     */
+    public function getFamilleTypeOperation(): ?FamilleTypeOperationEntity
+    {
+        return $this->familleTypeOperation;
+    }
+
+    /**
+     * Set the value of familleTypeOperation
+     *
+     * @param  FamilleTypeOperationEntity  $familleTypeOperation
+     *
+     * @return  self
+     */
+    public function setFamilleTypeOperation(?FamilleTypeOperationEntity $familleTypeOperation)
+    {
+        $this->familleTypeOperation = $familleTypeOperation;
+
+        return $this;
     }
 }

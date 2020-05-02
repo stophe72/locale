@@ -72,7 +72,7 @@ class FamilleCompteController extends AbstractController
     /**
      * @Route("user/famillecompte/edit/{id}", name="user_famillecompte_edit")
      */
-    public function edit(famillecompteEntity $familleCompte, Request $request)
+    public function edit(FamillecompteEntity $familleCompte, Request $request)
     {
         $form = $this->createForm(FamilleCompteType::class, $familleCompte);
         $form->handleRequest($request);

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\TypeOperationEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,5 +18,14 @@ class TypeOperationRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, TypeOperationEntity::class);
+    }
+
+    public function getQueryBuilder(UserEntity $user)
+    {
+        return $this->createQueryBuilder('ope')
+            ->innerJoin('ope.user', 'user')
+            ->innerJoin('ope.familleTypeOperation', 'fto')
+            ->where('user = :userId')
+            ->setParameter('userId', $user->getId());
     }
 }

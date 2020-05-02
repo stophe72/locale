@@ -1,0 +1,17 @@
+<div class="row">
+    <div class="col-2 text-center">
+        <img class="mx-3" src="{{ absolute_url(asset("images/mjpm.png")) }}" width="64" height="64">
+    </div>
+    <div class="col-10">
+        <div class="row">
+            <div class="col text-center">
+                <h4 class="text-primary">COMPTE RENDU DE GESTION ANNUEL</h4>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col text-center">
+                <div class="bg-light p-1">EXERCICE DU {{ debut|date("d/m/Y") }} au {{ fin|date("d/m/Y") }}</div>
+            </div>
+        </div>
+    </div>
+</div>

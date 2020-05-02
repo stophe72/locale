@@ -18,7 +18,7 @@ class DonneeBancaireEntity extends BaseUserEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity")
+     * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity", inversedBy="donneeBancaireEntities")
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
@@ -42,22 +42,23 @@ class DonneeBancaireEntity extends BaseUserEntity
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(name="numeroCompte", type="string", length=100, nullable=false)
+     * @ORM\Column(name="numeroCompte", type="string", length=100)
      */
     private $numeroCompte;
 
     /**
-     * @ORM\Column(name="soldeCourant", type="float")
+     * @ORM\Column(name="soldeCourant", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $soldeCourant;
 
     /**
-     * @ORM\Column(name="soldePrecedent", type="float")
+     * @ORM\Column(name="soldePrecedent", type="decimal", precision=10, scale=2, nullable=true)
      */
     private $soldePrecedent;
 
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="donneeBancaireId")
+     * @ORM\OneToMany(targetEntity="App\Entity\CompteGestionEntity", mappedBy="donneeBancaire")
+     * @ORM\JoinColumn(name="compteGestionId", referencedColumnName="id", nullable=false)
      */
     private $compteGestionEntities;
 
@@ -110,29 +111,29 @@ class DonneeBancaireEntity extends BaseUserEntity
 
     public function setNumeroCompte(string $numeroCompte): self
     {
-        $this->numeroCompte = strtoupper($numeroCompte);
+        $this->numeroCompte = $numeroCompte;
 
         return $this;
     }
 
-    public function getSoldeCourant(): ?float
+    public function getSoldeCourant(): ?string
     {
         return $this->soldeCourant;
     }
 
-    public function setSoldeCourant(float $soldeCourant): self
+    public function setSoldeCourant(?string $soldeCourant): self
     {
         $this->soldeCourant = $soldeCourant;
 
         return $this;
     }
 
-    public function getSoldePrecedent(): ?float
+    public function getSoldePrecedent(): ?string
     {
         return $this->soldePrecedent;
     }
 
-    public function setSoldePrecedent(float $soldePrecedent): self
+    public function setSoldePrecedent(?string $soldePrecedent): self
     {
         $this->soldePrecedent = $soldePrecedent;
 

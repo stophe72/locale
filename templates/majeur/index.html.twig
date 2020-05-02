@@ -15,9 +15,9 @@
             <thead>
                 <tr>
                     <th>Civilité</th>
-                    <th>Nom</th>
-                    <th>Prénom</th>
+                    <th>Nom prénom</th>
                     <th>N° R.G.</th>
+                    <th>N° Sécurité Sociale</th>
                     <th></th>
                 </tr>
             </thead>
@@ -25,9 +25,9 @@
             {% for majeur in majeurs %}
                 <tr>
                     <td>{{ majeur.civilite }}</td>
-                    <td>{{ majeur.nom }}</td>
-                    <td>{{ majeur.prenom }}</td>
+                    <td>{{ majeur }}</td>
                     <td>{{ majeur.jugement.numeroRG }}</td>
+                    <td>{{ majeur.numeroSS }}</td>
                     <td class="col-sm-3">
                         <div class="row float-right pr-4">
                             <div class="btn-group mr-3">

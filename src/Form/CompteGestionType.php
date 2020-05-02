@@ -5,6 +5,8 @@ namespace App\Form;
 use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\TypeOperationEntity;
+use App\Repository\DonneeBancaireRepository;
+use App\Repository\TypeOperationRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -27,7 +29,12 @@ class CompteGestionType extends BaseLibelleType
                     'label' => 'Compte bancaire',
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'query_builder' => function (DonneeBancaireRepository $donneeBancaireRepository) {
+                        return $donneeBancaireRepository->createQueryBuilder('db')
+                            ->orderBy('db.numeroCompte', 'ASC');
+                    },
+
                 ]
             )
             ->add(
@@ -45,7 +52,11 @@ class CompteGestionType extends BaseLibelleType
                     'class' => TypeOperationEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'query_builder' => function (TypeOperationRepository $typeOperationRepository) {
+                        return $typeOperationRepository->createQueryBuilder('to')
+                            ->orderBy('to.libelle', 'ASC');
+                    },
                 ]
             )
             ->add('montant', MoneyType::class)
