@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\JugementRepository")
  * @ORM\Table(name="jugement")
  */
-class JugementEntity extends BaseUserEntity
+class JugementEntity extends BaseEntity
 {
     /**
      * @Assert\NotBlank

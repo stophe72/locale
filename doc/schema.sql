@@ -61,29 +61,6 @@ CREATE TABLE `agenceBancaire` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `balance`
---
-
-DROP TABLE IF EXISTS `balance`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `balance` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
-  `majeurId` int(11) NOT NULL,
-  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `typeCompteId` int(11) NOT NULL,
-  `dateCreation` datetime NOT NULL,
-  `dateModification` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `balance_FK` (`majeurId`),
-  KEY `balance_FK1` (`userId`),
-  CONSTRAINT `balance_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
-  CONSTRAINT `balance_FK1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `compteGestion`
 --
 
@@ -103,12 +80,12 @@ CREATE TABLE `compteGestion` (
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `compteGestion_FK_1` (`typeOperationId`),
-  KEY `compteGestion_FK_2` (`userId`),
   KEY `compteGestion_FK_3` (`donneeBancaireId`),
+  KEY `compteGestion_FK` (`userId`),
+  CONSTRAINT `compteGestion_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `compteGestion_FK_1` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`),
-  CONSTRAINT `compteGestion_FK_2` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `compteGestion_FK_3` FOREIGN KEY (`donneeBancaireId`) REFERENCES `donneeBancaire` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -120,15 +97,12 @@ DROP TABLE IF EXISTS `contact`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `telephone` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `mobile` varchar(30) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `email` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `periode_FK` (`userId`) USING BTREE,
-  CONSTRAINT `contact_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -182,6 +156,27 @@ CREATE TABLE `familleCompte` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `familleTypeOperation`
+--
+
+DROP TABLE IF EXISTS `familleTypeOperation`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `familleTypeOperation` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `libelleRapport` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `ordreAffichage` int(11) NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `periode_FK` (`userId`) USING BTREE,
+  CONSTRAINT `periode_FK_user_copy` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `importOperation`
 --
 
@@ -190,7 +185,6 @@ DROP TABLE IF EXISTS `importOperation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `importOperation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `typeOperationId` int(11) NOT NULL,
@@ -199,10 +193,8 @@ CREATE TABLE `importOperation` (
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `importOperation_FK` (`majeurId`),
-  KEY `importOperation_FK_1` (`userId`),
   KEY `importOperation_FK_2` (`typeOperationId`),
   CONSTRAINT `importOperation_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
-  CONSTRAINT `importOperation_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `importOperation_FK_2` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -216,7 +208,6 @@ DROP TABLE IF EXISTS `jugement`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `jugement` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `dateJugement` date NOT NULL,
   `tribunalId` int(11) NOT NULL,
   `numeroRG` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -225,9 +216,7 @@ CREATE TABLE `jugement` (
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `banque_FK` (`userId`) USING BTREE,
   KEY `jugement_FK_tribunal` (`tribunalId`),
-  CONSTRAINT `banque_FK_copy` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `jugement_FK_tribunal` FOREIGN KEY (`tribunalId`) REFERENCES `tribunal` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -290,6 +279,43 @@ CREATE TABLE `majeur` (
   CONSTRAINT `majeur_FK_parametremission` FOREIGN KEY (`parametreMissionId`) REFERENCES `parametreMission` (`id`),
   CONSTRAINT `majeur_FK_user` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `mandataire`
+--
+
+DROP TABLE IF EXISTS `mandataire`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `mandataire` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `nom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prenom` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `adresseId` int(11) NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `mandataire_FK` (`adresseId`),
+  KEY `mandataire_FK_1` (`userId`),
+  CONSTRAINT `mandataire_FK` FOREIGN KEY (`adresseId`) REFERENCES `adresse` (`id`),
+  CONSTRAINT `mandataire_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `migration_versions`
+--
+
+DROP TABLE IF EXISTS `migration_versions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migration_versions` (
+  `version` varchar(14) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `executed_at` datetime NOT NULL COMMENT '(DC2Type:datetime_immutable)',
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -363,7 +389,6 @@ DROP TABLE IF EXISTS `parametreMission`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `parametreMission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `natureId` int(11) NOT NULL,
   `protectionId` int(11) NOT NULL,
   `lieuVieId` int(11) NOT NULL,
@@ -372,13 +397,38 @@ CREATE TABLE `parametreMission` (
   PRIMARY KEY (`id`),
   KEY `parametreMission_FK_1` (`natureId`),
   KEY `parametreMission_FK_2` (`lieuVieId`),
-  KEY `parametreMission_FK_6` (`userId`),
   KEY `parametreMission_FK` (`protectionId`),
   CONSTRAINT `parametreMission_FK` FOREIGN KEY (`protectionId`) REFERENCES `protection` (`id`),
   CONSTRAINT `parametreMission_FK_1` FOREIGN KEY (`natureId`) REFERENCES `nature` (`id`),
-  CONSTRAINT `parametreMission_FK_2` FOREIGN KEY (`lieuVieId`) REFERENCES `lieuVie` (`id`),
-  CONSTRAINT `parametreMission_FK_6` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  CONSTRAINT `parametreMission_FK_2` FOREIGN KEY (`lieuVieId`) REFERENCES `lieuVie` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `patrimoine`
+--
+
+DROP TABLE IF EXISTS `patrimoine`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `patrimoine` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `majeurId` int(11) NOT NULL,
+  `date` date NOT NULL,
+  `typeOperationId` int(11) NOT NULL,
+  `nature` tinyint(4) NOT NULL,
+  `montant` double NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rapport_FK` (`majeurId`) USING BTREE,
+  KEY `patrimoine_FK` (`typeOperationId`),
+  KEY `patrimoine_FK_1` (`userId`),
+  CONSTRAINT `patrimoine_FK` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`),
+  CONSTRAINT `patrimoine_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `rapport_FK_copy` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -436,6 +486,24 @@ CREATE TABLE `protection` (
   KEY `protection_FK` (`userId`),
   CONSTRAINT `protection_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `rapport`
+--
+
+DROP TABLE IF EXISTS `rapport`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `rapport` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `majeurId` int(11) NOT NULL,
+  `annee` int(11) NOT NULL,
+  `commentaire` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `rapport_FK` (`majeurId`),
+  CONSTRAINT `rapport_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -528,12 +596,17 @@ CREATE TABLE `typeOperation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `libelleRapport` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `familleTypeOperationId` int(11) DEFAULT NULL,
+  `checkable` tinyint(4) NOT NULL DEFAULT 0,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `typeOperation_FK` (`userId`),
-  CONSTRAINT `typeOperation_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  KEY `typeOperation_FK_1` (`familleTypeOperationId`),
+  CONSTRAINT `typeOperation_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `typeOperation_FK_1` FOREIGN KEY (`familleTypeOperationId`) REFERENCES `familleTypeOperation` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -591,17 +664,14 @@ DROP TABLE IF EXISTS `visite`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `visite` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
   `date` date NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `visite_FK` (`majeurId`),
-  KEY `visite_FK_1` (`userId`),
-  CONSTRAINT `visite_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
-  CONSTRAINT `visite_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `visite_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -617,4 +687,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-22  8:36:20
+-- Dump completed on 2020-05-02 22:39:12

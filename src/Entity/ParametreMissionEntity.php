@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\ParametreMissionRepository")
  * @ORM\Table(name="parametreMission")
  */
-class ParametreMissionEntity extends BaseUserEntity
+class ParametreMissionEntity extends BaseEntity
 {
     /**
      * @Assert\NotNull

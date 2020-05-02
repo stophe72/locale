@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
@@ -27,6 +29,16 @@ class TypeOperationEntity extends BaseLibelleEntity
      * @ORM\JoinColumn(name="familleTypeOperationId", referencedColumnName="id", nullable=false)
      */
     private $familleTypeOperation;
+
+    /**
+     * @ORM\OneToMany(targetEntity="App\Entity\PatrimoineEntity", mappedBy="typeOperation")
+     */
+    private $patrimoineEntities;
+
+    public function __construct()
+    {
+        $this->patrimoineEntities = new ArrayCollection();
+    }
 
 
     public function getCheckable(): ?bool
@@ -61,6 +73,37 @@ class TypeOperationEntity extends BaseLibelleEntity
     public function setFamilleTypeOperation(?FamilleTypeOperationEntity $familleTypeOperation): self
     {
         $this->familleTypeOperation = $familleTypeOperation;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PatrimoineEntity[]
+     */
+    public function getPatrimoineEntities(): Collection
+    {
+        return $this->patrimoineEntities;
+    }
+
+    public function addPatrimoineEntity(PatrimoineEntity $patrimoineEntity): self
+    {
+        if (!$this->patrimoineEntities->contains($patrimoineEntity)) {
+            $this->patrimoineEntities[] = $patrimoineEntity;
+            $patrimoineEntity->setTypeOperation($this);
+        }
+
+        return $this;
+    }
+
+    public function removePatrimoineEntity(PatrimoineEntity $patrimoineEntity): self
+    {
+        if ($this->patrimoineEntities->contains($patrimoineEntity)) {
+            $this->patrimoineEntities->removeElement($patrimoineEntity);
+            // set the owning side to null (unless already changed)
+            if ($patrimoineEntity->getTypeOperation() === $this) {
+                $patrimoineEntity->setTypeOperation(null);
+            }
+        }
 
         return $this;
     }
