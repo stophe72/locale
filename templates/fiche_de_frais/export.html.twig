@@ -1,0 +1,43 @@
+{% extends 'base.html.twig' %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+    <style>
+    @media print {
+        .new-page {
+            page-break-before: always;
+        }
+    }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container-fluid p-5">
+    {% include 'fiche_de_frais/entete.html.twig' %}
+    <table class="table table-sm table-border mt-5">
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Lieu</th>
+                <th>Type de frais</th>
+                <th>Libellé</th>
+                <th>Montant</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% set totalFiche = 0 %}
+        {% for ndf in fiche.noteDeFraisEntities %}
+            {% set totalFiche = totalFiche + ndf.montant %}
+            <tr>
+                <td>{{ ndf.date|date('d/m/Y') }}</td>
+                <td>{{ ndf.lieu }}</td>
+                <td>{{ ndf.typeFrais }}</td>
+                <td>{{ ndf.libelle }}</td>
+                <td class="text-right">{{ ndf.montant|format_currency('EUR') }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <h3>Total : {{ totalFiche|format_currency('EUR') }}</h3>
+</div>
+{% endblock %}

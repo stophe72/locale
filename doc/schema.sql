@@ -177,6 +177,24 @@ CREATE TABLE `familleTypeOperation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `ficheFrais`
+--
+
+DROP TABLE IF EXISTS `ficheFrais`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `ficheFrais` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `dateCreation` datetime NOT NULL,
+  `dateModification` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ficheFrais_FK` (`userId`),
+  CONSTRAINT `ficheFrais_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `importOperation`
 --
 
@@ -368,16 +386,21 @@ CREATE TABLE `noteDeFrais` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) NOT NULL,
   `date` date NOT NULL,
+  `lieu` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `typeFraisId` int(11) NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `montant` double NOT NULL,
+  `ficheFraisId` int(11) NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `noteDeFrais_FK` (`typeFraisId`),
   KEY `noteDeFrais_FK_1` (`userId`),
+  KEY `noteDeFrais_FK_2` (`ficheFraisId`),
   CONSTRAINT `noteDeFrais_FK` FOREIGN KEY (`typeFraisId`) REFERENCES `typeFrais` (`id`),
-  CONSTRAINT `noteDeFrais_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  CONSTRAINT `noteDeFrais_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
+  CONSTRAINT `noteDeFrais_FK_2` FOREIGN KEY (`ficheFraisId`) REFERENCES `ficheFrais` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -416,6 +439,7 @@ CREATE TABLE `patrimoine` (
   `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
   `date` date NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `typeOperationId` int(11) NOT NULL,
   `nature` tinyint(4) NOT NULL,
   `montant` double NOT NULL,
@@ -687,4 +711,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-02 22:39:12
+-- Dump completed on 2020-05-03 23:47:05

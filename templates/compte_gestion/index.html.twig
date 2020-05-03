@@ -8,9 +8,6 @@
             <h3 class="text-primary"><i class="fa fa-tasks"></i> {{ page_title }}</h3>
             <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
         </div>
-        <div class="col-sm-2 text-right">
-            <a href="{{ path("user_comptegestion_add", { "donneeBancaire": donneeBancaire.id }) }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
-        </div>
     </div>
     <div class="row">
         <div class="col-sm-2 mt-2">
@@ -20,6 +17,7 @@
                 {{ form_row(form.libelle) }}
                 {{ form_row(form.typeOperation) }}
                 {{ form_row(form.familleTypeOperation) }}
+                {{ form_row(form.nature) }}
                 {{ form_row(form.montant) }}
                 <div class="float-right mt-3">
                     <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
@@ -30,6 +28,14 @@
             {{ form_end(form) }}
         </div>
         <div class="col-sm-8">
+            {% include 'generic/pagination_header.html.twig' with
+                {
+                    'no_row' : 'Aucune opération',
+                    'one_row': 'Une opération',
+                    'rows'   : 'opérations',
+                    'url_add': path("user_comptegestion_add", { "donneeBancaire": donneeBancaire.id })
+                }
+            %}
             {% if pagination.items|length == 0 %}
                 <div class="alert alert-info mt-3">Aucune opération</div>
             {% else %}

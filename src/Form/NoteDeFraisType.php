@@ -4,17 +4,19 @@ namespace App\Form;
 
 use App\Entity\NoteDeFraisEntity;
 use App\Entity\TypeFraisEntity;
-use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NoteDeFraisType extends AbstractType
+class NoteDeFraisType extends BaseLibelleType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        parent::buildForm($builder, $options);
+
         $typesFrais = $options['typesFrais'];
 
         $builder
@@ -25,6 +27,7 @@ class NoteDeFraisType extends AbstractType
                     'widget' => 'single_text',
                 ]
             )
+            ->add('lieu', TextType::class)
             ->add('montant', MoneyType::class)
             ->add(
                 'typeFrais',

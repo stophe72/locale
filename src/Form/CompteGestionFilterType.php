@@ -86,6 +86,22 @@ class CompteGestionFilterType extends AbstractType
                 ]
             )
             ->add(
+                'nature',
+                ChoiceType::class,
+                [
+                    'label' => 'Nature de l\'opération',
+                    'placeholder' => 'Sélectionner la nature de l\'opération',
+                    'choices' => [
+                        'Crédit' => 1,
+                        'Débit' => -1,
+                    ],
+                    'required' => false,
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
+                ]
+            )
+            ->add(
                 'montant',
                 NumberType::class,
                 [

@@ -34,8 +34,8 @@ class CompteGestionRepository extends ServiceEntityRepository
             ->innerJoin('to.familleTypeOperation', 'fto')
             ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
             ->setParameter('donneeBancaireId', $donneeBancaire->getId())
-            ->setParameter('userId', $user->getId())
-            ->addOrderBy('cg.date', 'DESC');
+            ->setParameter('userId', $user->getId());
+        // ->addOrderBy('cg.date', 'DESC');
 
         if ($filter->getLibelle()) {
             $qb->andWhere('LOWER(cg.libelle) LIKE LOWER(:libelle)')
@@ -65,6 +65,10 @@ class CompteGestionRepository extends ServiceEntityRepository
         if ($filter->getMontant()) {
             $qb->andWhere('cg.montant = :montant')
                 ->setParameter('montant', $filter->getMontant());
+        }
+        if ($filter->getNature()) {
+            $qb->andWhere('cg.nature = :nature')
+                ->setParameter('nature', $filter->getNature());
         }
 
         return $qb;
@@ -102,6 +106,7 @@ class CompteGestionRepository extends ServiceEntityRepository
         $qb = $this->createQueryBuilder('cg');
         $qb->select('ope.libelle AS libelle, SUM(cg.montant * cg.nature) AS montant')
             ->innerJoin('cg.typeOperation', 'ope')
+            ->innerJoin('ope.familleTypeOperation', 'fto')
             ->innerJoin('cg.donneeBancaire', 'db')
             ->andWhere('db.majeur = :majeurId')
             ->andWhere('cg.date BETWEEN :from AND :to')

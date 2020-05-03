@@ -1,0 +1,158 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 col-sm-6 mb-4">
+        <h3 class="text-primary"><i class="fa fa-receipt"></i> {{ page_title }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col text-right">
+            <a href="{{ path("user_fichefrais_add_fiche") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Nouvelle fiche</a>
+        </div>
+    </div>
+    {% for message in app.flashes('success') %}
+        <div class="alert alert-success">
+            {{ message }}
+        </div>
+    {% endfor %}
+
+    {% set totalFiche = 0 %}
+    {% for fiche in fichesDeFrais %}
+            <div class="card mb-4">
+                <div class="card-header" id="heading{{ fiche.id }}">
+                    <h2 class="mb-0">
+                        <button class="btn btn-link" type="button" data-toggle="collapse" data-target="#collapse{{ fiche.id }}" aria-expanded="true" aria-controls="collapse{{ fiche.id }}">
+                            Fiche n°{{ fiche.id }}
+                        </button>
+                        <a class="btn btn-primary float-right ml-auto" href="{{ path("user_fichefrais_add", { "ficheFrais": fiche.id }) }}">
+                            <i class="fas fa-plus-square"></i> Nouvelle note
+                        </a>
+                        <a class="btn btn-outline-primary float-right ml-auto mr-3" href="{{ path("user_fichefrais_export", { "ficheFrais": fiche.id }) }}">
+                            <i class="fas fa-file-download"></i> Exporter
+                        </a>
+                    </h2>
+                </div>
+                <div id="collapse{{ fiche.id }}" class="collapse{% if loop.first %} show{% endif %}" aria-controls="collapse{{ fiche.id }}">
+                    <div class="card-body">
+                        <table class="table table-sm table-borderless py-3">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Lieu</th>
+                                    <th>Type de frais</th>
+                                    <th>Libellé</th>
+                                    <th>Montant</th>
+                                    <th class="col-sm-3"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for ndf in fiche.noteDeFraisEntities %}
+                                {% set totalFiche = totalFiche + ndf.montant %}
+                                <tr>
+                                    <td>{{ ndf.date|date('d/m/Y') }}</td>
+                                    <td>{{ ndf.lieu }}</td>
+                                    <td>{{ ndf.typeFrais }}</td>
+                                    <td>{{ ndf.libelle }}</td>
+                                    <td class="text-right">{{ ndf.montant|format_currency('EUR') }}</td>
+                                    <td class="col-sm-3 text-right">
+                                        <a href="{{ path('user_fichefrais_edit', {'id': ndf.id}) }}" title="Détails de la note" class="btn btn-outline-primary btn-sm mr-2">
+                                            <i class="fa fa-pen"></i> Editer
+                                        </a>
+                                        <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.typeFrais.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                                            <i class="fa fa-trash"></i> Supprimer
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="card-footer text-muted">
+                    {% if fiche.noteDeFraisEntities|length == 0 %}
+                        Aucune note
+                    {% else %}
+                        {{ fiche.noteDeFraisEntities|length }} note(s)
+                     {% endif %}
+                     / {{ totalFiche|format_currency('EUR') }}
+                </div>
+            </div>
+    {% endfor %}
+
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la note de frais ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La fiche "<span id="ndf_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.ndfId;
+
+        window.location.href = "/fiche/delete/" + id;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.ndfId = id;
+
+        $.ajax({
+            url: "#", {#"{{ path('ajaxCanDeleteNoteDeFrais') }}",#}
+            dataType: "json",
+            data: {
+                "ndfId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#exampleModal');
+
+                    dialog.find('.modal-body').text("Supprimer la note de frais " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#ndf_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
+{% endblock %}

@@ -34,7 +34,6 @@ class CompteGestionType extends BaseLibelleType
                         return $donneeBancaireRepository->createQueryBuilder('db')
                             ->orderBy('db.numeroCompte', 'ASC');
                     },
-
                 ]
             )
             ->add(

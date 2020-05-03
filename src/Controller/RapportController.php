@@ -87,7 +87,7 @@ class RapportController extends AbstractController
     {
         $majeur = $majeurRepository->find(1);
 
-        // A partir du 01/01/2020, on présente les comptes de 2019 ?
+        // A partir du 01/01/2020, on présente les comptes de 2019
         $anneeCourante = date("Y");
         $anneeCourante--;
         $anneePrecedente = $anneeCourante - 1;
@@ -145,23 +145,5 @@ class RapportController extends AbstractController
             $this->snappyPdf->getOutputFromHtml($html),
             'rapport_' . $majeur->getNom() . '_' . $majeur->getPrenom() . '-' . $anneeCourante . '.pdf'
         );
-        /*
-        // Load HTML to Dompdf
-        $dompdf->loadHtml($html);
-
-        // (Optional) Setup the paper size and orientation 'portrait' or 'portrait'
-        $dompdf->setPaper('A4', 'portrait');
-
-        // Render the HTML as PDF
-        $dompdf->render();
-
-        // Output the generated PDF to Browser (force download)
-        $dompdf->stream(
-            'rapport_' . $majeur->getNom() . '_' . $majeur->getPrenom() . '-' . $anneeCourante . '.pdf',
-            [
-                "Attachment" => true
-            ]
-        );
-        */
     }
 }

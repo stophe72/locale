@@ -17,7 +17,7 @@ class PatrimoineEntity extends BaseLibelleEntity
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\TypeOperationEntity", inversedBy="patrimoineEntities")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(name="typeOperationId", referencedColumnName="id", nullable=false)
      */
     private $typeOperation;
 

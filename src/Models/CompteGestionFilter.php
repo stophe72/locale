@@ -38,6 +38,11 @@ class CompteGestionFilter
      */
     private $montant;
 
+    /**
+     * @var int
+     */
+    private $nature;
+
 
     /**
      * Get the value of dateDebut
@@ -179,6 +184,30 @@ class CompteGestionFilter
     public function setFamilleTypeOperation(?FamilleTypeOperationEntity $familleTypeOperation)
     {
         $this->familleTypeOperation = $familleTypeOperation;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of nature
+     *
+     * @return  int
+     */
+    public function getNature()
+    {
+        return $this->nature;
+    }
+
+    /**
+     * Set the value of nature
+     *
+     * @param  int  $nature
+     *
+     * @return  self
+     */
+    public function setNature(int $nature)
+    {
+        $this->nature = $nature;
 
         return $this;
     }

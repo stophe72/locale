@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\NoteDeFraisRepository")
  * @ORM\Table("noteDeFrais")
  */
-class NoteDeFraisEntity extends BaseUserEntity
+class NoteDeFraisEntity extends BaseLibelleEntity
 {
     /**
      * @Assert\NotNull
@@ -32,6 +32,18 @@ class NoteDeFraisEntity extends BaseUserEntity
      * @ORM\Column(type="float")
      */
     private $montant;
+
+    /**
+     * @ORM\Column(type="string", length=100, nullable=true)
+     */
+    private $lieu;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\FicheFraisEntity", inversedBy="noteDeFraisEntities")
+     * @ORM\JoinColumn(name="ficheFraisId", referencedColumnName="id", nullable=false)
+     */
+    private $ficheFrais;
+
 
     public function getDate(): ?\DateTimeInterface
     {
@@ -65,6 +77,30 @@ class NoteDeFraisEntity extends BaseUserEntity
     public function setMontant(float $montant): self
     {
         $this->montant = $montant;
+
+        return $this;
+    }
+
+    public function getLieu(): ?string
+    {
+        return $this->lieu;
+    }
+
+    public function setLieu(?string $lieu): self
+    {
+        $this->lieu = $lieu;
+
+        return $this;
+    }
+
+    public function getFicheFrais(): ?FicheFraisEntity
+    {
+        return $this->ficheFrais;
+    }
+
+    public function setFicheFrais(?FicheFraisEntity $ficheFrais): self
+    {
+        $this->ficheFrais = $ficheFrais;
 
         return $this;
     }

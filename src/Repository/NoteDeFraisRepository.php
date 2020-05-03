@@ -19,13 +19,4 @@ class NoteDeFraisRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, NoteDeFraisEntity::class);
     }
-
-    public function getQueryBuilder(UserEntity $user)
-    {
-        return $this->createQueryBuilder('ndf')
-            ->innerJoin('ndf.user', 'user')
-            ->where('user = :userId')
-            ->setParameter('userId', $user->getId())
-            ->orderBy('ndf.date', 'DESC');
-    }
 }
