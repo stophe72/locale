@@ -13,7 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 class FicheFraisEntity extends BaseUserEntity
 {
     /**
-     * @ORM\OneToMany(targetEntity="App\Entity\NoteDeFraisEntity", mappedBy="ficheFrais", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="App\Entity\NoteDeFraisEntity", mappedBy="ficheFrais")
      */
     private $noteDeFraisEntities;
 
