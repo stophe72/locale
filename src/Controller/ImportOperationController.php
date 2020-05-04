@@ -35,7 +35,7 @@ class ImportOperationController extends AbstractController
     {
         $user = $this->security->getUser();
 
-        $ios = $importOperationRepository->findBy(['user' => $user,], ['majeur' => 'ASC', 'libelle' => 'ASC']);
+        $ios = $importOperationRepository->findByUser($user);
         return $this->render(
             'import_operation/index.html.twig',
             [

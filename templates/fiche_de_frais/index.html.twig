@@ -55,11 +55,11 @@
                                 <td>{{ ndf.libelle }}</td>
                                 <td class="text-right">{{ ndf.montant|format_currency('EUR') }}</td>
                                 <td class="col-sm-3 text-right">
-                                    <a href="{{ path('user_fichefrais_edit', {'id': ndf.id}) }}" title="Détails de la note" class="btn btn-outline-primary btn-sm mr-2">
-                                        <i class="fa fa-pen"></i> Editer
+                                    <a href="{{ path('user_fichefrais_edit', {'id': ndf.id}) }}" title="Détails de la note" class="btn btn-primary btn-sm mr-1">
+                                        <i class="fa fa-pen"></i>
                                     </a>
-                                    <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.typeFrais.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
-                                        <i class="fa fa-trash"></i> Supprimer
+                                    <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.typeFrais.libelle }}")' type="button" class="btn btn-sm btn-danger">
+                                        <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
