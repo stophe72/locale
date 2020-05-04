@@ -12,7 +12,9 @@ use App\Repository\MajeurRepository;
 use App\Repository\VisiteRepository;
 use App\Util\Calendrier;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -37,20 +39,25 @@ class VisiteController extends AbstractController
      */
     private $session;
 
-    /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
-     */
+	/**
+	 * Constructeur
+	 *
+	 * @param Security         $security
+	 * @param SessionInterface $sessionInterface
+	 */
     public function __construct(Security $security, SessionInterface $sessionInterface)
     {
         $this->security = $security;
         $this->session = $sessionInterface;
     }
 
-    /**
-     * @Route("user/visites", name="user_visites")
-     */
+	/**
+	 * @Route("user/visites", name="user_visites")
+	 * @param Request            $request
+	 * @param PaginatorInterface $paginator
+	 * @param VisiteRepository   $visiteRepository
+	 * @return Response
+	 */
     public function index(Request $request, PaginatorInterface $paginator, VisiteRepository $visiteRepository)
     {
         $user = $this->security->getUser();
@@ -82,9 +89,12 @@ class VisiteController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("user/visite/add", name="user_visite_add")
-     */
+	/**
+	 * @Route("user/visite/add", name="user_visite_add")
+	 * @param Request          $request
+	 * @param MajeurRepository $majeurRepository
+	 * @return RedirectResponse|Response
+	 */
     public function add(Request $request, MajeurRepository $majeurRepository)
     {
         $visite = new VisiteEntity();
@@ -115,9 +125,13 @@ class VisiteController extends AbstractController
         );
     }
 
-    /**
-     * @Route("user/visite/edit/{id}", name="user_visite_edit")
-     */
+	/**
+	 * @Route("user/visite/edit/{id}", name="user_visite_edit")
+	 * @param VisiteEntity     $visite
+	 * @param Request          $request
+	 * @param MajeurRepository $majeurRepository
+	 * @return RedirectResponse|Response
+	 */
     public function edit(VisiteEntity $visite, Request $request, MajeurRepository $majeurRepository)
     {
         $user = $this->security->getUser();
@@ -145,9 +159,12 @@ class VisiteController extends AbstractController
         );
     }
 
-    /**
-     * @Route("user/visites/calendrier", name="user_visites_calendrier")
-     */
+	/**
+	 * @Route("user/visites/calendrier", name="user_visites_calendrier")
+	 * @param Request          $request
+	 * @param VisiteRepository $visiteRepository
+	 * @return Response
+	 */
     public function calendrier(Request $request, VisiteRepository $visiteRepository)
     {
         $user = $this->security->getUser();
@@ -175,9 +192,11 @@ class VisiteController extends AbstractController
         );
     }
 
-    /**
-     * @Route("user/visite/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
-     */
+	/**
+	 * @Route("user/visite/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
     public function ajaxVisiteClearFilter(Request $request)
     {
         if ($request->get('clearVisiteFilter', 0)) {
@@ -190,9 +209,11 @@ class VisiteController extends AbstractController
         );
     }
 
-    /**
-     * @Route("user/visite/ajaxCalendrierClearFilter", name="ajax_calendrier_clear_filter")
-     */
+	/**
+	 * @Route("user/visite/ajaxCalendrierClearFilter", name="ajax_calendrier_clear_filter")
+	 * @param Request $request
+	 * @return JsonResponse
+	 */
     public function ajaxCalendrierClearFilter(Request $request)
     {
         if ($request->get('clearCalendrierFilter', 0)) {

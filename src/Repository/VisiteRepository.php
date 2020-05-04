@@ -19,52 +19,52 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class VisiteRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, VisiteEntity::class);
-    }
+	public function __construct(ManagerRegistry $registry)
+	{
+		parent::__construct($registry, VisiteEntity::class);
+	}
 
-    public function getFromFilter(UserEntity $user, VisiteFilter $visiteFilter)
-    {
-        $qb = $this->createQueryBuilder('v');
-        $qb->innerJoin('v.majeur', 'm')
-            ->innerJoin('v.user', 'u', Join::WITH, $qb->expr()->eq('v.user', ':userId'))
-            ->andWhere('m = :majeurId')
-            ->setParameter('userId', $user->getId())
-            ->setParameter('majeurId', $visiteFilter->getMajeurId())
-            ->orderBy('v.date', 'DESC')
-            ->addOrderBy('m.nom', 'ASC')
-            ->addOrderBy('m.prenom', 'ASC');
+	public function getFromFilter(UserEntity $user, VisiteFilter $visiteFilter)
+	{
+		$qb = $this->createQueryBuilder('v');
+		$qb->innerJoin('v.majeur', 'm')
+		   ->innerJoin('m.user', 'u', Join::WITH, $qb->expr()->eq('m.user', ':userId'))
+		   ->andWhere('m = :majeurId')
+		   ->setParameter('userId', $user->getId())
+		   ->setParameter('majeurId', $visiteFilter->getMajeurId())
+		   ->orderBy('v.date', 'DESC')
+		   ->addOrderBy('m.nom', 'ASC')
+		   ->addOrderBy('m.prenom', 'ASC');
 
 
-        if ($visiteFilter->getDateDebut() && $visiteFilter->getDateFin()) {
-            $dates = Util::orderDates($visiteFilter->getDateDebut(), $visiteFilter->getDateFin());
-            $visiteFilter->setDateDebut($dates[0]);
-            $visiteFilter->setDateFin($dates[1]);
-        }
-        if ($visiteFilter->getDateDebut()) {
-            $qb->andWhere('v.date >= :dateDebut')
-                ->setParameter('dateDebut', $visiteFilter->getDateDebut());
-        }
-        if ($visiteFilter->getDateFin()) {
-            $qb->andWhere('v.date <= :dateFin')
-                ->setParameter('dateFin', $visiteFilter->getDateFin());
-        }
+		if ($visiteFilter->getDateDebut() && $visiteFilter->getDateFin()) {
+			$dates = Util::orderDates($visiteFilter->getDateDebut(), $visiteFilter->getDateFin());
+			$visiteFilter->setDateDebut($dates[0]);
+			$visiteFilter->setDateFin($dates[1]);
+		}
+		if ($visiteFilter->getDateDebut()) {
+			$qb->andWhere('v.date >= :dateDebut')
+			   ->setParameter('dateDebut', $visiteFilter->getDateDebut());
+		}
+		if ($visiteFilter->getDateFin()) {
+			$qb->andWhere('v.date <= :dateFin')
+			   ->setParameter('dateFin', $visiteFilter->getDateFin());
+		}
 
-        return $qb->getQuery()->getResult();
-    }
+		return $qb->getQuery()->getResult();
+	}
 
-    public function getFromCalendrierFilter(UserEntity $user, CalendrierVisiteFilter $visiteFilter)
-    {
-        $qb = $this->createQueryBuilder('v');
-        $qb->innerJoin('v.majeur', 'm')
-            ->innerJoin('v.user', 'u', Join::WITH, 'v.user = :userId')
-            ->andWhere('m = :majeurId')
-            ->andWhere('YEAR(v.date) = :annee')
-            ->setParameter('userId', $user->getId())
-            ->setParameter('majeurId', $visiteFilter->getMajeurId())
-            ->setParameter('annee', $visiteFilter->getAnnee());
+	public function getFromCalendrierFilter(UserEntity $user, CalendrierVisiteFilter $visiteFilter)
+	{
+		$qb = $this->createQueryBuilder('v');
+		$qb->innerJoin('v.majeur', 'm')
+		   ->innerJoin('m.user', 'u', Join::WITH, 'm.user = :userId')
+		   ->andWhere('m = :majeurId')
+		   ->andWhere('YEAR(v.date) = :annee')
+		   ->setParameter('userId', $user->getId())
+		   ->setParameter('majeurId', $visiteFilter->getMajeurId())
+		   ->setParameter('annee', $visiteFilter->getAnnee());
 
-        return $qb->getQuery()->getResult();
-    }
+		return $qb->getQuery()->getResult();
+	}
 }
