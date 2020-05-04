@@ -31,10 +31,6 @@ class PatrimoineEntity extends BaseLibelleEntity
      */
     private $montant;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
 
     public function getDate(): ?\DateTimeInterface
     {
