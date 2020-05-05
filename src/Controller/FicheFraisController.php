@@ -128,7 +128,7 @@ class FicheFraisController extends AbstractController
      * @Route("user/fichedefrais/delete/{id}", name="user_fichefrais_delete")
      */
     public function delete(
-        NoteDeFraisEntity $noteDeFrais,
+        NoteDeFraisEntity $noteDeFrais
     ) {
         $user = $this->security->getUser();
         if ($noteDeFrais && $noteDeFrais->isOwnBy($user)) {
