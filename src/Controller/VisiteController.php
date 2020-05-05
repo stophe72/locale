@@ -71,7 +71,6 @@ class VisiteController extends AbstractController
             $this->session->set(self::FILTER_VISITE, $filter);
             $startPage = 1;
         }
-
         $pagination = $paginator->paginate(
             $visiteRepository->getFromFilter($user, $filter),
             $startPage,
@@ -105,8 +104,6 @@ class VisiteController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $visite->setUser($user);
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($visite);
             $em->flush();
@@ -224,5 +221,20 @@ class VisiteController extends AbstractController
                 'success' => 1,
             ]
         );
+    }
+
+    /**
+     * @Route("user/visite/delete/{id}", name="user_visite_delete")
+     */
+    public function delete(
+        VisiteEntity $visite
+    ) {
+        $user = $this->security->getUser();
+        if ($visite && $visite->getMajeur()->isOwnBy($user)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($visite);
+            $em->flush();
+        }
+        return $this->redirectToRoute('user_visites');
     }
 }

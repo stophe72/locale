@@ -8,9 +8,6 @@
             <h3 class="text-primary"><i class="fa fa-handshake"></i> {{ page_title }}</h3>
             <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
         </div>
-        <div class="col-sm-2 text-right">
-            <a href="{{ path("user_visite_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
-        </div>
     </div>
     <div class="row">
         <div class="col-sm-2 mt-2">
@@ -28,6 +25,15 @@
             {{ form_end(form) }}
         </div>
         <div class="col-sm-8">
+            {% include 'generic/pagination_header.html.twig' with
+                {
+                    'no_row' : 'Aucune visite',
+                    'one_row': 'Une visite',
+                    'rows'   : 'visites',
+                    'url_add': path("user_visite_add")
+                }
+            %}
+
             {% if pagination.items|length == 0 %}
                 <div class="alert alert-success mt-3">Aucune visite</div>
             {% else %}
@@ -47,7 +53,7 @@
                                 <a href="{{ path('user_visite_edit', {'id': visite.id}) }}" title="Détails de la visite" class="btn btn-outline-primary btn-sm mr-2">
                                     <i class="fa fa-pen"></i> Editer
                                 </a>
-                                <a href="#" onclick='del_confirm({{ visite.id }}, "")' type="button" class="btn btn-sm btn-outline-danger">
+                                <a href="#" onclick='del_confirm({{ visite.id }}, "{{ visite.date|date("d/m/Y") }}")' type="button" class="btn btn-sm btn-outline-danger">
                                     <i class="fa fa-trash"></i> Supprimer
                                 </a>
                             </td>
@@ -73,26 +79,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Suppression impossible</p>
-                    <p>La visite "<span id="typeFrais_name"></span>" est utilisée.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -149,38 +135,21 @@
 
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.typeFraisId;
+        const id = el.dataset.visiteId;
 
-        window.location.href = "user/visite/delete/" + id;
+        var url = "{{ path('user_visite_delete', {'id': 0}) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.typeFraisId = id;
+        document.getElementById('btn_delete').dataset.visiteId = id;
 
-        $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteTypeFrais') }}",#}
-            dataType: "json",
-            data: {
-                "typeFraisId": id
-            },
+        var dialog = $('#exampleModal');
 
-            success: function (reponse)
-            {
-                if (reponse['data']) {
-                    var dialog = $('#exampleModal');
-
-                    dialog.find('.modal-body').text("Supprimer la visite " + name + " ?");
-                    dialog.modal('show');
-                } else {
-                    $("#typeFrais_name").html(name);
-                    $("#myModal").modal();
-                }
-            },
-
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
+        dialog.find('.modal-body').text("Supprimer visite du " + name + " ?");
+        dialog.modal('show');
     }
 </script>
 {% endblock %}
