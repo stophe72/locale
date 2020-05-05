@@ -125,6 +125,21 @@ class FicheFraisController extends AbstractController
     }
 
     /**
+     * @Route("user/fichedefrais/delete/{id}", name="user_fichefrais_delete")
+     */
+    public function delete(
+        NoteDeFraisEntity $noteDeFrais,
+    ) {
+        $user = $this->security->getUser();
+        if ($noteDeFrais && $noteDeFrais->isOwnBy($user)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($noteDeFrais);
+            $em->flush();
+        }
+        return $this->redirectToRoute('user_fichesdefrais');
+    }
+
+    /**
      * @Route("user/fichedefrais/exporter/{ficheFrais}", name="user_fichefrais_export")
      */
     public function exporter(FicheFraisEntity $ficheFrais)

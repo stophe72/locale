@@ -58,7 +58,7 @@
                                     <a href="{{ path('user_fichefrais_edit', {'id': ndf.id}) }}" title="Détails de la note" class="btn btn-primary btn-sm mr-1">
                                         <i class="fa fa-pen"></i>
                                     </a>
-                                    <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.typeFrais.libelle }}")' type="button" class="btn btn-sm btn-danger">
+                                    <a href="#" onclick='del_confirm({{ ndf.id }}, "{{ ndf.date|date('d/m/Y') }}")' type="button" class="btn btn-sm btn-danger">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </td>
@@ -95,26 +95,6 @@
             </div>
         </div>
     </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Suppression impossible</p>
-                    <p>La fiche "<span id="ndf_name"></span>" est utilisée.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -123,36 +103,19 @@
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.ndfId;
 
-        window.location.href = "/fiche/delete/" + id;
+        var url = "{{ path('user_fichefrais_delete', {'id': 0}) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.ndfId = id;
 
-        $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteNoteDeFrais') }}",#}
-            dataType: "json",
-            data: {
-                "ndfId": id
-            },
+        var dialog = $('#exampleModal');
 
-            success: function (reponse)
-            {
-                if (reponse['data']) {
-                    var dialog = $('#exampleModal');
-
-                    dialog.find('.modal-body').text("Supprimer la note de frais " + name + " ?");
-                    dialog.modal('show');
-                } else {
-                    $("#ndf_name").html(name);
-                    $("#myModal").modal();
-                }
-            },
-
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
+        dialog.find('.modal-body').text("Supprimer la note de frais du " + name + " ?");
+        dialog.modal('show');
     }
 </script>
 {% endblock %}
