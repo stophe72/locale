@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\ContactRepository")
  * @ORM\Table(name="contact")
  */
-class ContactEntity extends BaseUserEntity
+class ContactEntity extends BaseEntity
 {
     /**
      * @ORM\Column(type="string", length=30, nullable=true)
