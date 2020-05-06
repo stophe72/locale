@@ -166,7 +166,7 @@ class CompteGestionController extends AbstractController
     /**
      * @Route("user/comptegestion/ajaxCompteGestionClearFilter", name="ajaxCompteGestionClearFilter")
      */
-    public function ajaxCultureClearFilter(Request $request)
+    public function ajaxCompteGestionClearFilter(Request $request)
     {
         if ($request->get('clearCompteGestionFilter', 0)) {
             $this->session->remove(self::FILTER_COMPTE_GESTION);
@@ -174,6 +174,26 @@ class CompteGestionController extends AbstractController
         return new JsonResponse(
             [
                 'success' => 1,
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/comptegestion/delete/{id}", name="user_comptegestion_delete")
+     */
+    public function delete(
+        CompteGestionEntity $compteGestion
+    ) {
+        $user = $this->security->getUser();
+        if ($compteGestion && $compteGestion->getDonneeBancaire()->getMajeur()->isOwnBy($user)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($compteGestion);
+            $em->flush();
+        }
+        return $this->redirectToRoute(
+            'user_comptesgestion',
+            [
+                'id' => $compteGestion->getDonneeBancaire()->getId()
             ]
         );
     }
