@@ -6,6 +6,7 @@ use App\Entity\TribunalEntity;
 use App\Form\TribunalType;
 use App\Repository\TribunalRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -92,5 +93,39 @@ class TribunalController extends AbstractController
                 'url_back'    => $this->generateUrl('user_tribunaux'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/tribunal/ajaxCanDeleteTribunal", name="ajaxCanDeleteTribunal")
+     */
+    public function ajaxCanDeleteTribunal(
+        Request $request,
+        TribunalRepository $tribunalRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $tribunalId = $request->get('tribunalId', -1);
+        $count = $tribunalRepository->countByJugement($user, $tribunalId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/tribunal/delete/{id}", name="user_tribunal_delete")
+     */
+    public function delete(
+        TribunalEntity $tribunal,
+        TribunalRepository $tribunalRepository
+    ) {
+        if ($tribunal) {
+            $user = $this->security->getUser();
+            $count = $tribunalRepository->countByJugement($user, $tribunal->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($tribunal);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_tribunaux');
     }
 }
