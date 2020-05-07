@@ -22,7 +22,7 @@ class AgenceBancaireRepository extends ServiceEntityRepository
         parent::__construct($registry, AgenceBancaireEntity::class);
     }
 
-    public function countByDonneeBancaire(UserEntity $user, $agenceBancaireId)
+    public function countByDonneeBancaire(UserEntity $user, int $agenceBancaireId)
     {
         $qb = $this->createQueryBuilder('a');
         $qb->select('COUNT(a.id)')

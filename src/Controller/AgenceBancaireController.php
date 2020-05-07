@@ -112,7 +112,6 @@ class AgenceBancaireController extends AbstractController
         return new JsonResponse(['data' => $count == 0]);
     }
 
-
     /**
      * @Route("user/agenceBancaire/delete/{id}", name="user_agencebancaire_delete")
      */
@@ -120,9 +119,8 @@ class AgenceBancaireController extends AbstractController
         AgenceBancaireEntity $agenceBancaire,
         AgenceBancaireRepository $agenceBancaireRepository
     ) {
-        $user = $this->security->getUser();
-
         if ($agenceBancaire) {
+            $user = $this->security->getUser();
             $count = $agenceBancaireRepository->countByDonneeBancaire($user, $agenceBancaire->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
