@@ -64,7 +64,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La lieuVie "<span id="lieuvie_name"></span>" est utilisée.</p>
+                    <p>Le lieu de vie "<span id="lieuvie_name"></span>" est utilisé.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -78,19 +78,22 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.tribunalId;
+        const id = el.dataset.lieuVieId;
 
-        window.location.href = "/lieuVie/delete/" + id;
+        var url = "{{ path('user_lieuvie_delete', { 'id': 0 }) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.tribunalId = id;
+        document.getElementById('btn_delete').dataset.lieuVieId = id;
 
         $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            url: "{{ path('ajaxCanDeleteLieuVie') }}",
             dataType: "json",
             data: {
-                "tribunalId": id
+                "lieuVieId": id
             },
 
             success: function (reponse)

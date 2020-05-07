@@ -4,8 +4,12 @@ namespace App\Repository;
 
 use App\Entity\LieuVie;
 use App\Entity\LieuVieEntity;
+use App\Entity\MajeurEntity;
+use App\Entity\ParametreMissionEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method LieuVie|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,32 +24,18 @@ class LieuVieRepository extends ServiceEntityRepository
         parent::__construct($registry, LieuVieEntity::class);
     }
 
-    // /**
-    //  * @return LieuVie[] Returns an array of LieuVie objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function countById(UserEntity $user, int $lieuVieId)
     {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('lv');
+        $qb->select('COUNT(lv.id)')
+            ->innerJoin(ParametreMissionEntity::class, 'pm', Join::WITH, 'pm.lieuVie = lv')
+            ->innerJoin(MajeurEntity::class, 'm', Join::WITH, 'm.parametreMission = pm')
+            ->innerJoin('m.user', 'u')
+            ->where('lv = :lieuVieId')
+            ->andWhere('u = :userId')
+            ->setParameter('lieuVieId', $lieuVieId)
+            ->setParameter('userId', $user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?LieuVie
-    {
-        return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return $qb->getQuery()->getSingleScalarResult();
     }
-    */
 }

@@ -6,6 +6,7 @@ use App\Entity\LieuVieEntity;
 use App\Form\LieuVieType;
 use App\Repository\LieuVieRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -92,5 +93,38 @@ class LieuVieController extends AbstractController
                 'url_back'    => $this->generateUrl('user_lieu_vies'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/lieuvie/ajaxCanDeletelieuvie", name="ajaxCanDeleteLieuVie")
+     */
+    public function ajaxCanDeleteLieuVie(
+        Request $request,
+        LieuVieRepository $lieuVieRepository
+    ) {
+        $user = $this->security->getUser();
+        $lieuVieId = $request->get('lieuVieId', -1);
+        $count = $lieuVieRepository->countById($user, $lieuVieId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/lieuvie/delete/{id}", name="user_lieuvie_delete")
+     */
+    public function delete(
+        LieuVieEntity $lieuvie,
+        LieuVieRepository $lieuVieRepository
+    ) {
+        if ($lieuvie) {
+            $user = $this->security->getUser();
+            $count = $lieuVieRepository->countById($user, $lieuvie->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($lieuvie);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_lieu_vies');
     }
 }
