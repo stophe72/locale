@@ -6,6 +6,7 @@ use App\Entity\AgenceBancaireEntity;
 use App\Form\AgenceBancaireType;
 use App\Repository\AgenceBancaireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -97,17 +98,38 @@ class AgenceBancaireController extends AbstractController
     }
 
     /**
-     * @Route("user/potager/ajaxCanDeleteBanque", name="ajaxCanDeleteBanque")
+     * @Route("user/agencebancaire/ajaxCanDeleteAgenceBancaire", name="ajaxCanDeleteAgenceBancaire")
      */
-    /*public function ajaxCanDeleteBanque(
+    public function ajaxCanDeleteAgenceBancaire(
         Request $request,
-        IParcelleRepository $parcelleRepository
+        AgenceBancaireRepository $agenceBancaireRepository
     ) {
         $user = $this->security->getUser();
 
-        $potagerId = $request->get(self::REQUEST_KEY_POTAGER_ID, -1);
-        $parcelles = $parcelleRepository->findBy(['potager' => $potagerId, 'user' => $user->getId()]);
+        $agenceId = $request->get('agenceId', -1);
+        $count = $agenceBancaireRepository->countByDonneeBancaire($user, $agenceId);
 
-        return new JsonResponse(['data' => empty($parcelles)]);
-    }*/
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+
+    /**
+     * @Route("user/agenceBancaire/delete/{id}", name="user_agencebancaire_delete")
+     */
+    public function delete(
+        AgenceBancaireEntity $agenceBancaire,
+        AgenceBancaireRepository $agenceBancaireRepository
+    ) {
+        $user = $this->security->getUser();
+
+        if ($agenceBancaire) {
+            $count = $agenceBancaireRepository->countByDonneeBancaire($user, $agenceBancaire->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($agenceBancaire);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_visites');
+    }
 }
