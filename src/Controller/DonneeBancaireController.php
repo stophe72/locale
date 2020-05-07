@@ -35,12 +35,7 @@ class DonneeBancaireController extends AbstractController
     {
         $user = $this->security->getUser();
 
-        $dbs = $donneeBancaireRepository->findBy(
-            [
-                'user' => $user->getId(),
-                'majeur' => $majeur->getId(),
-            ]
-        );
+        $dbs = $donneeBancaireRepository->findByMajeur($user, $majeur);
 
         return $this->render('donnee_bancaire/index.html.twig', [
             'donneebancaires' => $dbs,

@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="donneeBancaire")
  * @UniqueEntity(fields={"agenceBancaire", "numeroCompte"})
  */
-class DonneeBancaireEntity extends BaseUserEntity
+class DonneeBancaireEntity extends BaseEntity
 {
     /**
      * @Assert\NotNull
