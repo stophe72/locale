@@ -6,6 +6,7 @@ use App\Entity\TypeCompteEntity;
 use App\Form\TypeCompteType;
 use App\Repository\TypeCompteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -92,5 +93,39 @@ class TypeCompteController extends AbstractController
                 'url_back'    => $this->generateUrl('user_typecomptes'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/typecompte/ajaxCanDeleteTypeCompte", name="ajaxCanDeleteTypeCompte")
+     */
+    public function ajaxCanDeleteTypeCompte(
+        Request $request,
+        TypeCompteRepository $typeCompteRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $typeCompte = $request->get('typeCompteId', -1);
+        $count = $typeCompteRepository->countById($user, $typeCompte);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/typecompte/delete/{id}", name="user_typecompte_delete")
+     */
+    public function delete(
+        TypeCompteEntity $typeCompte,
+        TypeCompteRepository $typeCompteRepository
+    ) {
+        if ($typeCompte) {
+            $user = $this->security->getUser();
+            $count = $typeCompteRepository->countById($user, $typeCompte->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($typeCompte);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_typecomptes');
     }
 }

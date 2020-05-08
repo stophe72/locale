@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\DonneeBancaireEntity;
 use App\Entity\TypeCompteEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method TypeCompteEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +22,18 @@ class TypeCompteRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeCompteEntity::class);
     }
 
-    // /**
-    //  * @return TypeCompteEntity[] Returns an array of TypeCompteEntity objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function countById(UserEntity $user, int $id)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb  = $this->createQueryBuilder('tc');
+        $qb->select('COUNT(tc.id)')
+            ->innerJoin(DonneeBancaireEntity::class, 'db', Join::WITH, 'db.typeCompte = tc')
+            ->innerJoin('db.majeur', 'm')
+            ->innerJoin('m.user', 'u')
+            ->where('tc = :typeCompteId')
+            ->andWhere('u = :userId')
+            ->setParameter('typeCompteId', $id)
+            ->setParameter('userId', $user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?TypeCompteEntity
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
-    */
 }

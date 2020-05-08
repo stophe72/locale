@@ -6,6 +6,7 @@ use App\Entity\TypeFraisEntity;
 use App\Form\TypeFraisType;
 use App\Repository\TypeFraisRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -92,5 +93,39 @@ class TypeFraisController extends AbstractController
                 'url_back' => $this->generateUrl('user_typesfrais'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/typefrais/ajaxCanDeleteTypeFrais", name="ajaxCanDeleteTypeFrais")
+     */
+    public function ajaxCanDeleteTypeFrais(
+        Request $request,
+        TypeFraisRepository $typeFraisRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $typeFrais = $request->get('typeFraisId', -1);
+        $count = $typeFraisRepository->countById($user, $typeFrais);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/typefrais/delete/{id}", name="user_typefrais_delete")
+     */
+    public function delete(
+        TypeFraisEntity $typeFrais,
+        TypeFraisRepository $typeFraisRepository
+    ) {
+        if ($typeFrais) {
+            $user = $this->security->getUser();
+            $count = $typeFraisRepository->countById($user, $typeFrais->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($typeFrais);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_typesfrais');
     }
 }

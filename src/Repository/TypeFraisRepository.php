@@ -2,10 +2,14 @@
 
 namespace App\Repository;
 
+use App\Entity\FicheFraisEntity;
+use App\Entity\NoteDeFraisEntity;
 use App\Entity\TypeFrais;
 use App\Entity\TypeFraisEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method TypeFrais|null find($id, $lockMode = null, $lockVersion = null)
@@ -20,32 +24,18 @@ class TypeFraisRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeFraisEntity::class);
     }
 
-    // /**
-    //  * @return TypeFrais[] Returns an array of TypeFrais objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function countById(UserEntity $user, int $id)
     {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('t.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('tf');
+        $qb->select('COUNT(tf.id)')
+            ->innerJoin(NoteDeFraisEntity::class, 'nf', Join::WITH, 'nf.typeFrais = tf')
+            ->innerJoin(FicheFraisEntity::class, 'ff', Join::WITH, 'ff = nf.ficheFrais')
+            ->innerJoin('ff.user', 'u')
+            ->where('tf = :typeFraisId')
+            ->andWhere('u = :userId')
+            ->setParameter('typeFraisId', $id)
+            ->setParameter('userId', $user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?TypeFrais
-    {
-        return $this->createQueryBuilder('t')
-            ->andWhere('t.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
-    */
 }

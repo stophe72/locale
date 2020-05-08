@@ -107,7 +107,7 @@ class FicheFraisController extends AbstractController
 
         $user = $this->security->getUser();
 
-        if ($noteDeFrais->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($noteDeFrais->getFicheFrais()->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_fichesdefrais');
@@ -131,7 +131,7 @@ class FicheFraisController extends AbstractController
         NoteDeFraisEntity $noteDeFrais
     ) {
         $user = $this->security->getUser();
-        if ($noteDeFrais && $noteDeFrais->isOwnBy($user)) {
+        if ($noteDeFrais && $noteDeFrais->getFicheFrais()->isOwnBy($user)) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($noteDeFrais);
             $em->flush();
