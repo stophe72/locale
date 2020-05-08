@@ -6,6 +6,7 @@ use App\Entity\FamilleCompteEntity;
 use App\Form\FamilleCompteType;
 use App\Repository\FamilleCompteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -94,5 +95,39 @@ class FamilleCompteController extends AbstractController
                 'url_back'    => $this->generateUrl('user_famillecomptes'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/famillecompte/ajaxCanDeleteAgenceBancaire", name="ajaxCanDeleteFamilleCompte")
+     */
+    public function ajaxCanDeleteFamilleCompte(
+        Request $request,
+        FamilleCompteRepository $familleCompteRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $familleCompte = $request->get('familleCompteId', -1);
+        $count = $familleCompteRepository->countById($user, $familleCompte);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/famillecompte/delete/{id}", name="user_famillecompte_delete")
+     */
+    public function delete(
+        FamilleCompteEntity $familleCompte,
+        FamilleCompteRepository $familleCompteRepository
+    ) {
+        if ($familleCompte) {
+            $user = $this->security->getUser();
+            $count = $familleCompteRepository->countById($user, $familleCompte->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($familleCompte);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_famillecomptes');
     }
 }
