@@ -115,7 +115,6 @@ DROP TABLE IF EXISTS `donneeBancaire`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `donneeBancaire` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
   `agenceBancaireId` int(11) NOT NULL,
   `typeCompteId` int(11) NOT NULL,
@@ -128,11 +127,9 @@ CREATE TABLE `donneeBancaire` (
   KEY `donneeBancaire_FK` (`majeurId`),
   KEY `donneeBancaire_FK_1` (`agenceBancaireId`),
   KEY `donneeBancaire_FK_2` (`typeCompteId`),
-  KEY `donneeBancaire_FK_3` (`userId`),
   CONSTRAINT `donneeBancaire_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
   CONSTRAINT `donneeBancaire_FK_1` FOREIGN KEY (`agenceBancaireId`) REFERENCES `agenceBancaire` (`id`),
-  CONSTRAINT `donneeBancaire_FK_2` FOREIGN KEY (`typeCompteId`) REFERENCES `typeCompte` (`id`),
-  CONSTRAINT `donneeBancaire_FK_3` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
+  CONSTRAINT `donneeBancaire_FK_2` FOREIGN KEY (`typeCompteId`) REFERENCES `typeCompte` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -256,7 +253,7 @@ CREATE TABLE `lieuVie` (
   PRIMARY KEY (`id`),
   KEY `lieuVie_FK` (`userId`),
   CONSTRAINT `lieuVie_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -400,7 +397,7 @@ CREATE TABLE `noteDeFrais` (
   CONSTRAINT `noteDeFrais_FK` FOREIGN KEY (`typeFraisId`) REFERENCES `typeFrais` (`id`),
   CONSTRAINT `noteDeFrais_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `noteDeFrais_FK_2` FOREIGN KEY (`ficheFraisId`) REFERENCES `ficheFrais` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -565,7 +562,7 @@ CREATE TABLE `tribunal` (
   PRIMARY KEY (`id`),
   KEY `tribunal_FK` (`userId`),
   CONSTRAINT `tribunal_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -695,7 +692,7 @@ CREATE TABLE `visite` (
   PRIMARY KEY (`id`),
   KEY `visite_FK` (`majeurId`),
   CONSTRAINT `visite_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -711,4 +708,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-03 23:47:05
+-- Dump completed on 2020-05-08 12:33:06
