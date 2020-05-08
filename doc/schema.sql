@@ -381,7 +381,6 @@ DROP TABLE IF EXISTS `noteDeFrais`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `noteDeFrais` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `userId` int(11) NOT NULL,
   `date` date NOT NULL,
   `lieu` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `typeFraisId` int(11) NOT NULL,
@@ -392,10 +391,8 @@ CREATE TABLE `noteDeFrais` (
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `noteDeFrais_FK` (`typeFraisId`),
-  KEY `noteDeFrais_FK_1` (`userId`),
   KEY `noteDeFrais_FK_2` (`ficheFraisId`),
   CONSTRAINT `noteDeFrais_FK` FOREIGN KEY (`typeFraisId`) REFERENCES `typeFrais` (`id`),
-  CONSTRAINT `noteDeFrais_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `noteDeFrais_FK_2` FOREIGN KEY (`ficheFraisId`) REFERENCES `ficheFrais` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -603,7 +600,7 @@ CREATE TABLE `typeFrais` (
   PRIMARY KEY (`id`),
   KEY `typeFrais_FK` (`userId`),
   CONSTRAINT `typeFrais_FK` FOREIGN KEY (`userId`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -708,4 +705,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-08 12:33:06
+-- Dump completed on 2020-05-08 23:48:28
