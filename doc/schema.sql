@@ -200,6 +200,7 @@ DROP TABLE IF EXISTS `importOperation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `importOperation` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `typeOperationId` int(11) NOT NULL,
@@ -209,7 +210,9 @@ CREATE TABLE `importOperation` (
   PRIMARY KEY (`id`),
   KEY `importOperation_FK` (`majeurId`),
   KEY `importOperation_FK_2` (`typeOperationId`),
+  KEY `importOperation_FK_1` (`userId`),
   CONSTRAINT `importOperation_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
+  CONSTRAINT `importOperation_FK_1` FOREIGN KEY (`userId`) REFERENCES `user` (`id`),
   CONSTRAINT `importOperation_FK_2` FOREIGN KEY (`typeOperationId`) REFERENCES `typeOperation` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -705,4 +708,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-08 23:48:28
+-- Dump completed on 2020-05-08 23:55:36
