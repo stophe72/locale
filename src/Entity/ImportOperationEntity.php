@@ -9,23 +9,8 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\ImportOperationRepository")
  * @ORM\Table(name="importOperation")
  */
-class ImportOperationEntity extends BaseEntity
+class ImportOperationEntity extends BaseLibelleEntity
 {
-    /**
-     * @Assert\NotBlank
-     * @Assert\Length(
-     *      min = 2,
-     *      max = 100,
-     *      minMessage = "Le libellé doit contenir au moins {{ limit }} caractères",
-     *      maxMessage = "Le libellé doit contenir au plus {{ limit }} caractères"
-     * )
-     *
-     * @ORM\Column(type="string", length=100)
-     *
-     * @var string
-     */
-    private $libelle;
-
     /**
      * @Assert\NotNull
      *
@@ -96,30 +81,6 @@ class ImportOperationEntity extends BaseEntity
     public function setNature(?int $nature)
     {
         $this->nature = $nature;
-
-        return $this;
-    }
-
-    /**
-     * Get )
-     *
-     * @return  string
-     */
-    public function getLibelle(): ?string
-    {
-        return $this->libelle;
-    }
-
-    /**
-     * Set )
-     *
-     * @param  string  $libelle  )
-     *
-     * @return  self
-     */
-    public function setLibelle(?string $libelle)
-    {
-        $this->libelle = $libelle;
 
         return $this;
     }
