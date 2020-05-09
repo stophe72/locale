@@ -7,6 +7,7 @@ use App\Form\ImportOperationType;
 use App\Repository\ImportOperationRepository;
 use App\Repository\TypeOperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -112,5 +113,21 @@ class ImportOperationController extends AbstractController
                 'url_back'    => $this->generateUrl('user_importoperations'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/importoperation/delete/{id}", name="user_importoperation_delete")
+     */
+    public function delete(
+        ImportOperationEntity $importOperation,
+        ImportOperationRepository $importOperationRepository
+    ) {
+        $user = $this->security->getUser();
+        if ($importOperation && $importOperation->isOwnBy($user)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($importOperation);
+            $em->flush();
+        }
+        return $this->redirectToRoute('user_importoperations');
     }
 }

@@ -40,11 +40,11 @@
         </table>
     </div>
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="yesNoModal" tabindex="-1" role="dialog" aria-labelledby="yesNoModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
                     Supprimer la donnée bancaire ?
@@ -52,26 +52,6 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
                     <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Suppression impossible</p>
-                    <p>L'import "<span id="importoperation_name"></span>" est utilisé.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
                 </div>
             </div>
         </div>
@@ -84,36 +64,19 @@
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.importoperationId;
 
-        window.location.href = "user/importoperation/delete/" + id;
+        var url = "{{ path('user_importoperation_delete', {'id': 0}) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.importoperationId = id;
 
-        $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
-            dataType: "json",
-            data: {
-                "importoperationId": id
-            },
+        var dialog = $('#yesNoModal');
 
-            success: function (reponse)
-            {
-                if (reponse['data']) {
-                    var dialog = $('#exampleModal');
-
-                    dialog.find('.modal-body').text("Supprimer la donnée bancaire " + name + " ?");
-                    dialog.modal('show');
-                } else {
-                    $("#importoperation_name").html(name);
-                    $("#myModal").modal();
-                }
-            },
-
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
+        dialog.find('.modal-body').text("Supprimer l'import d'opérations " + name + " ?");
+        dialog.modal('show');
     }
 </script>
 {% endblock %}
