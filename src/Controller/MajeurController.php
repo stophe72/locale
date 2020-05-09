@@ -129,7 +129,7 @@ class MajeurController extends AbstractController
     {
         $user = $this->security->getUser();
         if ($majeur && $majeur->isOwnBy($user)) {
-            $dbs = $donneeBancaireRepository->findBy(['user' => $user, 'majeur' => $majeur,], []);
+            $dbs = $donneeBancaireRepository->findBy(['majeur' => $majeur,]);
             return $this->render(
                 'majeur/show.html.twig',
                 [
