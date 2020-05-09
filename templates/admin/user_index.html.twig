@@ -46,12 +46,12 @@
         </table>
     </div>
 
-    <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade" id="exampleModal" role="dialog"
+    <div aria-hidden="true" aria-labelledby="yesNoModalLabel" class="modal fade" id="yesNoModal" role="dialog"
         tabindex="-1">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
                     Supprimer l'utilisateur et les données associées ?
@@ -80,7 +80,7 @@
     function del_confirm(id, email) {
         document.getElementById('btn_delete').dataset.userId = id;
 
-        var dialog = $('#exampleModal');
+        var dialog = $('#yesNoModal');
         dialog.find('.modal-body').text("Supprimer l'utilisateur \"" + email + "\" ?");
         dialog.modal('show');
     }
