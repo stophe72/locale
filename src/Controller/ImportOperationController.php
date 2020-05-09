@@ -119,8 +119,7 @@ class ImportOperationController extends AbstractController
      * @Route("user/importoperation/delete/{id}", name="user_importoperation_delete")
      */
     public function delete(
-        ImportOperationEntity $importOperation,
-        ImportOperationRepository $importOperationRepository
+        ImportOperationEntity $importOperation
     ) {
         $user = $this->security->getUser();
         if ($importOperation && $importOperation->isOwnBy($user)) {
