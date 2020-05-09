@@ -82,14 +82,17 @@
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.familleTypeOperationId;
 
-        window.location.href = "/familleTypeOperation/delete/" + id;
+        var url = "{{ path('user_familletypeoperation_delete', {'id': 0}) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.familleTypeOperationId = id;
 
         $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            url: "{{ path('ajaxCanDeleteFamilleTypeOperation') }}",
             dataType: "json",
             data: {
                 "familleTypeOperationId": id
@@ -103,7 +106,7 @@
                     dialog.find('.modal-body').text("Supprimer la famille de types d'opération " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#familleTypeOperation_name").html(name);
+                    $("#familletypeoperation_name").html(name);
                     $("#myModal").modal();
                 }
             },

@@ -4,9 +4,11 @@ namespace App\Controller;
 
 use App\Entity\TypeOperationEntity;
 use App\Form\TypeOperationType;
+use App\Repository\ImportOperationRepository;
 use App\Repository\TypeOperationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -107,5 +109,42 @@ class TypeOperationController extends AbstractController
                 'url_back'    => $this->generateUrl('user_typesoperation'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/typeoperation/ajaxCanDeleteTypeOperation", name="ajaxCanDeleteTypeOperation")
+     */
+    public function ajaxCanDeleteTypeOperation(
+        Request $request,
+        TypeOperationRepository $typeOperationRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $typeOperationId = $request->get('typeOperationId', -1);
+        $count = $typeOperationRepository->countByCompteGestion($user, $typeOperationId)
+            + $typeOperationRepository->countByImportOperation($user, $typeOperationId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/typeoperation/delete/{id}", name="user_typeoperation_delete")
+     */
+    public function delete(
+        TypeOperationEntity $typeOperation,
+        TypeOperationRepository $typeOperationRepository
+    ) {
+        if ($typeOperation) {
+            $user = $this->security->getUser();
+            $count = $typeOperationRepository->countByCompteGestion($user, $typeOperation->getId())
+                + $typeOperationRepository->countByImportOperation($user, $typeOperation->getId());
+
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($typeOperation);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_typesoperation');
     }
 }

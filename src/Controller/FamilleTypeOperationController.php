@@ -6,6 +6,7 @@ use App\Entity\FamilleTypeOperationEntity;
 use App\Form\FamilleTypeOperationType;
 use App\Repository\FamilleTypeOperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -94,5 +95,40 @@ class FamilleTypeOperationController extends AbstractController
                 'url_back'    => $this->generateUrl('user_familletypeoperations'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/familletypeoperation/ajaxCanDeleteFamilleTypeOperation", name="ajaxCanDeleteFamilleTypeOperation")
+     */
+    public function ajaxCanDeleteFamilleTypeOperation(
+        Request $request,
+        FamilleTypeOperationRepository $familleTypeOperationRepository
+    ) {
+        $user = $this->security->getUser();
+
+        $familleTypeOperationId = $request->get('familleTypeOperationId', -1);
+        $count = $familleTypeOperationRepository->countById($user, $familleTypeOperationId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/familletypeoperation/delete/{id}", name="user_familletypeoperation_delete")
+     */
+    public function delete(
+        FamilleTypeOperationEntity $familleTypeOperation,
+        FamilleTypeOperationRepository $familleTypeOperationRepository
+    ) {
+        if ($familleTypeOperation) {
+            $user = $this->security->getUser();
+            $count = $familleTypeOperationRepository->countById($user, $familleTypeOperation->getId());
+
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($familleTypeOperation);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_familletypeoperations');
     }
 }
