@@ -8,48 +8,55 @@
             <h3 class="text-primary"><i class="fas fa-calendar-check"></i> {{ page_title }}</h3>
         </div>
     </div>
+    {{ form_start(form, {'attr': {'id': 'form_calendrier'}}) }}
     <div class="row">
          <div class="col-sm-2 mt-2">
-            {{ form_start(form) }}
-                {{ form_row(form.annee) }}
-                {{ form_row(form.majeurNom) }}
-                {{ form_row(form.majeurId) }}
-                <div class="float-right mt-3">
-                    <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary">
-                        <i class="fa fa-filter"></i> Appliquer</button>
-                    <button id="btnClearFilters" type="button" class="btn btn-outline-secondary">
-                        <i class="fas fa-times"></i></button>
-                </div>
-            {{ form_end(form) }}
+            {{ form_row(form.annee) }}
+            {{ form_row(form.jour) }}
+            {{ form_row(form.mois) }}
+            {{ form_row(form.majeurId) }}
+            <div class="float-right mt-3">
+                <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary"><i class="fa fa-filter"></i> Appliquer</button>
+                <button id="btnClearFilters" type="button" class="btn btn-outline-secondary"><i class="fas fa-times"></i></button>
+            </div>
         </div>
         <div class="col-sm-8">
             <div class="row">
             {% for mois, jours in calendrier %}
                 <div class="col-sm-3">
                     <div class="row">
-                        <div class="col text-center">
-                            {{ ('month.' ~ mois)|trans }}
+                        <div class="col ml-3">
+                            <strong>{{ ('month.' ~ mois)|trans }}</strong>
                         </div>
                     </div>
-                    <table class="table table-bordered table-sm">
+                    <table class="table table-borderless table-sm">
                         <thead>
-                            <tr class="bg-light">
-                                <th class="text-center text-secondary">L</th>
-                                <th class="text-center text-secondary">M</th>
-                                <th class="text-center text-secondary">M</th>
-                                <th class="text-center text-secondary">J</th>
-                                <th class="text-center text-secondary">V</th>
-                                <th class="text-center text-secondary">S</th>
-                                <th class="text-center text-secondary">D</th>
+                            <tr>
+                                <td class="text-center text-secondary">L</td>
+                                <td class="text-center text-secondary">M</td>
+                                <td class="text-center text-secondary">M</td>
+                                <td class="text-center text-secondary">J</td>
+                                <td class="text-center text-secondary">V</td>
+                                <td class="text-center text-secondary">S</td>
+                                <td class="text-center text-secondary">D</td>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                             {% for key, jour in jours %}
                                 {% if jour.visite %}
-                                    <td class="text-center bg-success text-light"><strong>{{ jour.numero }}</strong></td>
+                                    <td class="text-light m-0">
+                                        <button type="button" data-visite=1 data-mois="{{ mois }}" data-jour="{{ jour.numero }}" style="width:100%;" data-backdrop="static" class="jour p-0 btn btn-success font-weight-bold">{{ jour.numero }}</button>
+                                    </td>
                                 {% else %}
-                                    <td class="text-center">{{ jour.numero }}</td>
+                                    {% if jour.numero is empty %}
+                                        <td>
+                                        </td>
+                                    {% else %}
+                                        <td class="m-0">
+                                            <button type="button" data-visite=1 data-mois="{{ mois }}" data-jour="{{ jour.numero }}" style="width:100%;" data-backdrop="static" class="jour p-0 btn">{{ jour.numero }}</button>
+                                        </td>
+                                    {% endif %}
                                 {% endif %}
                                 {% if loop.index is divisible by (7) %}
                                     </tr>
@@ -69,42 +76,15 @@
         </div>
     </div>
 
-    <div class="modal fade" id="yesNoModal" tabindex="-1" role="dialog" aria-labelledby="yesNoModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+    <div id="mySmallModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm  modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
-                </div>
-                <div class="modal-body">
-                    Supprimer la visite ?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
-                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
-                </div>
+                <div id="loadingDiv" class="text-primary spinner-border spinner-border-sm align-self-center my-3"></div>
+                <div class="text-center text-secondary mb-2">Enregistrement</div>
             </div>
         </div>
     </div>
-
-    <div class="modal" tabindex="-1" role="dialog" id="myModal">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Information</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p>Suppression impossible</p>
-                    <p>La visite "<span id="typeFrais_name"></span>" est utilisée.</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
-                </div>
-            </div>
-        </div>
-    </div>
+    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
@@ -112,83 +92,41 @@
     let majeurName = $("#calendrier_filter_majeurNom");
     let majeurId = $("#calendrier_filter_majeurId");
 
-    majeurName.autocomplete({
-        debounce: 500,
-        source: function(request, response) {
-            $.ajax({
-                url: "{{ path('ajax_majeurs_get_by_name') }}",
-                type: "post",
-                dataType: "json",
-                data: {
-                    name: request.term
-                },
-                success: function(data) {
-                    response(data);
-                }
-            });
-        },
-        focus: function(event, ui) {
-            event.preventDefault();
-            majeurName.val(ui.item.label);
-            majeurId.val(ui.item.value);
-        },
-        select: function(event, ui) {
-            {# event.preventDefault(); #}
-            majeurName.val(ui.item.label);
-            majeurId.val(ui.item.value);
+    $(".jour").click(function(event) {
+         var dialog = $('#mySmallModal');
 
-            return false;
-        }
-    });
+        dialog.modal('show');
 
-    $('#btnClearFilters').on('click', function(e) {
-        $.ajax({
-            url: "{{ path('ajax_calendrier_clear_filter') }}",
-            dataType: "json",
-            data: {
-                clearCalendrierFilter: 1
-            },
-            success: function (reponse)
-            {
-                window.location.href = "{{ path('user_visites_calendrier') }}";
-            },
-        });
-    });
-
-    $("#btn_delete").on("click", function(e) {
-        var el = document.querySelector('#btn_delete');
-        const id = el.dataset.typeFraisId;
-
-        window.location.href = "user/visite/delete/" + id;
-    });
-
-    function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.typeFraisId = id;
+        const mois = this.dataset.mois;
+        const jour = this.dataset.jour;
+        const annee = $("#calendrier_filter_type2_annee").val();
 
         $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteTypeFrais') }}",#}
+            url: "{{ path('ajax_visite_toggle_visite') }}",
             dataType: "json",
             data: {
-                "typeFraisId": id
+                "jour": jour,
+                "mois": mois,
+                "annee": annee,
+                "majeurId": {{ majeur.id }}
             },
 
             success: function (reponse)
             {
-                if (reponse['data']) {
-                    var dialog = $('#yesNoModal');
-
-                    dialog.find('.modal-body').text("Supprimer la visite " + name + " ?");
-                    dialog.modal('show');
+                dialog.modal('hide');
+                if (reponse['data'] == 1) { // visite supprimee
+                    $(event.target).removeClass('btn-success');
+                    $(event.target).removeClass('font-weight-bold');
                 } else {
-                    $("#typeFrais_name").html(name);
-                    $("#myModal").modal();
+                    $(event.target).addClass('btn-success');
+                    $(event.target).addClass('font-weight-bold');
                 }
             },
 
             error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
+                dialog.modal('hide');
             }
         });
-    }
+    });
 </script>
 {% endblock %}

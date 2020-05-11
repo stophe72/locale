@@ -28,9 +28,9 @@
                     <td>{{ majeur }}</td>
                     <td>{{ majeur.jugement.numeroRG }}</td>
                     <td>{{ majeur.numeroSS }}</td>
-                    <td class="col-sm-3">
+                    <td>
                         <div class="row float-right pr-4">
-                            <div class="btn-group mr-3">
+                            <div class="btn-group">
                                 <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-primary">
                                     <i class="fa fa-info-circle"></i> Détails
                                 </a>
@@ -44,6 +44,27 @@
                                     <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
                                         <i class="fa fa-trash"></i> Supprimer
                                     </a>
+                                </div>
+                            </div>
+                            <div class="dropdown mx-2">
+                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <i class="fa fa-handshake"></i> Visites
+                                </button>
+                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                    {% if majeur.donneeBancaireEntities is not empty %}
+                                        <div class="dropdown-header">COMPTES</div>
+                                        {% for db in majeur.donneeBancaireEntities %}
+                                            <a class="dropdown-item" href="{{ path("user_comptesgestion", { 'id': db.id }) }}">
+                                                {{ db }}
+                                                <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
+                                                <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
+                                            </a>
+                                        {% endfor %}
+                                        <div class="dropdown-divider"></div>
+                                    {% endif %}
+                                    <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}"><i class="fas fa-file-import"></i> Import d'opérations</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}">Gérer</a>
                                 </div>
                             </div>
                             <div class="dropdown">
@@ -62,6 +83,8 @@
                                         {% endfor %}
                                         <div class="dropdown-divider"></div>
                                     {% endif %}
+                                    <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}"><i class="fas fa-file-import"></i> Import d'opérations</a>
+                                    <div class="dropdown-divider"></div>
                                     <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}">Gérer</a>
                                 </div>
                             </div>

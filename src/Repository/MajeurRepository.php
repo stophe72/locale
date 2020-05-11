@@ -23,6 +23,9 @@ class MajeurRepository extends ServiceEntityRepository
     public function getAllOrderByNomPrenom(UserEntity $user)
     {
         $qb = $this->createQueryBuilder('m')
+            ->innerJoin('m.user', 'u')
+            ->where('u = :userId')
+            ->setParameter('userId', $user->getId())
             ->orderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC');
 

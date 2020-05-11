@@ -21,7 +21,7 @@ class VisiteType extends AbstractType
                 'majeur',
                 ChoiceType::class,
                 [
-                    'label' => 'Majeurs',
+                    'label' => 'Majeur',
                     'choices' => $majeurs,
                     'choice_label' => function (MajeurEntity $majeur) {
                         return $majeur->getNom()  . ' ' . $majeur->getPrenom();
@@ -31,6 +31,7 @@ class VisiteType extends AbstractType
                     },
                     'attr' => [
                         'class' => 'custom-select',
+                        'size' => 12,
                     ],
                 ]
             )

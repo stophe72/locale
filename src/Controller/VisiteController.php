@@ -2,15 +2,20 @@
 
 namespace App\Controller;
 
+use App\Entity\MajeurEntity;
 use App\Entity\VisiteEntity;
 use App\Form\CalendrierFilterType;
+use App\Form\CalendrierFilterType2;
 use App\Form\VisiteFilterType;
 use App\Form\VisiteType;
 use App\Models\CalendrierVisiteFilter;
+use App\Models\CalendrierVisiteFilter2;
 use App\Models\VisiteFilter;
 use App\Repository\MajeurRepository;
 use App\Repository\VisiteRepository;
 use App\Util\Calendrier;
+use App\Util\Util;
+use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -190,6 +195,48 @@ class VisiteController extends AbstractController
     }
 
     /**
+     * @Route("user/visites/calendrier2/{id}", name="user_visites_calendrier2")
+     * @param Request          $request
+     * @param VisiteRepository $visiteRepository
+     * @return Response
+     */
+    public function calendrier2(MajeurEntity $majeur, Request $request, VisiteRepository $visiteRepository)
+    {
+        $user = $this->security->getUser();
+        $filter = new CalendrierVisiteFilter2();
+
+        $form = $this->createForm(CalendrierFilterType2::class, $filter);
+        $form->handleRequest($request);
+
+        $filter->setMajeurId($majeur->getId());
+        if (!$filter->getAnnee()) {
+            $filter->setAnnee(date('Y'));
+        }
+
+        $visites = $visiteRepository->getFromCalendrierFilter2($user, $filter);
+        $calendrier = new Calendrier($visites, $filter->getAnnee());
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            // nouvelle visite
+            $nextAction = $form->get('add_visite')->isClicked()
+                ? 'task_new'
+                : 'task_success';
+        }
+
+        return $this->render(
+            'visite/calendrier.html.twig',
+            [
+                'majeur' => $majeur,
+                'form' => $form->createView(),
+                // 'baseEntity' => $visite,
+                'page_title' => 'Calendrier des visites',
+                'calendrier' => $calendrier->generate(),
+                // 'url_back' => $this->generateUrl('user_visites'),
+            ]
+        );
+    }
+
+    /**
      * @Route("user/visite/ajaxVisiteClearFilter", name="ajax_visite_clear_filter")
      * @param Request $request
      * @return JsonResponse
@@ -201,7 +248,7 @@ class VisiteController extends AbstractController
         }
         return new JsonResponse(
             [
-                'success' => 1,
+                'data' => 1,
             ]
         );
     }
@@ -218,7 +265,7 @@ class VisiteController extends AbstractController
         }
         return new JsonResponse(
             [
-                'success' => 1,
+                'data' => 1,
             ]
         );
     }
@@ -236,5 +283,54 @@ class VisiteController extends AbstractController
             $em->flush();
         }
         return $this->redirectToRoute('user_visites');
+    }
+
+
+    /**
+     * @Route("user/visite/ajaxVisiteToggleVisite", name="ajax_visite_toggle_visite")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function ajaxVisiteToggleVisite(Request $request)
+    {
+        $user = $this->security->getUser();
+        $em = $this->getDoctrine()->getManager();
+
+        $data = 0;
+        $jour = $request->get('jour', 0);
+        $mois = $request->get('mois', 0);
+        $annee = $request->get('annee', 0);
+        $majeurId = $request->get('majeurId', 0);
+
+        $majeurRepo = $em->getRepository(MajeurEntity::class);
+        $majeur = $majeurRepo->find($majeurId);
+
+        if ($majeur && $majeur->isOwnBy($user) && Util::verifyDate($jour . '/' . $mois . '/' . $annee)) {
+            $date = new DateTime();
+            $date->setDate($annee, $mois, $jour);
+
+            $visiteRepo = $em->getRepository(VisiteEntity::class);
+            $visite = $visiteRepo->findBy(['majeur' => $majeur, 'date' => $date]);
+            if ($visite) {
+                $em->remove($visite[0]);
+
+                $data = 1;
+            } else {
+                $visite = new VisiteEntity();
+                $visite->setMajeur($majeur);
+                $visite->setDate($date);
+
+                $em->persist($visite);
+
+                $data = 2;
+            }
+            $em->flush();
+        }
+
+        return new JsonResponse(
+            [
+                'data' => $data,
+            ]
+        );
     }
 }

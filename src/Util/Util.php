@@ -2,6 +2,7 @@
 
 namespace App\Util;
 
+use DateTime;
 use DateTimeInterface;
 
 class Util
@@ -17,5 +18,17 @@ class Util
             $date1,
             $date2,
         ];
+    }
+
+    public static function verifyDate(string $date, string $format = 'd/m/Y', bool $strict = true)
+    {
+        $dateTime = DateTime::createFromFormat($format, $date);
+        if ($strict) {
+            $errors = DateTime::getLastErrors();
+            if (!empty($errors['warning_count'])) {
+                return false;
+            }
+        }
+        return $dateTime !== false;
     }
 }

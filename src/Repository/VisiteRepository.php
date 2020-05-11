@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\UserEntity;
 use App\Entity\VisiteEntity;
 use App\Models\CalendrierVisiteFilter;
+use App\Models\CalendrierVisiteFilter2;
 use App\Models\VisiteFilter;
 use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -57,6 +58,20 @@ class VisiteRepository extends ServiceEntityRepository
     }
 
     public function getFromCalendrierFilter(UserEntity $user, CalendrierVisiteFilter $visiteFilter)
+    {
+        $qb = $this->createQueryBuilder('v');
+        $qb->innerJoin('v.majeur', 'm')
+            ->innerJoin('m.user', 'u', Join::WITH, 'm.user = :userId')
+            ->andWhere('m = :majeurId')
+            ->andWhere('YEAR(v.date) = :annee')
+            ->setParameter('userId', $user->getId())
+            ->setParameter('majeurId', $visiteFilter->getMajeurId())
+            ->setParameter('annee', $visiteFilter->getAnnee());
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function getFromCalendrierFilter2(UserEntity $user, CalendrierVisiteFilter2 $visiteFilter)
     {
         $qb = $this->createQueryBuilder('v');
         $qb->innerJoin('v.majeur', 'm')
