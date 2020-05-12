@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <div id="mySmallModal" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div id="mySmallModal" class="modal bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm  modal-dialog-centered">
             <div class="modal-content">
                 <div id="loadingDiv" class="text-primary spinner-border spinner-border-sm align-self-center my-3"></div>
@@ -93,8 +93,7 @@
     let majeurId = $("#calendrier_filter_majeurId");
 
     $(".jour").click(function(event) {
-         var dialog = $('#mySmallModal');
-
+        let dialog = $('#mySmallModal');
         dialog.modal('show');
 
         const mois = this.dataset.mois;
@@ -113,7 +112,6 @@
 
             success: function (reponse)
             {
-                dialog.modal('hide');
                 if (reponse['data'] == 1) { // visite supprimee
                     $(event.target).removeClass('btn-success');
                     $(event.target).removeClass('font-weight-bold');
@@ -121,6 +119,7 @@
                     $(event.target).addClass('btn-success');
                     $(event.target).addClass('font-weight-bold');
                 }
+                dialog.modal('hide');
             },
 
             error: function(xhr, textStatus, errorThrown) {
