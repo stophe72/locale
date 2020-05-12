@@ -1,31 +1,19 @@
 {% extends 'layout_fluid.html.twig' %}
 
-{% form_theme form 'bootstrap_4_layout.html.twig' %}
-
 {% block content %}
     <div class="row my-4">
         <div class="col-sm-4 offset-2">
             <h3 class="text-primary"><i class="fas fa-calendar-check"></i> {{ page_title }}</h3>
         </div>
         <div class="col-sm-4 text-right">
-            <button type="button" class="btn btn-outline-primary px-3 mr-3"><i class="fa fa-backward"></i></button>
-            <strong><span id="lbl_annee">2020</span></strong>
-            <button type="button" class="btn btn-outline-primary px-3 ml-3"><i class="fa fa-forward"></i></button>
+            <button data-annee="{{ annee - 1 }}" type="button" class="btn-add-annee btn btn-outline-primary px-3 mr-3"><i class="fa fa-backward"></i></button>
+            <strong><span id="lbl_annee">{{ annee }}</span></strong>
+            <button data-annee="{{ annee + 1 }}" type="button" class="btn-add-annee btn btn-outline-primary px-3 ml-3"><i class="fa fa-forward"></i></button>
         </div>
     </div>
-    {{ form_start(form, {'attr': {'id': 'form_calendrier'}}) }}
+    <input type="hidden" id="cur_annee" value="{{ annee }}"></input>
     <div class="row">
-         <div class="col-sm-2 mt-2">
-            {{ form_row(form.annee) }}
-            {{ form_row(form.jour) }}
-            {{ form_row(form.mois) }}
-            {{ form_row(form.majeurId) }}
-            <div class="float-right mt-3">
-                <button id="btn_filtrer" type="submit" class="btn btn-outline-secondary"><i class="fa fa-filter"></i> Appliquer</button>
-                <button id="btnClearFilters" type="button" class="btn btn-outline-secondary"><i class="fas fa-times"></i></button>
-            </div>
-        </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8 offset-2">
             <div class="row">
             {% for mois, jours in calendrier %}
                 <div class="col-sm-3">
@@ -82,28 +70,37 @@
     </div>
 
     <div id="mySmallModal" class="modal bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-sm  modal-dialog-centered">
+        <div class="modal-dialog modal-sm">
             <div class="modal-content">
-                <div id="loadingDiv" class="text-primary spinner-border spinner-border-sm align-self-center my-3"></div>
-                <div class="text-center text-secondary mb-2">Enregistrement</div>
+                <div class="text-primary spinner-border spinner-border-sm align-self-center my-3"></div>
+                <div id="modal_text" class="text-center text-secondary mb-2">Enregistrement</div>
             </div>
         </div>
     </div>
-    {{ form_end(form) }}
 {% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript">
-    let majeurName = $("#calendrier_filter_majeurNom");
-    let majeurId = $("#calendrier_filter_majeurId");
+    $(".btn-add-annee").click(function(event) {
+        let dialog = $('#mySmallModal');
+        dialog.find("#modal_text").text("Chargement");
+        dialog.modal('show');
+
+        let annee = this.dataset.annee;
+        let url = "{{ path("user_visites", { "id": majeur.id, "annee": 0 }) }}";
+        url = url.replace("0", annee);
+
+        window.location.href = url;
+    });
 
     $(".jour").click(function(event) {
         let dialog = $('#mySmallModal');
         dialog.modal('show');
+         {# $('.modal-backdrop').removeClass("modal-backdrop"); #}
 
         const mois = this.dataset.mois;
         const jour = this.dataset.jour;
-        const annee = $("#calendrier_filter_type2_annee").val();
+        const annee = $("#cur_annee").val();
 
         $.ajax({
             url: "{{ path('ajax_visite_toggle_visite') }}",
