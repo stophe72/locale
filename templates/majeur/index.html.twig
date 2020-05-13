@@ -46,27 +46,7 @@
                                     </a>
                                 </div>
                             </div>
-                            <div class="dropdown mx-2">
-                                <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <i class="fa fa-handshake"></i> Visites
-                                </button>
-                                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                    {% if majeur.donneeBancaireEntities is not empty %}
-                                        <div class="dropdown-header">COMPTES</div>
-                                        {% for db in majeur.donneeBancaireEntities %}
-                                            <a class="dropdown-item" href="{{ path("user_comptesgestion", { 'id': db.id }) }}">
-                                                {{ db }}
-                                                <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
-                                                <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
-                                            </a>
-                                        {% endfor %}
-                                        <div class="dropdown-divider"></div>
-                                    {% endif %}
-                                    <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}"><i class="fas fa-file-import"></i> Import d'opérations</a>
-                                    <div class="dropdown-divider"></div>
-                                    <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}">Gérer</a>
-                                </div>
-                            </div>
+                            <a class="mx-2 btn btn-primary" href="{{ path("user_visites", { "id": majeur.id } ) }}"><i class="fa fa-handshake"></i> Visites</a>
                             <div class="dropdown">
                                 <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <i class="fa fa-university"></i> Comptes
