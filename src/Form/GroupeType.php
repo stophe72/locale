@@ -2,15 +2,15 @@
 
 namespace App\Form;
 
-use App\Entity\UserGroupeEntity;
+use App\Entity\GroupeEntity;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class UserGroupeType extends BaseLibelleType
+class GroupeType extends BaseLibelleType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => UserGroupeEntity::class,
+            'data_class' => GroupeEntity::class,
         ]);
     }
 }

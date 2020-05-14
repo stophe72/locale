@@ -7,7 +7,7 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("admin_usergroupe_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+            <a href="{{ path("admin_groupe_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -18,14 +18,14 @@
                     <th></th>
                 </tr>
             </thead>
-            {% for usergroupe in usergroupes %}
+            {% for groupe in groupes %}
                 <tr>
-                    <td>{{ usergroupe.libelle }}</td>
+                    <td>{{ groupe.libelle }}</td>
                     <td class="text-right">
-                        <a href="{{ path('admin_usergroupe_edit', {'id': usergroupe.id}) }}" title="Détails du groupe" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('admin_groupe_edit', {'id': groupe.id}) }}" title="Détails du groupe" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ usergroupe.id }}, "{{ usergroupe.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ groupe.id }}, "{{ groupe.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
@@ -62,7 +62,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>Le groupe "<span id="usergroupe_name"></span>" est utilisé.</p>
+                    <p>Le groupe "<span id="groupe_name"></span>" est utilisé.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -76,19 +76,19 @@
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
-        const id = el.dataset.usergroupeId;
+        const id = el.dataset.groupeId;
 
-        window.location.href = "/usergroupe/delete/" + id;
+        window.location.href = "/groupe/delete/" + id;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.usergroupeId = id;
+        document.getElementById('btn_delete').dataset.groupeId = id;
 
         $.ajax({
             url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
             dataType: "json",
             data: {
-                "usergroupeId": id
+                "groupeId": id
             },
 
             success: function (reponse)
@@ -96,10 +96,10 @@
                 if (reponse['data']) {
                     var dialog = $('#yesNoModal');
 
-                    dialog.find('.modal-body').text("Supprimer le usergroupe " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer le groupe " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#usergroupe_name").html(name);
+                    $("#groupe_name").html(name);
                     $("#myModal").modal();
                 }
             },

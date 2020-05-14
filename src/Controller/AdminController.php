@@ -120,19 +120,4 @@ class AdminController extends AbstractController
         }
         return $this->redirectToRoute(self::ROUTE_USERS);
     }
-
-    /**
-     * @Route("admin/user/show/{id}", name="admin_user_show")
-     */
-    public function showUser(UserEntity $user, UserRepository $userRepository)
-    {
-        return $this->render(
-            'admin/user_show.html.twig',
-            [
-                'user' => $user,
-                'page_title' => 'Détails d\'un utilisateur',
-                'url_back'   => $this->generateUrl('admin_users'),
-            ]
-        );
-    }
 }

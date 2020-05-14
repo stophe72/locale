@@ -3,11 +3,7 @@
 {% set icone = "fas fa-user" %}
 
 {% block form_content %}
-    {{ form_row(form.nom) }}
-    {{ form_row(form.prenom) }}
     {{ form_row(form.email) }}
-    {{ form_row(form.groupe) }}
-    {{ form_widget(form.adresse) }}
     {{ form_row(form.password) }}
     {{ form_row(form.administrateur) }}
 {% endblock %}

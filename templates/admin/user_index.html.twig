@@ -15,8 +15,6 @@
                 <tr>
                     <th>Id</th>
                     <th>Email</th>
-                    <th>Nom</th>
-                    <th>Groupe</th>
                     <th>Rôles</th>
                     <th></th>
                 </tr>
@@ -26,13 +24,8 @@
                 <tr>
                     <td>{{ user.id }}</td>
                     <td>{{ user.email }}</td>
-                    <td>{{ user.nom }} {{ user.prenom }}</td>
-                    <td>{{ user.groupe }}</td>
                     <td>{{ user.roles|join(', ', ' et ') }} </td>
                     <td class="text-right">
-                        <a href="{{ path("admin_user_show", { "id": user.id}) }}" title="Détails d'un utilisateur" class="btn btn-outline-primary btn-sm">
-                            <i class="fa fa-info-circle"></i> Détails
-                        </a>
                         <a href="{{ path('admin_user_edit', {'id': user.id}) }}" title="Editer un utilisateur" class="btn btn-outline-primary btn-sm mx-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>

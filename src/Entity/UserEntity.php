@@ -16,20 +16,6 @@ class UserEntity extends BaseEntity implements UserInterface
 {
     /**
      * @Assert\NotBlank
-     *
-     * @ORM\Column(name="nom", type="string", length=100, nullable=false)
-     */
-    private $nom;
-
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(name="prenom", type="string", length=100, nullable=false)
-     */
-    private $prenom;
-
-    /**
-     * @Assert\NotBlank
      * @Assert\Email(
      *     message = "L'adresse email '{{ value }}' n'est pas une adresse valide."
      * )
@@ -56,21 +42,6 @@ class UserEntity extends BaseEntity implements UserInterface
      */
     private $password;
 
-    /**
-     * @Assert\NotNull
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\AdresseEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="adresseId", referencedColumnName="id", nullable=false)
-     */
-    private $adresse;
-
-    /**
-     * @Assert\NotNull
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserGroupeEntity")
-     * @ORM\JoinColumn(name="groupeId", referencedColumnName="id", nullable=false)
-     */
-    private $groupe;
 
     /**
      * @var boolean
@@ -175,92 +146,8 @@ class UserEntity extends BaseEntity implements UserInterface
         return $this;
     }
 
-    /**
-     * Get the value of adresse
-     *
-     * @return  AdresseEntity
-     */
-    public function getAdresse(): ?AdresseEntity
-    {
-        return $this->adresse;
-    }
-
-    /**
-     * Set the value of adresse
-     *
-     * @param  AdresseEntity  $adresse
-     *
-     * @return  self
-     */
-    public function setAdresse(AdresseEntity $adresse)
-    {
-        $this->adresse = $adresse;
-
-        return $this;
-    }
-
-    /**
-     * Get the value of nom
-     */
-    public function getNom()
-    {
-        return $this->nom;
-    }
-
-    /**
-     * Set the value of nom
-     *
-     * @return  self
-     */
-    public function setNom($nom)
-    {
-        $this->nom = strtoupper($nom);
-
-        return $this;
-    }
-
-    /**
-     * Get the value of prenom
-     */
-    public function getPrenom()
-    {
-        return $this->prenom;
-    }
-
-    /**
-     * Set the value of prenom
-     *
-     * @return  self
-     */
-    public function setPrenom($prenom)
-    {
-        $this->prenom = ucfirst($prenom);
-
-        return $this;
-    }
-
     public function __toString()
     {
-        return $this->getNom() . ' ' . $this->getPrenom();
-    }
-
-    /**
-     * Get the value of groupe
-     */
-    public function getGroupe(): ?UserGroupeEntity
-    {
-        return $this->groupe;
-    }
-
-    /**
-     * Set the value of groupe
-     *
-     * @return  self
-     */
-    public function setGroupe(?UserGroupeEntity $groupe)
-    {
-        $this->groupe = $groupe;
-
-        return $this;
+        return $this->getEmail();
     }
 }
