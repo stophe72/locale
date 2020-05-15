@@ -61,7 +61,7 @@ class VisiteController extends AbstractController
                 'page_title' => 'Calendrier des visites',
                 'calendrier' => $calendrier->generate(),
                 'annee' => $annee,
-                // 'url_back' => $this->generateUrl('user_visites'),
+                'url_back' => $this->generateUrl('user_majeurs'),
             ]
         );
     }
