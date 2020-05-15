@@ -69,7 +69,7 @@ class MandataireEntity extends BaseUserEntity
      */
     public function setNom(string $nom)
     {
-        $this->nom = $nom;
+        $this->nom = strtoupper($nom);
 
         return $this;
     }
@@ -93,7 +93,7 @@ class MandataireEntity extends BaseUserEntity
      */
     public function setPrenom(string $prenom)
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucfirst($prenom);
 
         return $this;
     }

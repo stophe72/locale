@@ -20,12 +20,12 @@
             </thead>
             {% for mandataire in mandataires %}
                 <tr>
-                    <td>{{ mandataire.libelle }}</td>
+                    <td>{{ mandataire }}</td>
                     <td class="text-right">
                         <a href="{{ path('admin_mandataire_edit', {'id': mandataire.id}) }}" title="Détails du mandataire" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ mandataire.id }}, "{{ mandataire.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ mandataire.id }}, "{{ mandataire }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
@@ -75,39 +75,21 @@
 {% block javascripts %}
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
-        var el = document.querySelector('#btn_delete');
+        let el = document.querySelector('#btn_delete');
         const id = el.dataset.mandataireId;
 
-        window.location.href = "/mandataire/delete/" + id;
+        let url = "{{ path("user_mandataire_delete", { "id": 0} ) }}";
+        url = url.replace("0", id);
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.mandataireId = id;
 
-        $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
-            dataType: "json",
-            data: {
-                "mandataireId": id
-            },
+        var dialog = $('#yesNoModal');
 
-            success: function (reponse)
-            {
-                if (reponse['data']) {
-                    var dialog = $('#yesNoModal');
-
-                    dialog.find('.modal-body').text("Supprimer le mandataire " + name + " ?");
-                    dialog.modal('show');
-                } else {
-                    $("#mandataire_name").html(name);
-                    $("#myModal").modal();
-                }
-            },
-
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
+        dialog.find('.modal-body').text("Supprimer le mandataire " + name + " ?");
+        dialog.modal('show');
     }
 </script>
 {% endblock %}

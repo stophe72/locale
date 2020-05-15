@@ -101,4 +101,21 @@ class MandataireController extends AbstractController
             'url_back' => $this->generateUrl('admin_mandataires'),
         ]);
     }
+
+
+    /**
+     * @Route("user/mandataire/delete/{id}", name="user_mandataire_delete")
+     */
+    public function delete(
+        MandataireEntity $mandataire,
+        MandataireRepository $mandataireRepository
+    ) {
+        $user = $this->security->getUser();
+        if ($mandataire && $mandataire->isOwnBy($user)) {
+            $em = $this->getDoctrine()->getManager();
+            $em->remove($mandataire);
+            $em->flush();
+        }
+        return $this->redirectToRoute('admin_mandataires');
+    }
 }
