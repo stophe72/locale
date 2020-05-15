@@ -6,11 +6,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\NatureRepository")
- * @ORM\Table(name="nature")
+ * @ORM\Entity(repositoryClass="App\Repository\MesureRepository")
+ * @ORM\Table(name="mesure")
  * @UniqueEntity("code")
  */
-class NatureEntity extends BaseCodeLibelleEntity
+class MesureEntity extends BaseCodeLibelleEntity
 {
     public function __toString()
     {

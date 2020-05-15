@@ -14,10 +14,10 @@ class ParametreMissionEntity extends BaseEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\NatureEntity")
-     * @ORM\JoinColumn(name="natureId", referencedColumnName="id", nullable=false)
+     * @ORM\ManyToOne(targetEntity="App\Entity\MesureEntity")
+     * @ORM\JoinColumn(name="mesureId", referencedColumnName="id", nullable=false)
      */
-    private $nature;
+    private $mesure;
 
     /**
      * @Assert\NotNull
@@ -37,14 +37,14 @@ class ParametreMissionEntity extends BaseEntity
     private $lieuVie;
 
 
-    public function getNature(): ?NatureEntity
+    public function getMesure(): ?MesureEntity
     {
-        return $this->nature;
+        return $this->mesure;
     }
 
-    public function setNature(?NatureEntity $nature): self
+    public function setMesure(?MesureEntity $mesure): self
     {
-        $this->nature = $nature;
+        $this->mesure = $mesure;
 
         return $this;
     }

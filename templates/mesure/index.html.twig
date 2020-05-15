@@ -7,7 +7,7 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_nature_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+            <a href="{{ path("user_mesure_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -19,15 +19,15 @@
                     <th></th>
                 </tr>
             </thead>
-            {% for nature in natures %}
+            {% for mesure in mesures %}
                 <tr>
-                    <td>{{ nature.code }}</td>
-                    <td>{{ nature.libelle }}</td>
+                    <td>{{ mesure.code }}</td>
+                    <td>{{ mesure.libelle }}</td>
                     <td class="text-right">
-                        <a href="{{ path('user_nature_edit', {'id': nature.id}) }}" title="Détails de la nature" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('user_mesure_edit', {'id': mesure.id}) }}" title="Détails de la mesure" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
-                        <a href="#" onclick='del_confirm({{ nature.id }}, "{{ nature.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                        <a href="#" onclick='del_confirm({{ mesure.id }}, "{{ mesure.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
                             <i class="fa fa-trash"></i> Supprimer
                         </a>
                     </td>
@@ -43,7 +43,7 @@
                     <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
                 </div>
                 <div class="modal-body">
-                    Supprimer la nature de mission ?
+                    Supprimer la mesure de mission ?
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
@@ -64,7 +64,7 @@
                 </div>
                 <div class="modal-body">
                     <p>Suppression impossible</p>
-                    <p>La nature "<span id="nature_name"></span>" est utilisée.</p>
+                    <p>La mesure "<span id="mesure_name"></span>" est utilisée.</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
@@ -77,20 +77,22 @@
 {% block javascripts %}
 <script type="text/javascript">
     $("#btn_delete").on("click", function(e) {
-        var el = document.querySelector('#btn_delete');
-        const id = el.dataset.natureId;
+        let el = document.querySelector('#btn_delete');
+        const id = el.dataset.mesureId;
 
-        window.location.href = "/nature/delete/" + id;
+        let url = "{{ path("user_mesure_delete", { "id": 0} ) }}";
+        url = url.replace("0", id);
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
-        document.getElementById('btn_delete').dataset.natureId = id;
+        document.getElementById('btn_delete').dataset.mesureId = id;
 
         $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            url: "{{ path('ajaxCanDeleteMesure') }}",
             dataType: "json",
             data: {
-                "natureId": id
+                "mesureId": id
             },
 
             success: function (reponse)
@@ -98,10 +100,10 @@
                 if (reponse['data']) {
                     var dialog = $('#yesNoModal');
 
-                    dialog.find('.modal-body').text("Supprimer la nature de mission " + name + " ?");
+                    dialog.find('.modal-body').text("Supprimer la mesure " + name + " ?");
                     dialog.modal('show');
                 } else {
-                    $("#nature_name").html(name);
+                    $("#mesure_name").html(name);
                     $("#myModal").modal();
                 }
             },

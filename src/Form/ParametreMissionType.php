@@ -3,11 +3,11 @@
 namespace App\Form;
 
 use App\Entity\LieuVieEntity;
-use App\Entity\NatureEntity;
+use App\Entity\MesureEntity;
 use App\Entity\ParametreMissionEntity;
 use App\Entity\ProtectionEntity;
 use App\Repository\LieuVieRepository;
-use App\Repository\NatureRepository;
+use App\Repository\MesureRepository;
 use App\Repository\ProtectionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
@@ -23,12 +23,12 @@ class ParametreMissionType extends AbstractType
                 'nature',
                 EntityType::class,
                 [
-                    'class' => NatureEntity::class,
+                    'class' => MesureEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
                     ],
-                    'query_builder' => function (NatureRepository $natureRepository) {
-                        return $natureRepository->createQueryBuilder('db')
+                    'query_builder' => function (MesureRepository $MesureRepository) {
+                        return $MesureRepository->createQueryBuilder('db')
                             ->orderBy('db.libelle', 'ASC');
                     },
                 ]

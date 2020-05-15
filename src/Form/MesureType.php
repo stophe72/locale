@@ -2,15 +2,15 @@
 
 namespace App\Form;
 
-use App\Entity\NatureEntity;
+use App\Entity\MesureEntity;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class NatureType extends BaseCodeLibelleType
+class MesureType extends BaseCodeLibelleType
 {
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => NatureEntity::class,
+            'data_class' => MesureEntity::class,
         ]);
     }
 }
