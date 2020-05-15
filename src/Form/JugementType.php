@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\JugementEntity;
 use App\Entity\TribunalEntity;
+use App\Repository\TribunalRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
@@ -55,6 +56,10 @@ class JugementType extends AbstractType
                     'attr' => [
                         'class' => 'custom-select',
                     ],
+                    'query_builder' => function (TribunalRepository $tribunalRepository) {
+                        return $tribunalRepository->createQueryBuilder('db')
+                            ->orderBy('db.libelle', 'ASC');
+                    },
                 ]
             );
     }

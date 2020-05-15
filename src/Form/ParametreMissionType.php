@@ -6,6 +6,9 @@ use App\Entity\LieuVieEntity;
 use App\Entity\NatureEntity;
 use App\Entity\ParametreMissionEntity;
 use App\Entity\ProtectionEntity;
+use App\Repository\LieuVieRepository;
+use App\Repository\NatureRepository;
+use App\Repository\ProtectionRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,7 +26,11 @@ class ParametreMissionType extends AbstractType
                     'class' => NatureEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'query_builder' => function (NatureRepository $natureRepository) {
+                        return $natureRepository->createQueryBuilder('db')
+                            ->orderBy('db.libelle', 'ASC');
+                    },
                 ]
             )
             ->add(
@@ -33,7 +40,11 @@ class ParametreMissionType extends AbstractType
                     'class' => ProtectionEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'query_builder' => function (ProtectionRepository $protectionRepository) {
+                        return $protectionRepository->createQueryBuilder('db')
+                            ->orderBy('db.libelle', 'ASC');
+                    },
                 ]
             )
             ->add(
@@ -44,7 +55,11 @@ class ParametreMissionType extends AbstractType
                     'class' => LieuVieEntity::class,
                     'attr' => [
                         'class' => 'custom-select',
-                    ]
+                    ],
+                    'query_builder' => function (LieuVieRepository $lieuVieRepository) {
+                        return $lieuVieRepository->createQueryBuilder('db')
+                            ->orderBy('db.libelle', 'ASC');
+                    },
                 ]
             );
     }
