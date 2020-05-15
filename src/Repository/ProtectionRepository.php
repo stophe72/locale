@@ -2,9 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\ParametreMissionEntity;
 use App\Entity\ProtectionEntity;
+use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method ProtectionEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,32 +22,17 @@ class ProtectionRepository extends ServiceEntityRepository
         parent::__construct($registry, ProtectionEntity::class);
     }
 
-    // /**
-    //  * @return ProtectionEntity[] Returns an array of ProtectionEntity objects
-    //  */
-    /*
-    public function findByExampleField($value)
+    public function countById(UserEntity $user, int $id)
     {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('p.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-    */
+        $qb = $this->createQueryBuilder('p');
+        $qb->select('COUNT(p.id)')
+            ->innerJoin(ParametreMissionEntity::class, 'pm', Join::WITH, 'pm.protection = p')
+            ->innerJoin('p.user', 'u')
+            ->where('p = :protectionId')
+            ->andWhere('u = :userId')
+            ->setParameter('protectionId', $id)
+            ->setParameter('userId', $user->getId());
 
-    /*
-    public function findOneBySomeField($value): ?ProtectionEntity
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
-    */
 }

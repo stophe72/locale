@@ -6,6 +6,7 @@ use App\Entity\ProtectionEntity;
 use App\Form\ProtectionType;
 use App\Repository\ProtectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -92,5 +93,38 @@ class ProtectionController extends AbstractController
                 'url_back'    => $this->generateUrl('user_protections'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/protection/ajaxCanDeleteProtection", name="ajaxCanDeleteProtection")
+     */
+    public function ajaxCanDeleteProtection(
+        Request $request,
+        ProtectionRepository $protectionRepository
+    ) {
+        $user = $this->security->getUser();
+        $protectionId = $request->get('protectionId', -1);
+        $count = $protectionRepository->countById($user, $protectionId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/protection/delete/{id}", name="user_protection_delete")
+     */
+    public function delete(
+        ProtectionEntity $protection,
+        ProtectionRepository $protectionRepository
+    ) {
+        if ($protection) {
+            $user = $this->security->getUser();
+            $count = $protectionRepository->countById($user, $protection->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($protection);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute('user_protections');
     }
 }
