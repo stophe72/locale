@@ -76,11 +76,11 @@
             </tr>
             <tr>
                 <th>Mesure</th>
-                <td>Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
+                <td>{{ majeur.parametreMission.mesure }}</td>
             </tr>
             <tr>
-                <th>Nature de la mission</th>
-                <td>{{ majeur.parametreMission.nature }}</td>
+                <th>Durée de la mesure</th>
+                <td>Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
             </tr>
             <tr>
                 <th>Protection</th>
