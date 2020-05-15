@@ -27,7 +27,15 @@ class MandataireType extends AbstractType
                     ]
                 ]
             )
-            ->add('nom')
+            ->add(
+                'nom',
+                TextType::class,
+                [
+                    'attr' => [
+                        'style' => 'text-transform:uppercase',
+                    ]
+                ]
+            )
             ->add(
                 'prenom',
                 TextType::class,

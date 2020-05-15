@@ -32,7 +32,15 @@ class AdresseType extends AbstractType
             ->add('codePostal', NumberType::class, [
                 'label' => 'Code postal',
             ])
-            ->add('ville', TextType::class);
+            ->add(
+                'ville',
+                TextType::class,
+                [
+                    'attr' => [
+                        'style' => 'text-transform:uppercase',
+                    ]
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)
