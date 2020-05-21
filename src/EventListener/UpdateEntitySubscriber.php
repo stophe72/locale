@@ -3,7 +3,7 @@
 namespace App\EventListener;
 
 use App\Entity\BaseEntity;
-use App\Entity\BaseUserEntity;
+use App\Entity\BaseGroupeEntity;
 use DateTime;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
@@ -35,9 +35,6 @@ class UpdateEntitySubscriber implements EventSubscriber
             $date = new DateTime();
             $entity->setDateCreation($date);
             $entity->setDateModification($date);
-        }
-        if ($entity instanceof BaseUserEntity) {
-            $entity->setUser($this->security->getUser());
         }
     }
 

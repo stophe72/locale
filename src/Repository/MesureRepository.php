@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\MesureEntity;
 use App\Entity\ParametreMissionEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -22,16 +22,15 @@ class MesureRepository extends ServiceEntityRepository
         parent::__construct($registry, MesureEntity::class);
     }
 
-    public function countById(UserEntity $user, int $id)
+    public function countById(MandataireEntity $mandataire, int $id)
     {
         $qb = $this->createQueryBuilder('m');
         $qb->select('COUNT(m.id)')
             ->innerJoin(ParametreMissionEntity::class, 'pm', Join::WITH, 'pm.mesure = m')
-            ->innerJoin('m.user', 'u')
             ->where('m = :mesureId')
-            ->andWhere('u = :userId')
+            ->andWhere('m.groupe = :groupeId')
             ->setParameter('mesureId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

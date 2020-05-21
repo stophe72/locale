@@ -3,24 +3,22 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\GroupeRepository")
- * @ORM\Table(name="groupe")
- * @UniqueEntity("libelle")
+ * @ORM\MappedSuperclass
  */
-class GroupeEntity extends BaseEntity
+class BaseGroupeLibelleEntity extends BaseEntity
 {
     /**
-     * @var UserEntity
+     * @var GroupeEntity
      *
-     * @ORM\ManyToOne(targetEntity="App\Entity\UserEntity")
-     * @ORM\JoinColumn(name="userId", referencedColumnName="id", nullable=false)
+     * @Assert\NotNull
+     * @ORM\ManyToOne(targetEntity="App\Entity\GroupeEntity")
+     * @ORM\JoinColumn(name="groupeId", referencedColumnName="id", nullable=false)
      */
+    private $groupe;
 
-    private $user;
     /**
      * @Assert\NotBlank
      * @Assert\Length(
@@ -36,48 +34,50 @@ class GroupeEntity extends BaseEntity
      */
     private $libelle;
 
-    /**
-     * Get the value of user
-     *
-     * @return  UserEntity
-     */
-    public function getUser()
+
+    public function isOwnBy(UserEntity $user)
     {
-        return $this->user;
+        return $this->getGroupe()->getId() == $user->getId();
     }
 
     /**
-     * Set the value of user
+     * Get the value of groupe
      *
-     * @param  UserEntity  $user
+     * @return  GroupeEntity
+     */
+    public function getGroupe()
+    {
+        return $this->groupe;
+    }
+
+    /**
+     * Set the value of groupe
+     *
+     * @param  GroupeEntity  $groupe
      *
      * @return  self
      */
-    public function setUser(UserEntity $user)
+    public function setGroupe(GroupeEntity $groupe)
     {
-        $this->user = $user;
+        $this->groupe = $groupe;
 
         return $this;
     }
 
     /**
-     * Get )
-     *
      * @return  string
      */
-    public function getLibelle()
+    public function getLibelle(): ?string
     {
         return $this->libelle;
     }
 
     /**
-     * Set )
-     *
-     * @param  string  $libelle  )
+     * @param  string  $libelle
      *
      * @return  self
      */
-    public function setLibelle(string $libelle)
+    public function setLibelle(?string $libelle)
     {
         $this->libelle = $libelle;
 

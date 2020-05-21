@@ -6,7 +6,9 @@ use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
 use App\Form\DonneeBancaireType;
 use App\Repository\DonneeBancaireRepository;
+use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -19,13 +21,25 @@ class DonneeBancaireController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(DonneeBancaireEntity $donneeBancaire)
+    {
+        return $donneeBancaire && $this->getMandataire()->getGroupe() == $donneeBancaire->getMajeur()->getGroupe();
     }
 
     /**
@@ -33,9 +47,7 @@ class DonneeBancaireController extends AbstractController
      */
     public function index(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository)
     {
-        $user = $this->security->getUser();
-
-        $dbs = $donneeBancaireRepository->findByMajeur($user, $majeur);
+        $dbs = $donneeBancaireRepository->findByMajeur($this->getMandataire(), $majeur);
 
         return $this->render('donnee_bancaire/index.html.twig', [
             'donneebancaires' => $dbs,
@@ -89,9 +101,7 @@ class DonneeBancaireController extends AbstractController
         $form = $this->createForm(DonneeBancaireType::class, $donneeBancaire);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($donneeBancaire->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($donneeBancaire) && $form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($donneeBancaire);
             $em->flush();
@@ -115,5 +125,41 @@ class DonneeBancaireController extends AbstractController
                 ]
             ),
         ]);
+    }
+
+    /**
+     * @Route("user/donneebancaire/ajaxCanDeleteAgenceBancaire", name="ajaxCanDeleteDonneeBancaire")
+     */
+    public function ajaxCanDeleteAgenceBancaire(
+        Request $request,
+        DonneeBancaireRepository $donneeBancaireRepository
+    ) {
+        $donneeBancaireId = $request->get('donneebancaireId', -1);
+        $count = $donneeBancaireRepository->countByCompteGestion($this->getMandataire(), $donneeBancaireId);
+
+        return new JsonResponse(['data' => $count == 0]);
+    }
+
+    /**
+     * @Route("user/donneebancaire/delete/{id}", name="user_donneebancaire_delete")
+     */
+    public function delete(
+        DonneeBancaireEntity $donneeBancaire,
+        DonneeBancaireRepository $donneeBancaireRepository
+    ) {
+        if ($this->isInSameGroupe($donneeBancaire)) {
+            $count = $donneeBancaireRepository->countByCompteGestion($this->getMandataire(), $donneeBancaire->getId());
+            if ($count == 0) {
+                $em = $this->getDoctrine()->getManager();
+                $em->remove($donneeBancaire);
+                $em->flush();
+            }
+        }
+        return $this->redirectToRoute(
+            'user_donneebancaires',
+            [
+                'majeur' => $donneeBancaire->getMajeur()->getId(),
+            ]
+        );
     }
 }

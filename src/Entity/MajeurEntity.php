@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\MajeurRepository")
  * @ORM\Table(name="majeur")
  */
-class MajeurEntity extends BaseUserEntity
+class MajeurEntity extends BaseGroupeEntity
 {
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\DonneeBancaireEntity", mappedBy="majeur")
@@ -22,14 +22,14 @@ class MajeurEntity extends BaseUserEntity
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(type="string", length=25)
+     * @ORM\Column(type="string", length=25, nullable=false)
      */
     private $civilite;
 
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $nom;
 
@@ -41,7 +41,7 @@ class MajeurEntity extends BaseUserEntity
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(type="string", length=100)
+     * @ORM\Column(type="string", length=100, nullable=false)
      */
     private $prenom;
 
@@ -70,21 +70,21 @@ class MajeurEntity extends BaseUserEntity
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(name="dateNaissance", type="date")
+     * @ORM\Column(name="dateNaissance", type="date", nullable=false)
      */
     private $dateNaissance;
 
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(name="lieuNaissance", type="string", length=100)
+     * @ORM\Column(name="lieuNaissance", type="string", length=100, nullable=false)
      */
     private $lieuNaissance;
 
     /**
      * @Assert\NotBlank
      *
-     * @ORM\Column(name="numeroSS", type="string", length=100)
+     * @ORM\Column(name="numeroSS", type="string", length=100, nullable=false)
      */
     private $numeroSS;
 
@@ -108,6 +108,12 @@ class MajeurEntity extends BaseUserEntity
      */
     private $nationalite;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="image", type="string", nullable=true)
+     */
+    private $image;
 
 
     public function __construct()
@@ -165,7 +171,7 @@ class MajeurEntity extends BaseUserEntity
 
     public function setNom(string $nom): self
     {
-        $this->nom = $nom;
+        $this->nom = strtoupper($nom);
 
         return $this;
     }
@@ -305,5 +311,29 @@ class MajeurEntity extends BaseUserEntity
     public function __toString()
     {
         return $this->nom . " " . $this->prenom;
+    }
+
+    /**
+     * Get the value of image
+     *
+     * @return  string
+     */
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    /**
+     * Set the value of image
+     *
+     * @param  string  $image
+     *
+     * @return  self
+     */
+    public function setImage(?string $image)
+    {
+        $this->image = $image;
+
+        return $this;
     }
 }

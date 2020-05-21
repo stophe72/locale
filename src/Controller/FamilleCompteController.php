@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\FamilleCompteEntity;
 use App\Form\FamilleCompteType;
 use App\Repository\FamilleCompteRepository;
+use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,25 @@ class FamilleCompteController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(FamilleCompteEntity $familleCompte)
+    {
+        return $familleCompte && $this->getMandataire()->getGroupe() == $familleCompte->getGroupe();
     }
 
     /**
@@ -33,10 +46,8 @@ class FamilleCompteController extends AbstractController
      */
     public function index(FamilleCompteRepository $familleCompteRepository)
     {
-        $user = $this->security->getUser();
-
         return $this->render('famille_compte/index.html.twig', [
-            'familleComptes' => $familleCompteRepository->findBy(['user' => $user->getId(),], ['libelle' => 'ASC']),
+            'familleComptes' => $familleCompteRepository->findBy(['groupe' => $this->getMandataire()->getGroupe(),], ['libelle' => 'ASC']),
             'page_title' => 'Liste des familles de comptes',
         ]);
     }
@@ -47,6 +58,7 @@ class FamilleCompteController extends AbstractController
     public function add(Request $request)
     {
         $familleCompte = new FamilleCompteEntity();
+        $familleCompte->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(FamilleCompteType::class, $familleCompte);
         $form->handleRequest($request);
@@ -78,9 +90,7 @@ class FamilleCompteController extends AbstractController
         $form = $this->createForm(FamilleCompteType::class, $familleCompte);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($familleCompte->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($familleCompte) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_famillecomptes');
@@ -104,10 +114,8 @@ class FamilleCompteController extends AbstractController
         Request $request,
         FamilleCompteRepository $familleCompteRepository
     ) {
-        $user = $this->security->getUser();
-
         $familleCompte = $request->get('familleCompteId', -1);
-        $count = $familleCompteRepository->countById($user, $familleCompte);
+        $count = $familleCompteRepository->countById($this->getMandataire(), $familleCompte);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -120,8 +128,7 @@ class FamilleCompteController extends AbstractController
         FamilleCompteRepository $familleCompteRepository
     ) {
         if ($familleCompte) {
-            $user = $this->security->getUser();
-            $count = $familleCompteRepository->countById($user, $familleCompte->getId());
+            $count = $familleCompteRepository->countById($this->getMandataire(), $familleCompte->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($familleCompte);

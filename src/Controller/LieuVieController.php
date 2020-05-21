@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\LieuVieEntity;
 use App\Form\LieuVieType;
 use App\Repository\LieuVieRepository;
+use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,25 @@ class LieuVieController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(LieuVieEntity $lieuVie)
+    {
+        return $lieuVie && $this->getMandataire()->getGroupe() == $lieuVie->getGroupe();
     }
 
     /**

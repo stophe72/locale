@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="typeCompte")
  * @UniqueEntity("libelle")
  */
-class TypeCompteEntity extends BaseLibelleEntity
+class TypeCompteEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @var FamilleCompteEntity

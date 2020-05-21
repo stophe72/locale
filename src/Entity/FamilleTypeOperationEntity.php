@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="familleTypeOperation")
  * @UniqueEntity("libelle")
  */
-class FamilleTypeOperationEntity extends BaseLibelleEntity
+class FamilleTypeOperationEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\TypeOperationEntity", mappedBy="familleTypeOperation")

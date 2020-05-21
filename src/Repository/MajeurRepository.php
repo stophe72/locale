@@ -3,9 +3,11 @@
 namespace App\Repository;
 
 use App\Entity\MajeurEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\Query\Expr\Join;
 
 /**
  * @method MajeurEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -43,6 +45,19 @@ class MajeurRepository extends ServiceEntityRepository
             ->addOrderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC')
             ->setMaxResults($maxResult);
+
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findForGroupe(UserEntity $user)
+    {
+        $qb = $this->createQueryBuilder('m');
+        $qb->innerJoin('m.groupe', 'g')
+            ->innerJoin(MandataireEntity::class, 'ma', Join::WITH, 'ma.groupe = g')
+            ->innerJoin('ma.user', 'u')
+            ->where('u = :userId')
+            ->setParameter('userId', $user->getId())
+            ->orderBy('m.nom', 'ASC');
 
         return $qb->getQuery()->getResult();
     }

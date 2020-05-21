@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\MajeurEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\VisiteEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
@@ -22,14 +22,18 @@ class VisiteRepository extends ServiceEntityRepository
         parent::__construct($registry, VisiteEntity::class);
     }
 
-    public function getFromMajeurAndAnnee(UserEntity $user, MajeurEntity $majeur, int $annee)
+    public function getFromMajeurAndAnnee(MandataireEntity $mandataire, MajeurEntity $majeur, int $annee)
     {
+        if (!$mandataire) {
+            return [];
+        }
         $qb = $this->createQueryBuilder('v');
         $qb->innerJoin('v.majeur', 'm')
-            ->innerJoin('m.user', 'u', Join::WITH, 'm.user = :userId')
+            ->innerJoin('m.groupe', 'g')
+            ->innerJoin(MandataireEntity::class, 'ma', Join::WITH, 'ma.groupe = g AND g = :groupeId')
             ->andWhere('m = :majeurId')
             ->andWhere('YEAR(v.date) = :annee')
-            ->setParameter('userId', $user->getId())
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId())
             ->setParameter('majeurId', $majeur->getId())
             ->setParameter('annee', $annee);
 

@@ -6,6 +6,7 @@ use App\Form\ImportCompteGestionType;
 use App\Models\ImportCompteGestion;
 use App\Repository\ImportOperationRepository;
 use App\Repository\MajeurRepository;
+use App\Repository\MandataireRepository;
 use App\Util\ImportManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,13 +21,20 @@ class ImportCompteGestionController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
     }
 
     /**
@@ -35,8 +43,7 @@ class ImportCompteGestionController extends AbstractController
     public function index(Request $request, MajeurRepository $majeurRepository, ImportOperationRepository $importOperationRepository)
     {
         $import = new ImportCompteGestion();
-        $user = $this->security->getUser();
-        $majeurs = $majeurRepository->findBy(['user' => $user->getId()], ['nom' => 'ASC',]);
+        $majeurs = $majeurRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()->getId()], ['nom' => 'ASC',]);
         $form = $this->createForm(
             ImportCompteGestionType::class,
             $import,

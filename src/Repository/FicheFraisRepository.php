@@ -3,8 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\FicheFraisEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\NoteDeFraisEntity;
-use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,13 +22,13 @@ class FicheFraisRepository extends ServiceEntityRepository
         parent::__construct($registry, FicheFraisEntity::class);
     }
 
-    public function getAllByFiche(UserEntity $user)
+    public function getAllByFiche(MandataireEntity $mandataire)
     {
         $qb = $this->createQueryBuilder('ff')
             ->leftJoin(NoteDeFraisEntity::class, 'ndf', Join::WITH, 'ndf.ficheFrais = ff.id')
-            ->innerJoin('ff.user', 'user')
-            ->where('user = :userId')
-            ->setParameter('userId', $user->getId())
+            ->innerJoin('ff.mandataire', 'mandataire')
+            ->where('mandataire = :mandataireId')
+            ->setParameter('mandataireId', $mandataire->getId())
             ->orderBy('ff.id', 'DESC')
             ->addOrderBy('ndf.date', 'DESC');
 

@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\GroupeEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -17,5 +18,12 @@ class GroupeRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, GroupeEntity::class);
+    }
+
+    public function findByMandataire(MandataireEntity $mandataireEntity)
+    {
+        $qb = $this->createQueryBuilder('g');
+
+        return $qb->getQuery()->getResult();
     }
 }

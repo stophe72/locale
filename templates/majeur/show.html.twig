@@ -1,115 +1,199 @@
-{% extends 'layout.html.twig' %}
+{% extends 'layout_fluid.html.twig' %}
 
 {% block content %}
-    <div class="row mb-4 mt-4">
-        <h3 class="text-primary"><i class="fa fa-info-circle"></i> {{ page_title }}</h3>
+    <div class="row mb-4 mt-4 offset-3">
+        <h3 class="text-primary"><i class="fa fa-info-circle"></i> {{ page_title }} - {{ majeur.prenom }} {{ majeur.nom }}</h3>
     </div>
+
     <div class="row">
-        <table class="table">
+        <div class="col-sm-3">
+            <img class="rounded" src="{% if majeur.image %}{{ asset('uploads/' ~ majeur.image) | imagine_filter('squared_thumbnail_small') }}{% else %}{{ asset("images/person-128.png")| imagine_filter('squared_thumbnail_small') }}{% endif %}">
+            <div class="mt-5">
+                <div class="card">
+                    <div class="card-header text-white bg-warning ">
+                        <strong>ALERTES</strong>
+                    </div>
+                    <div class="card-body">
+                        <p>Fin C.M.U.</p>
+                        <p>Fin A.A.H</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3 mb-3">
+            <div class="card">
+                <div class="card-header text-white bg-primary ">
+                    <strong>MESURE</strong>
+                </div>
+                <div class="card-body" style="background: #e6f3ff;">
+                    <p><i class="fas fa-gavel"></i> Tribunal de {{ majeur.jugement.tribunal.libelle }}</p>
+                    <p>R.G. {{ majeur.jugement.numeroRG }}</p>
+                    <p>{{ majeur.parametreMission.mesure.code }} - {{ majeur.parametreMission.mesure.libelle }}</p>
+                    <p>Mesure du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3 mb-3">
+            <div class="card">
+                <div class="card-header text-white bg-success ">
+                    <strong>ADRESSE - CONTACT</strong>
+                </div>
+                <div class="card-body" style="background: #bfffcd;">
+                    <p><i class="fas fa-map-marker-alt"></i> {{ majeur.adresse.adresse1 }}</p>
+                    {% if majeur.adresse.adresse2 is not null %}
+                        <p class="ml-3">{{ majeur.adresse.adresse2 }}</p>
+                    {% endif %}
+                    <p><i class="fas fa-city"></i> {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}</p>
+                    {% if majeur.contact is not null %}
+                        <p><i class="fas fa-phone"></i> {{ majeur.contact.telephone }}</p>
+                        <p><i class="fas fa-mobile-alt"></i> {{ majeur.contact.mobile }}</p>
+                        <p><i class="fas fa-at"></i> {{ majeur.contact.email }}</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-3 mb-3">
+            <div class="card">
+                <div class="card-header text-white" style="background: #677d51;">
+                    <strong>SITUATION PERSONNELLE</strong>
+                </div>
+                <div class="card-body" style="background: #c8caaa;">
+                    <p class="card-text">Nom de naissance : {{ majeur.nomEtatCivil }}</p>
+                    <p><i class="fas fa-birthday-cake"></i> Né(e) le {{ majeur.dateNaissance|date('d/m/Y') }}</p>
+                    <p>S. Sociale {{ majeur.numeroSS }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{#
+<div class="row">
+        <h4 class="text-primary">Civilités</h4>
+        <table class="table mt-3">
             <tr>
-                <th>Nom</th>
-                <td>{{ majeur.nom }}</td>
+                <th class="col-sm-5">Civilité</th>
+                <td class="col-sm-7">{{ majeur.civilite }}</td>
             </tr>
             <tr>
-                <th>Nom état civil</th>
-                <td>{{ majeur.nomEtatCivil }}</td>
+                <th class="col-sm-5">Nom</th>
+                <td class="col-sm-7">{{ majeur.nom }}</td>
             </tr>
             <tr>
-                <th>Prénom</th>
-                <td>{{ majeur.prenom }}</td>
+                <th class="col-sm-5">Nom état civil</th>
+                <td class="col-sm-7">{{ majeur.nomEtatCivil }}</td>
             </tr>
             <tr>
-                <th>Adresse</th>
-                <td>{{ majeur.adresse.adresse1 }}</td>
-            </tr>
-            <tr>
-                <th>Complément d'adresse</th>
-                <td>{{ majeur.adresse.adresse2 }}</td>
-            </tr>
-            <tr>
-                <th>Code postal</th>
-                <td>{{ majeur.adresse.codePostal }}</td>
-            </tr>
-            <tr>
-                <th>Ville</th>
-                <td>{{ majeur.adresse.ville }}</td>
-            </tr>
-            <tr>
-                <th>Téléphone</th>
-                <td>{% if majeur.contact is not null %}{{ majeur.contact.telephone }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Mobile</th>
-                <td>{% if majeur.contact is not null %}{{ majeur.contact.mobile }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{% if majeur.contact is not null %}{{ majeur.contact.email }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th>Date de naissance</th>
-                <td>{{ majeur.dateNaissance|date('d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <th>N° de Sécurité Sociale</th>
-                <td>{{ majeur.numeroSS }}</td>
-            </tr>
-            <tr>
-                <th>Date de fin C.M.U.</th>
-                <td>{{ majeur.dateFinCMU|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th>Nationalité</th>
-                <td>{{ majeur.nationalite }}</td>
-            </tr>
-            <tr>
-                <th>N° de Répertoire Général</th>
-                <td>{{ majeur.jugement.numeroRG }}</td>
-            </tr>
-            <tr>
-                <th>Date de jugement</th>
-                <td>{{ majeur.jugement.dateJugement|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th>Tribunal</th>
-                <td>{{ majeur.jugement.tribunal.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Mesure</th>
-                <td>{{ majeur.parametreMission.mesure }}</td>
-            </tr>
-            <tr>
-                <th>Durée de la mesure</th>
-                <td>Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th>Protection</th>
-                <td>{{ majeur.parametreMission.protection.libelle }}</td>
-            </tr>
-            <tr>
-                <th>Lieu de vie</th>
-                <td>{{ majeur.parametreMission.lieuVie.libelle }}</td>
+                <th class="col-sm-5">Prénom</th>
+                <td class="col-sm-7">{{ majeur.prenom }}</td>
             </tr>
         </table>
-    </div>
-    <div class="row">
-        <div class="col-2">
-            <small>Date de création</small>
-        </div>
-        <div class="col">
-            <small>{{ majeur.dateCreation|date("d/m/Y H:i:s") }}</small>
-        </div>
-    </div>
-    {% if majeur.dateModification is not null %}
+        <h4 class="text-primary">Adresse et contacts</h4>
+        <table class="table mt-3">
+            <tr>
+                <th class="col-sm-5">Adresse</th>
+                <td class="col-sm-7">{{ majeur.adresse.adresse1 }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Complément d'adresse</th>
+                <td class="col-sm-7">{{ majeur.adresse.adresse2 }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Code postal</th>
+                <td class="col-sm-7">{{ majeur.adresse.codePostal }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Ville</th>
+                <td class="col-sm-7">{{ majeur.adresse.ville }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Téléphone</th>
+                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.telephone }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Mobile</th>
+                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.mobile }}{% endif %}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Email</th>
+                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.email }}{% endif %}</td>
+            </tr>
+        </table>
+        <h4 class="text-primary">Sécurité Sociale - Couverture Maladie Universelle</h4>
+        <table class="table mt-3">
+            <tr>
+                <th class="col-sm-5">Date de naissance</th>
+                <td class="col-sm-7">{{ majeur.dateNaissance|date('d/m/Y') }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">N° de Sécurité Sociale</th>
+                <td class="col-sm-7">{{ majeur.numeroSS }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Date de fin C.M.U.</th>
+                <td class="col-sm-7">{{ majeur.dateFinCMU|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Nationalité</th>
+                <td class="col-sm-7">{{ majeur.nationalite }}</td>
+            </tr>
+        </table>
+        <h4 class="text-primary">Jugement</h4>
+        <table class="table mt-3">
+            <tr>
+                <th class="col-sm-5">N° de Répertoire Général</th>
+                <td class="col-sm-7">{{ majeur.jugement.numeroRG }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Date de jugement</th>
+                <td class="col-sm-7">{{ majeur.jugement.dateJugement|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Tribunal</th>
+                <td class="col-sm-7">{{ majeur.jugement.tribunal.libelle }}</td>
+            </tr>
+        </table>
+        <h4 class="text-primary">Mesure</h4>
+        <table class="table mt-3">
+            <tr>
+                <th class="col-sm-5">Mesure</th>
+                <td class="col-sm-7">{{ majeur.parametreMission.mesure }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Durée de la mesure</th>
+                <td class="col-sm-7">Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Protection</th>
+                <td class="col-sm-7">{{ majeur.parametreMission.protection.libelle }}</td>
+            </tr>
+            <tr>
+                <th class="col-sm-5">Lieu de vie</th>
+                <td class="col-sm-7">{{ majeur.parametreMission.lieuVie.libelle }}</td>
+            </tr>
+        </table>
         <div class="row">
             <div class="col-2">
-                <small>Date de modification</small>
+                <small>Date de création</small>
             </div>
             <div class="col">
-                <small>{{ majeur.dateModification|date("d/m/Y H:i:s") }}</small>
+                <small>{{ majeur.dateCreation|date("d/m/Y H:i:s") }}</small>
             </div>
         </div>
-    {% endif %}
+        {% if majeur.dateModification is not null %}
+            <div class="row">
+                <div class="col-2">
+                    <small>Date de modification</small>
+                </div>
+                <div class="col">
+                    <small>{{ majeur.dateModification|date("d/m/Y H:i:s") }}</small>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+#}
     <div class="row float-right mx-0 mb-3">
         <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
     </div>

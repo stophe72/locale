@@ -10,12 +10,18 @@ use Doctrine\ORM\Mapping as ORM;
  * @ORM\Entity(repositoryClass="App\Repository\FicheFraisRepository")
  * @ORM\Table(name="ficheFrais")
  */
-class FicheFraisEntity extends BaseUserEntity
+class FicheFraisEntity extends BaseEntity
 {
     /**
      * @ORM\OneToMany(targetEntity="App\Entity\NoteDeFraisEntity", mappedBy="ficheFrais")
      */
     private $noteDeFraisEntities;
+
+    /**
+     * @ORM\ManyToOne(targetEntity="App\Entity\MandataireEntity", inversedBy="ficheFraisEntities")
+     * @ORM\JoinColumn(name="mandataireId", referencedColumnName="id", nullable=false)
+     */
+    private $mandataire;
 
     public function __construct()
     {
@@ -49,6 +55,18 @@ class FicheFraisEntity extends BaseUserEntity
                 $noteDeFraisEntity->setFicheFrais(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMandataire(): ?MandataireEntity
+    {
+        return $this->mandataire;
+    }
+
+    public function setMandataire(?MandataireEntity $mandataire): self
+    {
+        $this->mandataire = $mandataire;
 
         return $this;
     }

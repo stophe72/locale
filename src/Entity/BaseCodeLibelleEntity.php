@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\MappedSuperclass
  */
-class BaseCodeLibelleEntity extends BaseLibelleEntity
+class BaseCodeLibelleEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @var string

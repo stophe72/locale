@@ -6,6 +6,7 @@ use App\Entity\FicheFraisEntity;
 use App\Entity\NoteDeFraisEntity;
 use App\Form\NoteDeFraisType;
 use App\Repository\FicheFraisRepository;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeFraisRepository;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -21,22 +22,29 @@ class FicheFraisController extends AbstractController
      */
     private $security;
 
+    /**
+     * @var Pdf
+     */
     private $snappyPdf;
 
-    public function __construct(Security $security, Pdf $pdf)
+    /**
+     * @var MandataireRepository
+     */
+    private $mandataireRepository;
+
+    public function __construct(Security $security, Pdf $pdf, MandataireRepository $mandataireRepository)
     {
         $this->snappyPdf = $pdf;
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
     }
 
     /**
      * @Route("user/fichesdefrais", name="user_fichesdefrais")
      */
-    public function index(
-        FicheFraisRepository $ficheFraisRepository
-    ) {
-        $user = $this->security->getUser();
-        $ffs = $ficheFraisRepository->getAllByFiche($user);
+    public function index(FicheFraisRepository $ficheFraisRepository)
+    {
+        $ffs = $ficheFraisRepository->getAllByFiche($this->getMandataire());
 
         return $this->render('fiche_de_frais/index.html.twig', [
             'fichesDeFrais' => $ffs,
@@ -44,12 +52,24 @@ class FicheFraisController extends AbstractController
         ]);
     }
 
+    private function isNoteOwnBy(NoteDeFraisEntity $noteDeFrais)
+    {
+        return $noteDeFrais && $this->getMandataire() == $noteDeFrais->getFicheFrais()->getMandataire();
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
     /**
      * @Route("user/fichedefrais/addfiche", name="user_fichefrais_add_fiche")
      */
-    public function addFiche(Request $request, FicheFraisRepository $ficheFraisRepository)
+    public function addFiche(Request $request, MandataireRepository $mandataireRepository)
     {
-        $ficheFrais = new FicheFraisEntity;
+        $ficheFrais = new FicheFraisEntity();
+        $ficheFrais->setMandataire($this->getMandataire());
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($ficheFrais);
@@ -105,9 +125,7 @@ class FicheFraisController extends AbstractController
         $form = $this->createForm(NoteDeFraisType::class, $noteDeFrais, ['typesFrais' => $typesFrais]);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($noteDeFrais->getFicheFrais()->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isNoteOwnBy($noteDeFrais) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_fichesdefrais');
@@ -127,11 +145,9 @@ class FicheFraisController extends AbstractController
     /**
      * @Route("user/fichedefrais/delete/{id}", name="user_fichefrais_delete")
      */
-    public function delete(
-        NoteDeFraisEntity $noteDeFrais
-    ) {
-        $user = $this->security->getUser();
-        if ($noteDeFrais && $noteDeFrais->getFicheFrais()->isOwnBy($user)) {
+    public function delete(NoteDeFraisEntity $noteDeFrais)
+    {
+        if ($this->isNoteOwnBy($noteDeFrais)) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($noteDeFrais);
             $em->flush();
@@ -144,6 +160,10 @@ class FicheFraisController extends AbstractController
      */
     public function exporter(FicheFraisEntity $ficheFrais)
     {
+        if (!$ficheFrais || $ficheFrais->getMandataire() != $this->getMandataire()) {
+            return $this->redirectToRoute('user_fichesdefrais');
+        }
+
         $html = $this->renderView(
             'fiche_de_frais/export.html.twig',
             [

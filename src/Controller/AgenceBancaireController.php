@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\AgenceBancaireEntity;
 use App\Form\AgenceBancaireType;
 use App\Repository\AgenceBancaireRepository;
+use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,25 @@ class AgenceBancaireController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(AgenceBancaireEntity $agenceBancaire)
+    {
+        return $agenceBancaire && $this->getMandataire()->getGroupe() == $agenceBancaire->getGroupe();
     }
 
     /**
@@ -33,10 +46,8 @@ class AgenceBancaireController extends AbstractController
      */
     public function index(AgenceBancaireRepository $agenceBancaireRepository)
     {
-        $user = $this->security->getUser();
-
         return $this->render('agence_bancaire/index.html.twig', [
-            'banques' => $agenceBancaireRepository->findBy(['user' => $user->getId(),], ['libelle' => 'ASC']),
+            'banques' => $agenceBancaireRepository->findBy(['groupe' => $this->getMandataire()->getGroupe(),], ['libelle' => 'ASC']),
             'page_title' => 'Liste des agences bancaires',
         ]);
     }
@@ -47,6 +58,7 @@ class AgenceBancaireController extends AbstractController
     public function add(Request $request)
     {
         $agenceBancaire = new AgenceBancaireEntity();
+        $agenceBancaire->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(AgenceBancaireType::class, $agenceBancaire);
         $form->handleRequest($request);
@@ -78,9 +90,7 @@ class AgenceBancaireController extends AbstractController
         $form = $this->createForm(AgenceBancaireType::class, $agenceBancaire);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($agenceBancaire->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($agenceBancaire) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_agencebancaires');
@@ -104,10 +114,8 @@ class AgenceBancaireController extends AbstractController
         Request $request,
         AgenceBancaireRepository $agenceBancaireRepository
     ) {
-        $user = $this->security->getUser();
-
         $agenceId = $request->get('agenceId', -1);
-        $count = $agenceBancaireRepository->countByDonneeBancaire($user, $agenceId);
+        $count = $agenceBancaireRepository->countByDonneeBancaire($this->getMandataire(), $agenceId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -119,15 +127,14 @@ class AgenceBancaireController extends AbstractController
         AgenceBancaireEntity $agenceBancaire,
         AgenceBancaireRepository $agenceBancaireRepository
     ) {
-        if ($agenceBancaire) {
-            $user = $this->security->getUser();
-            $count = $agenceBancaireRepository->countByDonneeBancaire($user, $agenceBancaire->getId());
+        if ($this->isInSameGroupe($agenceBancaire)) {
+            $count = $agenceBancaireRepository->countByDonneeBancaire($this->getMandataire(), $agenceBancaire->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($agenceBancaire);
                 $em->flush();
             }
         }
-        return $this->redirectToRoute('user_visites');
+        return $this->redirectToRoute('user_agencebancaires');
     }
 }

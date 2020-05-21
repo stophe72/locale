@@ -3,7 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\MajeurEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\VisiteEntity;
+use App\Repository\GroupeRepository;
+use App\Repository\MajeurRepository;
+use App\Repository\MandataireRepository;
 use App\Repository\VisiteRepository;
 use App\Util\Calendrier;
 use App\Util\Util;
@@ -11,7 +15,6 @@ use DateTime;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 use Knp\Component\Pager\PaginatorInterface;
@@ -29,29 +32,28 @@ class VisiteController extends AbstractController
      * Constructeur
      *
      * @param Security         $security
-     * @param SessionInterface $sessionInterface
      */
-    public function __construct(Security $security, SessionInterface $sessionInterface)
+    public function __construct(Security $security)
     {
         $this->security = $security;
-        $this->session = $sessionInterface;
     }
 
     /**
      * @Route("user/visites/{id}/{annee?}", name="user_visites")
-     * @param Request            $request
      * @param PaginatorInterface $paginator
      * @param VisiteRepository   $visiteRepository
      * @return Response
      */
-    public function index(MajeurEntity $majeur, ?int $annee, Request $request, VisiteRepository $visiteRepository)
+    public function index(MajeurEntity $majeur, ?int $annee, MandataireRepository $mandataireRepository, VisiteRepository $visiteRepository)
     {
         $user = $this->security->getUser();
+
+        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
 
         if (!$annee || $annee < 2000 || $annee > 2050) {
             $annee = intval(date('Y'));
         }
-        $visites = $visiteRepository->getFromMajeurAndAnnee($user, $majeur, $annee);
+        $visites = $visiteRepository->getFromMajeurAndAnnee($mandataire, $majeur, $annee);
         $calendrier = new Calendrier($visites, $annee);
 
         return $this->render(
@@ -71,10 +73,11 @@ class VisiteController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function ajaxVisiteToggleVisite(Request $request)
+    public function ajaxVisiteToggleVisite(Request $request, MandataireRepository $mandataireRepository, MajeurRepository $majeurRepository)
     {
         $user = $this->security->getUser();
         $em = $this->getDoctrine()->getManager();
+        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
 
         $data = 0;
         $jour = $request->get('jour', 0);
@@ -82,10 +85,13 @@ class VisiteController extends AbstractController
         $annee = $request->get('annee', 0);
         $majeurId = $request->get('majeurId', 0);
 
-        $majeurRepo = $em->getRepository(MajeurEntity::class);
-        $majeur = $majeurRepo->find($majeurId);
+        $majeur = $majeurRepository->find($majeurId);
 
-        if ($majeur && $majeur->isOwnBy($user) && Util::verifyDate($jour . '/' . $mois . '/' . $annee)) {
+        if (
+            $majeur && $mandataire
+            && $majeur->getGroupe() == $mandataire->getGroupe()
+            && Util::verifyDate($jour . '/' . $mois . '/' . $annee)
+        ) {
             $date = new DateTime();
             $date->setDate($annee, $mois, $jour);
 

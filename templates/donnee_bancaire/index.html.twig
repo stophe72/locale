@@ -103,14 +103,17 @@
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.donneebancaireId;
 
-        window.location.href = "/donneebancaire/delete/" + id;
+        var url = "{{ path('user_donneebancaire_delete', { 'id': 0 }) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
     });
 
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.donneebancaireId = id;
 
         $.ajax({
-            url: "#", {#"{{ path('ajaxCanDeleteParcelle') }}",#}
+            url: "{{ path('ajaxCanDeleteDonneeBancaire') }}",
             dataType: "json",
             data: {
                 "donneebancaireId": id

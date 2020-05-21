@@ -3,7 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\ImportOperationEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -20,12 +20,12 @@ class ImportOperationRepository extends ServiceEntityRepository
         parent::__construct($registry, ImportOperationEntity::class);
     }
 
-    public function findByUser(UserEntity $user)
+    public function findByGroupe(MandataireEntity $mandataire)
     {
         $qb = $this->createQueryBuilder('io');
         $qb->innerJoin('io.majeur', 'm')
-            ->andWhere('m.user = :userId')
-            ->setParameter('userId', $user->getId())
+            ->andWhere('m.groupe = :groupeId')
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId())
             ->orderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC');
 

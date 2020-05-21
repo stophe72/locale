@@ -1,0 +1,87 @@
+{# {% if pagination.items|length == 0 %} #}
+{% if majeurs|length == 0 %}
+    <div class="alert alert-success">Aucun majeur</div>
+{% else %}
+    {# {% for majeur in pagination %} #}
+    {% for majeur in majeurs %}
+        {% if loop.index0 is divisible by(4) %}
+            <div class="row">
+        {% endif %}
+
+        <div class="col-sm-3 mb-3">
+            <div class="card shadow">
+                <img class="rounded-top card-img-top" src="{% if majeur.image %}{{ asset('uploads/' ~ majeur.image) | imagine_filter('squared_thumbnail_small') }}{% else %}{{ asset("images/person-128.png")| imagine_filter('squared_thumbnail_small') }}{% endif %}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ majeur }}</h5>
+                    <div class="row">
+                        <div class="col mt-2">
+                            <div class="row small">
+                                <div class="col-sm-5 text-muted">
+                                    N° R.G.
+                                </div>
+                                <div class="col-sm-7">
+                                    {{ majeur.jugement.numeroRg }}
+                                </div>
+                            </div>
+                            <div class="row small">
+                                <div class="col-sm-5 text-muted">
+                                    N° S. Sociale
+                                </div>
+                                <div class="col-sm-7">
+                                    {{ majeur.numeroSS }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row float-right pr-4 mt-3">
+                        <div class="btn-group">
+                            <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-outline-primary">
+                                <i class="fa fa-info-circle"></i>
+                            </a>
+                            <button type="button" class="btn btn-outline-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
+                                    <i class="fa fa-pen"></i> Editer
+                                </a>
+                                <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
+                                    <i class="fa fa-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        </div>
+                        <a class="mx-2 btn btn-primary" href="{{ path("user_visites", { "id": majeur.id } ) }}"><i class="fa fa-handshake"></i></a>
+                        <div class="dropdown">
+                            <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Comptes
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                {% if majeur.donneeBancaireEntities is not empty %}
+                                    <div class="dropdown-header">COMPTES</div>
+                                    {% for db in majeur.donneeBancaireEntities %}
+                                        <a class="dropdown-item" href="{{ path("user_comptesgestion", { 'id': db.id }) }}">
+                                            {{ db }}
+                                            <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
+                                            <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
+                                        </a>
+                                    {% endfor %}
+                                    <div class="dropdown-divider"></div>
+                                {% endif %}
+                                <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}"><i class="fas fa-file-import"></i> Import d'opérations</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="{{ path("user_donneebancaires", { 'majeur': majeur.id }) }}">Gérer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% if loop.last or (loop.index is divisible by(4)) %}
+            </div>
+        {% endif %}
+
+    {% endfor %}
+    <div class="pagination justify-content-center pt-2">
+        {# {{ knp_pagination_render(pagination) }} #}
+    </div>
+{% endif %}

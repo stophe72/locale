@@ -6,9 +6,11 @@ use App\Entity\MajeurEntity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\File;
 
 class MajeurType extends AbstractType
 {
@@ -30,7 +32,15 @@ class MajeurType extends AbstractType
                     ],
                 ]
             )
-            ->add('nom', TextType::class)
+            ->add(
+                'nom',
+                TextType::class,
+                [
+                    'attr' => [
+                        'style' => 'text-transform:uppercase',
+                    ]
+                ]
+            )
             ->add(
                 'nomEtatCivil',
                 TextType::class,
@@ -83,6 +93,30 @@ class MajeurType extends AbstractType
                     'required' => false,
                     'label' => 'Date de fin C.M.U.',
                     'widget' => 'single_text',
+                ]
+            )
+            ->add(
+                'image',
+                FileType::class,
+                [
+                    'label' => 'Photo',
+                    'mapped'      => false,
+                    'required'    => false,
+                    'attr'        => [
+                        'placeholder' => 'Choisir une photo',
+                    ],
+                    'constraints' => [
+                        new File(
+                            [
+                                'maxSize' => '2048k',
+                                'mimeTypes' => [
+                                    'image/jpeg',
+                                    'image/png'
+                                ],
+                                'mimeTypesMessage' => 'Merci de choisir une photo valide (*.png, *.jpg. 2 Mo maximum)',
+                            ]
+                        )
+                    ],
                 ]
             );
     }

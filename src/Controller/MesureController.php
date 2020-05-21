@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\MesureEntity;
 use App\Form\MesureType;
+use App\Repository\MandataireRepository;
 use App\Repository\MesureRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,22 +20,34 @@ class MesureController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(MesureEntity $mesure)
+    {
+        return $mesure && $this->getMandataire()->getGroupe() == $mesure->getGroupe();
     }
 
     /**
      * @Route("user/mesures", name="user_mesures")
      */
-    public function index(MesureRepository $MesureRepository)
+    public function index(MesureRepository $mesureRepository)
     {
         return $this->render('mesure/index.html.twig', [
-            'mesures' => $MesureRepository->findBy([], ['libelle' => 'ASC']),
+            'mesures' => $mesureRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des mesures',
         ]);
     }
@@ -45,6 +58,7 @@ class MesureController extends AbstractController
     public function add(Request $request)
     {
         $mesure = new MesureEntity();
+        $mesure->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(MesureType::class, $mesure);
         $form->handleRequest($request);
@@ -76,9 +90,7 @@ class MesureController extends AbstractController
         $form = $this->createForm(MesureType::class, $mesure);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($mesure->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($mesure) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_mesures');
@@ -102,9 +114,8 @@ class MesureController extends AbstractController
         Request $request,
         MesureRepository $mesureRepository
     ) {
-        $user = $this->security->getUser();
         $mesureId = $request->get('mesureId', -1);
-        $count = $mesureRepository->countById($user, $mesureId);
+        $count = $mesureRepository->countById($this->getMandataire(), $mesureId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -117,8 +128,7 @@ class MesureController extends AbstractController
         MesureRepository $mesureRepository
     ) {
         if ($mesure) {
-            $user = $this->security->getUser();
-            $count = $mesureRepository->countById($user, $mesure->getId());
+            $count = $mesureRepository->countById($this->getMandataire(), $mesure->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($mesure);

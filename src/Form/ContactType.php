@@ -17,11 +17,24 @@ class ContactType extends AbstractType
                 'telephone',
                 TextType::class,
                 [
+                    'required' => false,
                     'label' => 'Téléphone',
                 ]
             )
-            ->add('mobile')
-            ->add('email');
+            ->add(
+                'mobile',
+                TextType::class,
+                [
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'email',
+                TextType::class,
+                [
+                    'required' => false,
+                ]
+            );
     }
 
     public function configureOptions(OptionsResolver $resolver)

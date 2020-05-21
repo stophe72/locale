@@ -5,9 +5,9 @@ namespace App\Controller;
 use App\Entity\ImportOperationEntity;
 use App\Form\ImportOperationType;
 use App\Repository\ImportOperationRepository;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeOperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
@@ -20,13 +20,25 @@ class ImportOperationController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(ImportOperationEntity $importOperation)
+    {
+        return $importOperation && $this->getMandataire()->getGroupe() == $importOperation->getGroupe();
     }
 
     /**
@@ -34,9 +46,7 @@ class ImportOperationController extends AbstractController
      */
     public function index(ImportOperationRepository $importOperationRepository)
     {
-        $user = $this->security->getUser();
-
-        $ios = $importOperationRepository->findByUser($user);
+        $ios = $importOperationRepository->findByGroupe($this->getMandataire());
         return $this->render(
             'import_operation/index.html.twig',
             [
@@ -51,9 +61,9 @@ class ImportOperationController extends AbstractController
      */
     public function add(Request $request, TypeOperationRepository $typeOperationRepository)
     {
-        $user = $this->security->getUser();
-        $tos = $typeOperationRepository->findBy(['user' => $user,], ['libelle' => 'ASC',]);
+        $tos = $typeOperationRepository->findBy(['groupe' => $this->getMandataire()->getGroupe(),], ['libelle' => 'ASC',]);
         $importOperation = new ImportOperationEntity();
+        $importOperation->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(
             ImportOperationType::class,
@@ -86,8 +96,7 @@ class ImportOperationController extends AbstractController
      */
     public function edit(ImportOperationEntity $importOperation, Request $request, TypeOperationRepository $typeOperationRepository)
     {
-        $user = $this->security->getUser();
-        $tos = $typeOperationRepository->findBy(['user' => $user,], ['libelle' => 'ASC',]);
+        $tos = $typeOperationRepository->findBy(['groupe' => $this->getMandataire()->getGroupe(),], ['libelle' => 'ASC',]);
 
         $form = $this->createForm(
             ImportOperationType::class,
@@ -96,9 +105,7 @@ class ImportOperationController extends AbstractController
         );
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($importOperation->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($importOperation) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_importoperations');
@@ -118,11 +125,9 @@ class ImportOperationController extends AbstractController
     /**
      * @Route("user/importoperation/delete/{id}", name="user_importoperation_delete")
      */
-    public function delete(
-        ImportOperationEntity $importOperation
-    ) {
-        $user = $this->security->getUser();
-        if ($importOperation && $importOperation->isOwnBy($user)) {
+    public function delete(ImportOperationEntity $importOperation)
+    {
+        if ($this->isInSameGroupe($importOperation)) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($importOperation);
             $em->flush();

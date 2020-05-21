@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\CompteGestionRepository")
  * @ORM\Table(name="compteGestion")
  */
-class CompteGestionEntity extends BaseLibelleEntity
+class CompteGestionEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @Assert\NotNull

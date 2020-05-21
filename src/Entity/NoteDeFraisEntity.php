@@ -36,7 +36,7 @@ class NoteDeFraisEntity extends BaseEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\TypeFraisEntity", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\TypeFraisEntity")
      * @ORM\JoinColumn(name="typeFraisId", referencedColumnName="id", nullable=false)
      */
     private $typeFrais;
@@ -103,7 +103,7 @@ class NoteDeFraisEntity extends BaseEntity
 
     public function setLieu(?string $lieu): self
     {
-        $this->lieu = $lieu;
+        $this->lieu = strtoupper($lieu);
 
         return $this;
     }

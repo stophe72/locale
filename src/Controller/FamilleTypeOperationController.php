@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\FamilleTypeOperationEntity;
 use App\Form\FamilleTypeOperationType;
 use App\Repository\FamilleTypeOperationRepository;
+use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,13 +20,25 @@ class FamilleTypeOperationController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(FamilleTypeOperationEntity $familleTypeOperation)
+    {
+        return $familleTypeOperation && $this->getMandataire()->getGroupe() == $familleTypeOperation->getGroupe();
     }
 
     /**
@@ -33,10 +46,8 @@ class FamilleTypeOperationController extends AbstractController
      */
     public function index(FamilleTypeOperationRepository $familleTypeOperationRepository)
     {
-        $user = $this->security->getUser();
-
         return $this->render('famille_type_operation/index.html.twig', [
-            'familleTypeOperations' => $familleTypeOperationRepository->findBy(['user' => $user->getId(),], ['libelle' => 'ASC']),
+            'familleTypeOperations' => $familleTypeOperationRepository->findBy(['groupe' => $this->getMandataire()->getGroupe(),], ['libelle' => 'ASC']),
             'page_title' => 'Liste des familles de types d\'opération',
         ]);
     }
@@ -47,6 +58,7 @@ class FamilleTypeOperationController extends AbstractController
     public function add(Request $request)
     {
         $familleTypeOperation = new FamilleTypeOperationEntity();
+        $familleTypeOperation->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(FamilleTypeOperationType::class, $familleTypeOperation);
         $form->handleRequest($request);
@@ -78,9 +90,7 @@ class FamilleTypeOperationController extends AbstractController
         $form = $this->createForm(FamilleTypeOperationType::class, $familleTypeOperation);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($familleTypeOperation->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($familleTypeOperation) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_familletypeoperations');
@@ -104,10 +114,8 @@ class FamilleTypeOperationController extends AbstractController
         Request $request,
         FamilleTypeOperationRepository $familleTypeOperationRepository
     ) {
-        $user = $this->security->getUser();
-
         $familleTypeOperationId = $request->get('familleTypeOperationId', -1);
-        $count = $familleTypeOperationRepository->countById($user, $familleTypeOperationId);
+        $count = $familleTypeOperationRepository->countById($this->getMandataire(), $familleTypeOperationId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -120,8 +128,7 @@ class FamilleTypeOperationController extends AbstractController
         FamilleTypeOperationRepository $familleTypeOperationRepository
     ) {
         if ($familleTypeOperation) {
-            $user = $this->security->getUser();
-            $count = $familleTypeOperationRepository->countById($user, $familleTypeOperation->getId());
+            $count = $familleTypeOperationRepository->countById($this->getMandataire(), $familleTypeOperation->getId());
 
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();

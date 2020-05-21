@@ -20,7 +20,7 @@ class ParametreMissionType extends AbstractType
     {
         $builder
             ->add(
-                'nature',
+                'mesure',
                 EntityType::class,
                 [
                     'class' => MesureEntity::class,

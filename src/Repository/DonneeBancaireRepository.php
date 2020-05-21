@@ -2,10 +2,12 @@
 
 namespace App\Repository;
 
+use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\MajeurEntity;
-use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -21,16 +23,29 @@ class DonneeBancaireRepository extends ServiceEntityRepository
         parent::__construct($registry, DonneeBancaireEntity::class);
     }
 
-    public function findByMajeur(UserEntity $user, MajeurEntity $majeur)
+    public function findByMajeur(MandataireEntity $mandataire, MajeurEntity $majeur)
     {
         $qb = $this->createQueryBuilder('b');
         $qb->innerJoin('b.majeur', 'm')
-            ->innerJoin('m.user', 'u')
             ->where('m = :majeurId')
-            ->andWhere('u = :userId')
+            ->andWhere('m.groupe = :groupeId')
             ->setParameter('majeurId', $majeur->getId())
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function countByCompteGestion(MandataireEntity $mandataire, int $id)
+    {
+        $qb = $this->createQueryBuilder('db');
+        $qb->select('COUNT(db.id)')
+            ->innerJoin(CompteGestionEntity::class, 'cg', Join::WITH, 'cg.donneeBancaire = db')
+            ->innerJoin('db.majeur', 'm')
+            ->where('m.groupe = :groupeId')
+            ->andWhere('db = :donneeBancaireId')
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId())
+            ->setParameter('donneeBancaireId', $id);
+
+        return intval($qb->getQuery()->getSingleScalarResult());
     }
 }

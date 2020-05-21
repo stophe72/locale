@@ -12,7 +12,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="typeOperation")
  * @UniqueEntity("libelle")
  */
-class TypeOperationEntity extends BaseLibelleEntity
+class TypeOperationEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @ORM\Column(type="boolean", nullable=false)

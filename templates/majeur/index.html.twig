@@ -10,24 +10,26 @@
             <a href="{{ path("user_majeur_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
+
     <div class="row">
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Civilité</th>
                     <th>Nom prénom</th>
-                    <th>N° R.G.</th>
                     <th>N° Sécurité Sociale</th>
+                    <th>Date de naissance</th>
+                    <th>Lieu de naissance</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
             {% for majeur in majeurs %}
                 <tr>
-                    <td>{{ majeur.civilite }}</td>
                     <td>{{ majeur }}</td>
-                    <td>{{ majeur.jugement.numeroRG }}</td>
                     <td>{{ majeur.numeroSS }}</td>
+                    <td>{{ majeur.dateNaissance|date('d/m/Y') }}</td>
+                    <td>{{ majeur.lieuNaissance }}</td>
+                    <td></td>
                     <td>
                         <div class="row float-right pr-4">
                             <div class="btn-group">

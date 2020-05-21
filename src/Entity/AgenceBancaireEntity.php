@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Table(name="agenceBancaire")
  * @UniqueEntity("libelle")
  */
-class AgenceBancaireEntity extends BaseLibelleEntity
+class AgenceBancaireEntity extends BaseGroupeLibelleEntity
 {
     /**
      * @Assert\NotBlank

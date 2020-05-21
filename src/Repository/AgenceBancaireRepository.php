@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\AgenceBancaireEntity;
 use App\Entity\DonneeBancaireEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -22,17 +22,15 @@ class AgenceBancaireRepository extends ServiceEntityRepository
         parent::__construct($registry, AgenceBancaireEntity::class);
     }
 
-    public function countByDonneeBancaire(UserEntity $user, int $agenceBancaireId)
+    public function countByDonneeBancaire(MandataireEntity $mandataire, int $agenceBancaireId)
     {
-        $qb = $this->createQueryBuilder('a');
-        $qb->select('COUNT(a.id)')
-            ->innerJoin(DonneeBancaireEntity::class, 'b', Join::WITH, 'b.agenceBancaire = a')
-            ->innerJoin('b.majeur', 'm')
-            ->innerJoin('m.user', 'u')
-            ->where('a = :agenceBancaireId')
-            ->andWhere('u = :userId')
+        $qb = $this->createQueryBuilder('ab');
+        $qb->select('COUNT(ab.id)')
+            ->innerJoin(DonneeBancaireEntity::class, 'db', Join::WITH, 'db.agenceBancaire = ab')
+            ->where('ab = :agenceBancaireId')
+            ->andWhere('ab.groupe = :mandataireGroupeId')
             ->setParameter('agenceBancaireId', $agenceBancaireId)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('mandataireGroupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\FamilleTypeOperationEntity;
 use App\Entity\TypeOperationEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -22,16 +22,15 @@ class FamilleTypeOperationRepository extends ServiceEntityRepository
         parent::__construct($registry, FamilleTypeOperationEntity::class);
     }
 
-    public function countById(UserEntity $user, int $id)
+    public function countById(MandataireEntity $mandataire, int $id)
     {
         $qb = $this->createQueryBuilder('fto');
         $qb->select('COUNT(fto.id)')
             ->innerJoin(TypeOperationEntity::class, 'to', Join::WITH, 'fto = to.familleTypeOperation')
-            ->innerJoin('fto.user', 'u')
             ->where('fto = :familleTypeOperationId')
-            ->andWhere('u = :userId')
+            ->andWhere('fto.groupe = :groupeId')
             ->setParameter('familleTypeOperationId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

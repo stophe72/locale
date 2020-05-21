@@ -10,6 +10,6 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @ORM\Table(name="typeFrais")
  * @UniqueEntity("libelle")
  */
-class TypeFraisEntity extends BaseLibelleEntity
+class TypeFraisEntity extends BaseGroupeLibelleEntity
 {
 }

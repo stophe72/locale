@@ -26,7 +26,7 @@ class DonneeBancaireEntity extends BaseEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\AgenceBancaireEntity", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\AgenceBancaireEntity")
      * @ORM\JoinColumn(name="agenceBancaireId", referencedColumnName="id", nullable=false)
      */
     private $agenceBancaire;
@@ -34,7 +34,7 @@ class DonneeBancaireEntity extends BaseEntity
     /**
      * @Assert\NotNull
      *
-     * @ORM\OneToOne(targetEntity="App\Entity\TypeCompteEntity", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity="App\Entity\TypeCompteEntity")
      * @ORM\JoinColumn(name="typeCompteId", referencedColumnName="id", nullable=false)
      */
     private $typeCompte;

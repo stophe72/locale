@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -9,8 +11,16 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\MandataireRepository")
  * @ORM\Table(name="mandataire")
  */
-class MandataireEntity extends BaseUserEntity
+class MandataireEntity extends BaseGroupeEntity
 {
+    /**
+     * @var UserEntity
+     *
+     * @ORM\OneToOne(targetEntity="App\Entity\UserEntity")
+     * @ORM\JoinColumn(name="userId", referencedColumnName="id", nullable=false)
+     */
+    private $user;
+
     /**
      * @Assert\NotBlank
      *
@@ -40,14 +50,14 @@ class MandataireEntity extends BaseUserEntity
     private $adresse;
 
     /**
-     * @Assert\NotNull
-     *
-     * @ORM\ManyToOne(targetEntity="App\Entity\GroupeEntity")
-     * @ORM\JoinColumn(name="groupeId", referencedColumnName="id", nullable=false)
-     *
-     * @var GroupeEntity
+     * @ORM\OneToMany(targetEntity="App\Entity\FicheFraisEntity", mappedBy="mandataire")
      */
-    private $groupe;
+    private $ficheFraisEntities;
+
+    public function __construct()
+    {
+        $this->ficheFraisEntities = new ArrayCollection();
+    }
 
 
     /**
@@ -122,32 +132,63 @@ class MandataireEntity extends BaseUserEntity
         return $this;
     }
 
-    /**
-     * Get the value of groupe
-     *
-     * @return  GroupeEntity
-     */
-    public function getGroupe()
+    public function __toString()
     {
-        return $this->groupe;
+        return $this->getNom() . ' ' . $this->getPrenom();
     }
 
     /**
-     * Set the value of groupe
+     * Get the value of user
      *
-     * @param  GroupeEntity  $groupe
+     * @return  UserEntity
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * Set the value of user
+     *
+     * @param  UserEntity  $user
      *
      * @return  self
      */
-    public function setGroupe(GroupeEntity $groupe)
+    public function setUser(UserEntity $user)
     {
-        $this->groupe = $groupe;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function __toString()
+    /**
+     * @return Collection|FicheFraisEntity[]
+     */
+    public function getFicheFraisEntities(): Collection
     {
-        return $this->getNom() . ' ' . $this->getPrenom();
+        return $this->ficheFraisEntities;
+    }
+
+    public function addFicheFraisEntity(FicheFraisEntity $ficheFraisEntity): self
+    {
+        if (!$this->ficheFraisEntities->contains($ficheFraisEntity)) {
+            $this->ficheFraisEntities[] = $ficheFraisEntity;
+            $ficheFraisEntity->setMandataire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFicheFraisEntity(FicheFraisEntity $ficheFraisEntity): self
+    {
+        if ($this->ficheFraisEntities->contains($ficheFraisEntity)) {
+            $this->ficheFraisEntities->removeElement($ficheFraisEntity);
+            // set the owning side to null (unless already changed)
+            if ($ficheFraisEntity->getMandataire() === $this) {
+                $ficheFraisEntity->setMandataire(null);
+            }
+        }
+
+        return $this;
     }
 }
