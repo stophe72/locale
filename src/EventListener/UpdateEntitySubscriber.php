@@ -3,22 +3,13 @@
 namespace App\EventListener;
 
 use App\Entity\BaseEntity;
-use App\Entity\BaseGroupeEntity;
 use DateTime;
 use Doctrine\Common\EventSubscriber;
 use Doctrine\ORM\Event\LifecycleEventArgs;
 use Doctrine\ORM\Events;
-use Symfony\Component\Security\Core\Security;
 
 class UpdateEntitySubscriber implements EventSubscriber
 {
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
-
     public function getSubscribedEvents()
     {
         return [

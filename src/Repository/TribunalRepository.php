@@ -5,7 +5,7 @@ namespace App\Repository;
 use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TribunalEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -23,17 +23,15 @@ class TribunalRepository extends ServiceEntityRepository
         parent::__construct($registry, TribunalEntity::class);
     }
 
-    public function countByJugement(UserEntity $user, int $tribunalId)
+    public function countByJugement(MandataireEntity $mandataire, int $tribunalId)
     {
         $qb = $this->createQueryBuilder('t');
         $qb->select('COUNT(t.id)')
             ->innerJoin(JugementEntity::class, 'j', Join::WITH, 'j.tribunal = t')
-            ->innerJoin(MajeurEntity::class, 'm',  Join::WITH, 'm.jugement = j')
-            ->innerJoin('m.user', 'u')
             ->where('t = :tribunalId')
-            ->andWhere('u = :userId')
+            ->andWhere('t.groupe = :groupeId')
             ->setParameter('tribunalId', $tribunalId)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

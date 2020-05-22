@@ -15,7 +15,7 @@
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Nom prénom</th>
+                    <th>Majeur</th>
                     <th>N° Sécurité Sociale</th>
                     <th>Date de naissance</th>
                     <th>Lieu de naissance</th>
@@ -25,22 +25,25 @@
             <tbody>
             {% for majeur in majeurs %}
                 <tr>
-                    <td>{{ majeur }}</td>
+                    <td>
+                        {% set runtimeConfig = {"thumbnail": {"size": [32, 32] }} %}
+                        <img class="thumb-shadow mr-2" src="{% if majeur.image %}{{ asset('uploads/' ~ majeur.image) | imagine_filter('squared_thumbnail_small', runtimeConfig) }}{% else %}{{ asset("images/person-128.png")| imagine_filter('squared_thumbnail_small', runtimeConfig) }}{% endif %}">
+                        {{ majeur }}
+                    </td>
                     <td>{{ majeur.numeroSS }}</td>
                     <td>{{ majeur.dateNaissance|date('d/m/Y') }}</td>
                     <td>{{ majeur.lieuNaissance }}</td>
-                    <td></td>
                     <td>
                         <div class="row float-right pr-4">
                             <div class="btn-group">
-                                <a href="{{ path('user_majeur_show', {'id': majeur.id}) }}" title="Détails du majeur" class="btn btn-primary">
+                                <a href="{{ path('user_majeur_show', {'slug': majeur.slug}) }}" title="Détails du majeur" class="btn btn-primary">
                                     <i class="fa fa-info-circle"></i> Détails
                                 </a>
                                 <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{{ path("user_majeur_edit", {"id": majeur.id}) }}">
+                                    <a class="dropdown-item" href="{{ path("user_majeur_edit", {"slug": majeur.slug}) }}">
                                         <i class="fa fa-pen"></i> Editer
                                     </a>
                                     <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">

@@ -6,7 +6,7 @@ use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\TypeCompteEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use App\Models\CompteGestionFilter;
 use App\Util\Util;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -26,16 +26,16 @@ class CompteGestionRepository extends ServiceEntityRepository
         parent::__construct($registry, CompteGestionEntity::class);
     }
 
-    public function getFromFilter(UserEntity $user, DonneeBancaireEntity $donneeBancaire, CompteGestionFilter $filter)
+    public function getFromFilter(MandataireEntity $mandataire, DonneeBancaireEntity $donneeBancaire, CompteGestionFilter $filter)
     {
         $qb = $this->createQueryBuilder('cg');
         $qb->innerJoin('cg.typeOperation', 'to')
             ->innerJoin('cg.donneeBancaire', 'db', Join::WITH, $qb->expr()->eq('db', ':donneeBancaireId'))
+            ->innerJoin(MajeurEntity::class, 'm', Join::WITH, 'm = db.majeur')
             ->innerJoin('to.familleTypeOperation', 'fto')
-            ->innerJoin('cg.user', 'u', Join::WITH, $qb->expr()->eq('cg.user', ':userId'))
+            ->where('m.groupe = :groupeId')
             ->setParameter('donneeBancaireId', $donneeBancaire->getId())
-            ->setParameter('userId', $user->getId());
-        // ->addOrderBy('cg.date', 'DESC');
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         if ($filter->getLibelle()) {
             $qb->andWhere('LOWER(cg.libelle) LIKE LOWER(:libelle)')

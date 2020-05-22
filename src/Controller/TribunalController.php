@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TribunalEntity;
 use App\Form\TribunalType;
+use App\Repository\MandataireRepository;
 use App\Repository\TribunalRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +20,25 @@ class TribunalController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(TribunalEntity $tribunal)
+    {
+        return $tribunal && $this->getMandataire()->getGroupe() == $tribunal->getGroupe();
     }
 
     /**
@@ -34,7 +47,7 @@ class TribunalController extends AbstractController
     public function index(TribunalRepository $tribunalRepository)
     {
         return $this->render('tribunal/index.html.twig', [
-            'tribunaux' => $tribunalRepository->findBy([], ['libelle' => 'ASC']),
+            'tribunaux' => $tribunalRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des tribunaux',
         ]);
     }
@@ -45,6 +58,7 @@ class TribunalController extends AbstractController
     public function add(Request $request)
     {
         $tribunal = new TribunalEntity();
+        $tribunal->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(TribunalType::class, $tribunal);
         $form->handleRequest($request);
@@ -76,9 +90,7 @@ class TribunalController extends AbstractController
         $form = $this->createForm(TribunalType::class, $tribunal);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($tribunal->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($tribunal) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_tribunaux');
@@ -102,10 +114,8 @@ class TribunalController extends AbstractController
         Request $request,
         TribunalRepository $tribunalRepository
     ) {
-        $user = $this->security->getUser();
-
         $tribunalId = $request->get('tribunalId', -1);
-        $count = $tribunalRepository->countByJugement($user, $tribunalId);
+        $count = $tribunalRepository->countByJugement($this->getMandataire(), $tribunalId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -118,8 +128,7 @@ class TribunalController extends AbstractController
         TribunalRepository $tribunalRepository
     ) {
         if ($tribunal) {
-            $user = $this->security->getUser();
-            $count = $tribunalRepository->countByJugement($user, $tribunal->getId());
+            $count = $tribunalRepository->countByJugement($this->getMandataire(), $tribunal->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($tribunal);

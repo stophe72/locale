@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\NatureOperationEntity;
 use App\Form\NatureOperationType;
+use App\Repository\MandataireRepository;
 use App\Repository\NatureOperationRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,13 +19,25 @@ class NatureOperationController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(NatureOperationEntity $natureOperation)
+    {
+        return $natureOperation && $this->getMandataire()->getGroupe() == $natureOperation->getGroupe();
     }
 
     /**
@@ -33,7 +46,7 @@ class NatureOperationController extends AbstractController
     public function index(NatureOperationRepository $natureOperationRepository)
     {
         return $this->render('nature_operation/index.html.twig', [
-            'naturesOperation' => $natureOperationRepository->findBy([], ['libelle' => 'ASC']),
+            'naturesOperation' => $natureOperationRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des natures d\'opération',
         ]);
     }
@@ -44,6 +57,7 @@ class NatureOperationController extends AbstractController
     public function add(Request $request)
     {
         $nature = new NatureOperationEntity();
+        $nature->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(NatureOperationType::class, $nature);
         $form->handleRequest($request);

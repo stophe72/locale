@@ -5,6 +5,7 @@ namespace App\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\String\Slugger\SluggerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -115,6 +116,12 @@ class MajeurEntity extends BaseGroupeEntity
      */
     private $image;
 
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="slug", type="string", nullable=false)
+     */
+    private $slug;
 
     public function __construct()
     {
@@ -195,7 +202,7 @@ class MajeurEntity extends BaseGroupeEntity
 
     public function setPrenom(string $prenom): self
     {
-        $this->prenom = $prenom;
+        $this->prenom = ucfirst($prenom);
 
         return $this;
     }
@@ -333,6 +340,37 @@ class MajeurEntity extends BaseGroupeEntity
     public function setImage(?string $image)
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    public function computeSlug(SluggerInterface $slugger)
+    {
+        if (!$this->slug || '-' === $this->slug) {
+            $this->slug = (string) $slugger->slug((string) $this)->lower();
+        }
+    }
+
+    /**
+     * Get the value of slug
+     *
+     * @return  string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Set the value of slug
+     *
+     * @param  string  $slug
+     *
+     * @return  self
+     */
+    public function setSlug(string $slug)
+    {
+        $this->slug = $slug;
 
         return $this;
     }

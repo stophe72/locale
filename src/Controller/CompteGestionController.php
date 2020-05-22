@@ -9,6 +9,7 @@ use App\Form\CompteGestionType;
 use App\Models\CompteGestionFilter;
 use App\Repository\CompteGestionRepository;
 use App\Repository\FamilleTypeOperationRepository;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeOperationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -23,26 +24,36 @@ class CompteGestionController extends AbstractController
     const FILTER_COMPTE_GESTION = 'session_filter_compte_gestion';
 
     /**
-     * @var Security
-     */
-    private $security;
-
-    /**
-     * Variable membre pour la session
-     *
      * @var SessionInterface
      */
     private $session;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var Security
      */
-    public function __construct(Security $security, SessionInterface $sessionInterface)
+    private $security;
+
+    /**
+     * @var MandataireRepository
+     */
+    private $mandataireRepository;
+
+    public function __construct(SessionInterface $session, Security $security, MandataireRepository $mandataireRepository)
     {
+        $this->session = $session;
         $this->security = $security;
-        $this->session = $sessionInterface;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(CompteGestionEntity $compteGestion)
+    {
+        return $compteGestion && $this->getMandataire()->getGroupe() == $compteGestion->getDonneeBancaire()->getMajeur()->getGroupe();
     }
 
     /**
@@ -56,7 +67,6 @@ class CompteGestionController extends AbstractController
         FamilleTypeOperationRepository $familleTypeOperationRepository,
         CompteGestionRepository $compteGestionRepository
     ) {
-        $user = $this->security->getUser();
         $filter = $this->session->get(self::FILTER_COMPTE_GESTION, new CompteGestionFilter());
 
         $tos = $typeOperationRepository->findBy([], ['libelle' => 'ASC']);
@@ -79,7 +89,7 @@ class CompteGestionController extends AbstractController
         }
 
         $pagination = $paginator->paginate(
-            $compteGestionRepository->getFromFilter($user, $donneeBancaire, $filter),
+            $compteGestionRepository->getFromFilter($this->getMandataire(), $donneeBancaire, $filter),
             $startPage,
             8,
             [
@@ -139,9 +149,7 @@ class CompteGestionController extends AbstractController
         $form = $this->createForm(CompteGestionType::class, $compteGestion);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($compteGestion->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($compteGestion) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_comptesgestion', ['id' => $compteGestion->getDonneeBancaire()->getId()]);
@@ -181,11 +189,9 @@ class CompteGestionController extends AbstractController
     /**
      * @Route("user/comptegestion/delete/{id}", name="user_comptegestion_delete")
      */
-    public function delete(
-        CompteGestionEntity $compteGestion
-    ) {
-        $user = $this->security->getUser();
-        if ($compteGestion && $compteGestion->getDonneeBancaire()->getMajeur()->isOwnBy($user)) {
+    public function delete(CompteGestionEntity $compteGestion)
+    {
+        if ($this->isInSameGroupe($compteGestion)) {
             $em = $this->getDoctrine()->getManager();
             $em->remove($compteGestion);
             $em->flush();

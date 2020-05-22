@@ -4,20 +4,49 @@ namespace App\Controller;
 
 use App\Repository\CompteGestionRepository;
 use App\Repository\MajeurRepository;
+use App\Repository\MandataireRepository;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Security;
 
 class RapportController extends AbstractController
 {
+    /**
+     * @var Security
+     */
+    private $security;
+
+    /**
+     * @var Pdf
+     */
     private $snappyPdf;
 
-    public function __construct(Pdf $pdf)
+    /**
+     * @var MandataireRepository
+     */
+    private $mandataireRepository;
+
+    public function __construct(Security $security, Pdf $pdf, MandataireRepository $mandataireRepository)
     {
         $this->snappyPdf = $pdf;
+        $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
     }
+
+    private function isNoteOwnBy(NoteDeFraisEntity $noteDeFrais)
+    {
+        return $noteDeFrais && $this->getMandataire() == $noteDeFrais->getFicheFrais()->getMandataire();
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
 
     /**
      * @Route("user/rapports", name="user_rapports")

@@ -29,13 +29,25 @@ class VisiteController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param Security         $security
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(MajeurEntity $majeur)
+    {
+        return $majeur && $this->getMandataire()->getGroupe() == $majeur->getGroupe();
     }
 
     /**
@@ -44,16 +56,15 @@ class VisiteController extends AbstractController
      * @param VisiteRepository   $visiteRepository
      * @return Response
      */
-    public function index(MajeurEntity $majeur, ?int $annee, MandataireRepository $mandataireRepository, VisiteRepository $visiteRepository)
-    {
-        $user = $this->security->getUser();
-
-        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
-
+    public function index(
+        MajeurEntity $majeur,
+        ?int $annee,
+        VisiteRepository $visiteRepository
+    ) {
         if (!$annee || $annee < 2000 || $annee > 2050) {
             $annee = intval(date('Y'));
         }
-        $visites = $visiteRepository->getFromMajeurAndAnnee($mandataire, $majeur, $annee);
+        $visites = $visiteRepository->getFromMajeurAndAnnee($this->getMandataire(), $majeur, $annee);
         $calendrier = new Calendrier($visites, $annee);
 
         return $this->render(
@@ -73,11 +84,9 @@ class VisiteController extends AbstractController
      * @param Request $request
      * @return JsonResponse
      */
-    public function ajaxVisiteToggleVisite(Request $request, MandataireRepository $mandataireRepository, MajeurRepository $majeurRepository)
+    public function ajaxVisiteToggleVisite(Request $request, MajeurRepository $majeurRepository)
     {
-        $user = $this->security->getUser();
         $em = $this->getDoctrine()->getManager();
-        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
 
         $data = 0;
         $jour = $request->get('jour', 0);
@@ -88,8 +97,7 @@ class VisiteController extends AbstractController
         $majeur = $majeurRepository->find($majeurId);
 
         if (
-            $majeur && $mandataire
-            && $majeur->getGroupe() == $mandataire->getGroupe()
+            $this->isInSameGroupe($majeur)
             && Util::verifyDate($jour . '/' . $mois . '/' . $annee)
         ) {
             $date = new DateTime();

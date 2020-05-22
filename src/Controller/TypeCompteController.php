@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TypeCompteEntity;
 use App\Form\TypeCompteType;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeCompteRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +20,25 @@ class TypeCompteController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(TypeCompteEntity $typeCompte)
+    {
+        return $typeCompte && $this->getMandataire()->getGroupe() == $typeCompte->getGroupe();
     }
 
     /**
@@ -34,7 +47,7 @@ class TypeCompteController extends AbstractController
     public function index(TypeCompteRepository $typeCompteRepository)
     {
         return $this->render('type_compte/index.html.twig', [
-            'typeComptes' => $typeCompteRepository->findBy([], ['libelle' => 'ASC']),
+            'typeComptes' => $typeCompteRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des types de compte',
         ]);
     }
@@ -45,6 +58,7 @@ class TypeCompteController extends AbstractController
     public function add(Request $request)
     {
         $typeCompte = new TypeCompteEntity();
+        $typeCompte->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(TypeCompteType::class, $typeCompte);
         $form->handleRequest($request);
@@ -76,9 +90,7 @@ class TypeCompteController extends AbstractController
         $form = $this->createForm(TypeCompteType::class, $typeCompte);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($typeCompte->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($typeCompte) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_typecomptes');
@@ -102,10 +114,8 @@ class TypeCompteController extends AbstractController
         Request $request,
         TypeCompteRepository $typeCompteRepository
     ) {
-        $user = $this->security->getUser();
-
         $typeCompte = $request->get('typeCompteId', -1);
-        $count = $typeCompteRepository->countById($user, $typeCompte);
+        $count = $typeCompteRepository->countById($this->getMandataire(), $typeCompte);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -118,8 +128,7 @@ class TypeCompteController extends AbstractController
         TypeCompteRepository $typeCompteRepository
     ) {
         if ($typeCompte) {
-            $user = $this->security->getUser();
-            $count = $typeCompteRepository->countById($user, $typeCompte->getId());
+            $count = $typeCompteRepository->countById($this->getMandataire(), $typeCompte->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($typeCompte);

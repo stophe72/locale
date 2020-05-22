@@ -39,6 +39,17 @@ class FicheFraisController extends AbstractController
         $this->mandataireRepository = $mandataireRepository;
     }
 
+    private function isNoteOwnBy(NoteDeFraisEntity $noteDeFrais)
+    {
+        return $noteDeFrais && $this->getMandataire() == $noteDeFrais->getFicheFrais()->getMandataire();
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
     /**
      * @Route("user/fichesdefrais", name="user_fichesdefrais")
      */
@@ -50,17 +61,6 @@ class FicheFraisController extends AbstractController
             'fichesDeFrais' => $ffs,
             'page_title' => "Liste des fiches de frais"
         ]);
-    }
-
-    private function isNoteOwnBy(NoteDeFraisEntity $noteDeFrais)
-    {
-        return $noteDeFrais && $this->getMandataire() == $noteDeFrais->getFicheFrais()->getMandataire();
-    }
-
-    private function getMandataire()
-    {
-        $user = $this->security->getUser();
-        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
     }
 
     /**

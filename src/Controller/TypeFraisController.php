@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TypeFraisEntity;
 use App\Form\TypeFraisType;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeFraisRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +20,25 @@ class TypeFraisController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(TypeFraisEntity $typeFrais)
+    {
+        return $typeFrais && $this->getMandataire()->getGroupe() == $typeFrais->getGroupe();
     }
 
     /**
@@ -34,7 +47,7 @@ class TypeFraisController extends AbstractController
     public function index(TypeFraisRepository $typeFraisRepository)
     {
         return $this->render('type_frais/index.html.twig', [
-            'typesFrais' => $typeFraisRepository->findBy([], ['libelle' => 'ASC']),
+            'typesFrais' => $typeFraisRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des types de frais',
         ]);
     }
@@ -45,6 +58,7 @@ class TypeFraisController extends AbstractController
     public function add(Request $request)
     {
         $typeFrais = new TypeFraisEntity();
+        $typeFrais->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(TypeFraisType::class, $typeFrais);
         $form->handleRequest($request);
@@ -76,9 +90,7 @@ class TypeFraisController extends AbstractController
         $form = $this->createForm(TypeFraisType::class, $typeFrais);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($typeFrais->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($typeFrais) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_typesfrais');
@@ -102,10 +114,8 @@ class TypeFraisController extends AbstractController
         Request $request,
         TypeFraisRepository $typeFraisRepository
     ) {
-        $user = $this->security->getUser();
-
         $typeFrais = $request->get('typeFraisId', -1);
-        $count = $typeFraisRepository->countById($user, $typeFrais);
+        $count = $typeFraisRepository->countById($this->getMandataire(), $typeFrais);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -118,8 +128,7 @@ class TypeFraisController extends AbstractController
         TypeFraisRepository $typeFraisRepository
     ) {
         if ($typeFrais) {
-            $user = $this->security->getUser();
-            $count = $typeFraisRepository->countById($user, $typeFrais->getId());
+            $count = $typeFraisRepository->countById($this->getMandataire(), $typeFrais->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($typeFrais);

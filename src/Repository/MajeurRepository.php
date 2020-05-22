@@ -34,30 +34,16 @@ class MajeurRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function findByName(?string $name, UserEntity $user, $maxResult = 12)
+    public function findByName(?string $name, MandataireEntity $mandataire, $maxResult = 12)
     {
         $qb = $this->createQueryBuilder('m')
-            ->innerJoin('m.user', 'user')
-            ->where('user = :userId')
+            ->where('m.groupe = :groupeId')
             ->andWhere('LOWER(m.nom) LIKE LOWER(:nom)')
-            ->setParameter('userId', $user->getId())
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId())
             ->setParameter('nom', '%' . $name . '%')
             ->addOrderBy('m.nom', 'ASC')
             ->addOrderBy('m.prenom', 'ASC')
             ->setMaxResults($maxResult);
-
-        return $qb->getQuery()->getResult();
-    }
-
-    public function findForGroupe(UserEntity $user)
-    {
-        $qb = $this->createQueryBuilder('m');
-        $qb->innerJoin('m.groupe', 'g')
-            ->innerJoin(MandataireEntity::class, 'ma', Join::WITH, 'ma.groupe = g')
-            ->innerJoin('ma.user', 'u')
-            ->where('u = :userId')
-            ->setParameter('userId', $user->getId())
-            ->orderBy('m.nom', 'ASC');
 
         return $qb->getQuery()->getResult();
     }

@@ -58,6 +58,7 @@ class LieuVieController extends AbstractController
     public function add(Request $request)
     {
         $lieuVie = new LieuVieEntity();
+        $lieuVie->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(LieuVieType::class, $lieuVie);
         $form->handleRequest($request);
@@ -89,9 +90,7 @@ class LieuVieController extends AbstractController
         $form = $this->createForm(LieuVieType::class, $lieuVie);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($lieuVie->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($lieuVie) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_lieu_vies');
@@ -115,9 +114,8 @@ class LieuVieController extends AbstractController
         Request $request,
         LieuVieRepository $lieuVieRepository
     ) {
-        $user = $this->security->getUser();
         $lieuVieId = $request->get('lieuVieId', -1);
-        $count = $lieuVieRepository->countById($user, $lieuVieId);
+        $count = $lieuVieRepository->countById($this->getMandataire(), $lieuVieId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -130,8 +128,7 @@ class LieuVieController extends AbstractController
         LieuVieRepository $lieuVieRepository
     ) {
         if ($lieuvie) {
-            $user = $this->security->getUser();
-            $count = $lieuVieRepository->countById($user, $lieuvie->getId());
+            $count = $lieuVieRepository->countById($this->getMandataire(), $lieuvie->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($lieuvie);

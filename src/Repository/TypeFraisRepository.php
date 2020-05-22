@@ -2,11 +2,10 @@
 
 namespace App\Repository;
 
-use App\Entity\FicheFraisEntity;
 use App\Entity\NoteDeFraisEntity;
 use App\Entity\TypeFrais;
 use App\Entity\TypeFraisEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -24,17 +23,15 @@ class TypeFraisRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeFraisEntity::class);
     }
 
-    public function countById(UserEntity $user, int $id)
+    public function countById(MandataireEntity $mandataire, int $id)
     {
-        $qb = $this->createQueryBuilder('tf');
-        $qb->select('COUNT(tf.id)')
+        $qb = $this->createQueryBuilder('tf')
+            ->select('COUNT(tf.id)')
             ->innerJoin(NoteDeFraisEntity::class, 'nf', Join::WITH, 'nf.typeFrais = tf')
-            ->innerJoin(FicheFraisEntity::class, 'ff', Join::WITH, 'ff = nf.ficheFrais')
-            ->innerJoin('ff.user', 'u')
             ->where('tf = :typeFraisId')
-            ->andWhere('u = :userId')
+            ->andWhere('tf.groupe = :groupeId')
             ->setParameter('typeFraisId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

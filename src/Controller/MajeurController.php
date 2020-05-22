@@ -22,13 +22,25 @@ class MajeurController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(MajeurEntity $majeur)
+    {
+        return $majeur && $this->getMandataire()->getGroupe() == $majeur->getGroupe();
     }
 
     /**
@@ -38,9 +50,7 @@ class MajeurController extends AbstractController
     {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $user = $this->security->getUser();
-
-        $majeurs = $majeurRepository->findForGroupe($user);
+        $majeurs = $majeurRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['nom' => 'ASC']);
 
         return $this->render('majeur/index.html.twig', [
             'majeurs' => $majeurs,
@@ -51,13 +61,10 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/add", name="user_majeur_add")
      */
-    public function add(Request $request, MandataireRepository $mandataireRepository)
+    public function add(Request $request)
     {
-        $user = $this->security->getUser();
-        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
-
         $majeur = new MajeurEntity();
-        $majeur->setGroupe($mandataire->getGroupe());
+        $majeur->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(MajeurType::class, $majeur);
         $form->handleRequest($request);
@@ -89,21 +96,14 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/edit/{id}", name="user_majeur_edit")
+     * @Route("user/majeur/edit/{slug}", name="user_majeur_edit")
      */
     public function edit(Request $request, MajeurEntity $majeur, MandataireRepository $mandataireRepository)
     {
-        $user = $this->security->getUser();
-        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
-
-        if ($majeur && $mandataire && $majeur->getGroupe()->getId() != $mandataire->getGroupe()->getId()) {
-            return $this->redirectToRoute('user_majeurs');
-        }
-
         $form = $this->createForm(MajeurType::class, $majeur);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
@@ -135,10 +135,9 @@ class MajeurController extends AbstractController
     public function ajaxMajeursGetByName(Request $request, MajeurRepository $majeurRepository)
     {
         $name = $request->get('name');
-        $user = $this->security->getUser();
 
         /** @var MajeurEntity[] $majeurs */
-        $majeurs = $majeurRepository->findByName($name, $user);
+        $majeurs = $majeurRepository->findByName($name, $this->getMandataire());
         $a       = [];
         foreach ($majeurs as $majeur) {
             $a[] = [
@@ -150,14 +149,11 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/show/{id}", name="user_majeur_show")
+     * @Route("user/majeur/show/{slug}", name="user_majeur_show")
      */
-    public function show(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository, MandataireRepository $mandataireRepository)
+    public function show(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository)
     {
-        $user = $this->security->getUser();
-        $mandataire = $mandataireRepository->findOneBy(['user' => $user->getId()]);
-
-        if ($majeur && $mandataire && $majeur->getGroupe()->getId() == $mandataire->getGroupe()->getId()) {
+        if ($this->isInSameGroupe($majeur)) {
             $dbs = $donneeBancaireRepository->findBy(['majeur' => $majeur,]);
             return $this->render(
                 'majeur/show.html.twig',

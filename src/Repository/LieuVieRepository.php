@@ -6,7 +6,7 @@ use App\Entity\LieuVie;
 use App\Entity\LieuVieEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\ParametreMissionEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -24,17 +24,15 @@ class LieuVieRepository extends ServiceEntityRepository
         parent::__construct($registry, LieuVieEntity::class);
     }
 
-    public function countById(UserEntity $user, int $lieuVieId)
+    public function countById(MandataireEntity $mandataire, int $lieuVieId)
     {
         $qb = $this->createQueryBuilder('lv');
         $qb->select('COUNT(lv.id)')
             ->innerJoin(ParametreMissionEntity::class, 'pm', Join::WITH, 'pm.lieuVie = lv')
-            ->innerJoin(MajeurEntity::class, 'm', Join::WITH, 'm.parametreMission = pm')
-            ->innerJoin('m.user', 'u')
             ->where('lv = :lieuVieId')
-            ->andWhere('u = :userId')
+            ->andWhere('lv.groupe = :groupeId')
             ->setParameter('lieuVieId', $lieuVieId)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return $qb->getQuery()->getSingleScalarResult();
     }

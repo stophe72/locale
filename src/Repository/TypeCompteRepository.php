@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\TypeCompteEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -22,17 +22,15 @@ class TypeCompteRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeCompteEntity::class);
     }
 
-    public function countById(UserEntity $user, int $id)
+    public function countById(MandataireEntity $mandataire, int $id)
     {
         $qb  = $this->createQueryBuilder('tc');
         $qb->select('COUNT(tc.id)')
             ->innerJoin(DonneeBancaireEntity::class, 'db', Join::WITH, 'db.typeCompte = tc')
-            ->innerJoin('db.majeur', 'm')
-            ->innerJoin('m.user', 'u')
             ->where('tc = :typeCompteId')
-            ->andWhere('u = :userId')
+            ->andWhere('tc.groupe = :groupeId')
             ->setParameter('typeCompteId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

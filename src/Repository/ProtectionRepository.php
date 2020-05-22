@@ -4,7 +4,7 @@ namespace App\Repository;
 
 use App\Entity\ParametreMissionEntity;
 use App\Entity\ProtectionEntity;
-use App\Entity\UserEntity;
+use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
@@ -22,16 +22,15 @@ class ProtectionRepository extends ServiceEntityRepository
         parent::__construct($registry, ProtectionEntity::class);
     }
 
-    public function countById(UserEntity $user, int $id)
+    public function countById(MandataireEntity $mandataire, int $id)
     {
         $qb = $this->createQueryBuilder('p');
         $qb->select('COUNT(p.id)')
             ->innerJoin(ParametreMissionEntity::class, 'pm', Join::WITH, 'pm.protection = p')
-            ->innerJoin('p.user', 'u')
             ->where('p = :protectionId')
-            ->andWhere('u = :userId')
+            ->andWhere('p.groupe = :groupeId')
             ->setParameter('protectionId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

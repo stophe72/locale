@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\ProtectionEntity;
 use App\Form\ProtectionType;
+use App\Repository\MandataireRepository;
 use App\Repository\ProtectionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,13 +20,25 @@ class ProtectionController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(ProtectionEntity $protection)
+    {
+        return $protection && $this->getMandataire()->getGroupe() == $protection->getGroupe();
     }
 
     /**
@@ -34,7 +47,7 @@ class ProtectionController extends AbstractController
     public function index(ProtectionRepository $protectionRepository)
     {
         return $this->render('protection/index.html.twig', [
-            'protections' => $protectionRepository->findBy([], ['libelle' => 'ASC']),
+            'protections' => $protectionRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']),
             'page_title' => 'Liste des protections',
         ]);
     }
@@ -45,6 +58,7 @@ class ProtectionController extends AbstractController
     public function add(Request $request)
     {
         $protection = new ProtectionEntity();
+        $protection->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(ProtectionType::class, $protection);
         $form->handleRequest($request);
@@ -76,9 +90,7 @@ class ProtectionController extends AbstractController
         $form = $this->createForm(ProtectionType::class, $protection);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($protection->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($protection) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_protections');
@@ -102,9 +114,8 @@ class ProtectionController extends AbstractController
         Request $request,
         ProtectionRepository $protectionRepository
     ) {
-        $user = $this->security->getUser();
         $protectionId = $request->get('protectionId', -1);
-        $count = $protectionRepository->countById($user, $protectionId);
+        $count = $protectionRepository->countById($this->getMandataire(), $protectionId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -117,8 +128,7 @@ class ProtectionController extends AbstractController
         ProtectionRepository $protectionRepository
     ) {
         if ($protection) {
-            $user = $this->security->getUser();
-            $count = $protectionRepository->countById($user, $protection->getId());
+            $count = $protectionRepository->countById($this->getMandataire(), $protection->getId());
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
                 $em->remove($protection);

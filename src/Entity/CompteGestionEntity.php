@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity(repositoryClass="App\Repository\CompteGestionRepository")
  * @ORM\Table(name="compteGestion")
  */
-class CompteGestionEntity extends BaseGroupeLibelleEntity
+class CompteGestionEntity extends BaseEntity
 {
     /**
      * @Assert\NotNull
@@ -47,6 +47,21 @@ class CompteGestionEntity extends BaseGroupeLibelleEntity
      * @ORM\JoinColumn(name="donneeBancaireId", referencedColumnName="id", nullable=false)
      */
     private $donneeBancaire;
+
+    /**
+     * @Assert\NotBlank
+     * @Assert\Length(
+     *      min = 2,
+     *      max = 100,
+     *      minMessage = "Le libellé doit contenir au moins {{ limit }} caractères",
+     *      maxMessage = "Le libellé doit contenir au plus {{ limit }} caractères"
+     * )
+     *
+     * @ORM\Column(type="string", length=100)
+     *
+     * @var string
+     */
+    private $libelle;
 
 
     public function getDate(): ?\DateTimeInterface
@@ -105,6 +120,26 @@ class CompteGestionEntity extends BaseGroupeLibelleEntity
     public function setDonneeBancaire(?DonneeBancaireEntity $donneeBancaire): self
     {
         $this->donneeBancaire = $donneeBancaire;
+
+        return $this;
+    }
+
+    /**
+     * @return  string
+     */
+    public function getLibelle()
+    {
+        return $this->libelle;
+    }
+
+    /**
+     * @param  string  $libelle
+     *
+     * @return  self
+     */
+    public function setLibelle(string $libelle)
+    {
+        $this->libelle = $libelle;
 
         return $this;
     }
