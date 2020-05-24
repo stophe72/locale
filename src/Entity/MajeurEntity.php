@@ -123,6 +123,12 @@ class MajeurEntity extends BaseGroupeEntity
      */
     private $slug;
 
+    /**
+     * @ORM\OneToOne(targetEntity=DecesEntity::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="decesId", referencedColumnName="id", nullable=false)
+     */
+    private $deces;
+
     public function __construct()
     {
         $this->donneeBancaireEntities = new ArrayCollection();
@@ -317,7 +323,7 @@ class MajeurEntity extends BaseGroupeEntity
 
     public function __toString()
     {
-        return $this->nom . " " . $this->prenom;
+        return $this->prenom . " " . $this->nom;
     }
 
     /**
@@ -371,6 +377,18 @@ class MajeurEntity extends BaseGroupeEntity
     public function setSlug(string $slug)
     {
         $this->slug = $slug;
+
+        return $this;
+    }
+
+    public function getDeces(): ?DecesEntity
+    {
+        return $this->deces;
+    }
+
+    public function setDeces(DecesEntity $deces): self
+    {
+        $this->deces = $deces;
 
         return $this;
     }

@@ -1,0 +1,45 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mb-4 mt-4">
+        <h3 class="text-primary"><i class="fa fa-skull"></i> {{ page_title }}</h3>
+    </div>
+
+    <table class="table mt-3">
+        <tr>
+            <th class="col-sm-5">Libellé</th>
+            <td class="col-sm-7">{{ pompeFunebre.libelle }}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Adresse</th>
+            <td class="col-sm-7">{{ pompeFunebre.adresse.adresse1 }}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Complément d'adresse</th>
+            <td class="col-sm-7">{{ pompeFunebre.adresse.adresse2 }}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Code postal</th>
+            <td class="col-sm-7">{{ pompeFunebre.adresse.codePostal }}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Ville</th>
+            <td class="col-sm-7">{{ pompeFunebre.adresse.ville }}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Téléphone</th>
+            <td class="col-sm-7">{% if pompeFunebre.contact is not null %}{{ pompeFunebre.contact.telephone }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Mobile</th>
+            <td class="col-sm-7">{% if pompeFunebre.contact is not null %}{{ pompeFunebre.contact.mobile }}{% endif %}</td>
+        </tr>
+        <tr>
+            <th class="col-sm-5">Email</th>
+            <td class="col-sm-7">{% if pompeFunebre.contact is not null %}{{ pompeFunebre.contact.email }}{% endif %}</td>
+        </tr>
+    </table>
+<div class="row float-right mx-0 mb-3">
+        <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
+    </div>
+{% endblock %}

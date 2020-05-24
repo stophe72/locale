@@ -1,0 +1,10 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-map-marker-alt" %}
+
+{% block form_content %}
+    {{ form_row(form.adresse1) }}
+    {{ form_row(form.adresse2) }}
+    {{ form_row(form.codePostal) }}
+    {{ form_row(form.ville) }}
+{% endblock %}

@@ -3,11 +3,18 @@
 namespace App\Controller;
 
 use App\Entity\MajeurEntity;
+use App\Form\AdresseType;
+use App\Form\ContactType;
+use App\Form\JugementType;
+use App\Form\MajeurAdresseContactType;
 use App\Form\MajeurType;
+use App\Form\TribunalType;
+use App\Models\MajeurAdresseContact;
 use App\Repository\DonneeBancaireRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -185,5 +192,67 @@ class MajeurController extends AbstractController
             // ... handle exception if something happens during file upload
         }
         return $newFilename;
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editJugement", name="user_majeur_edit_jugement")
+     */
+    public function editTribunal(MajeurEntity $majeur, Request $request)
+    {
+        $form = $this->createForm(JugementType::class, $majeur->getJugement());
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_jugement.html.twig', $majeur, $majeur->__toString() . ' - Mesure');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editAdresse", name="user_majeur_edit_adresse")
+     */
+    public function editAdresse(MajeurEntity $majeur, Request $request)
+    {
+        $form = $this->createForm(AdresseType::class, $majeur->getAdresse());
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_adresse.html.twig', $majeur, $majeur->__toString() . ' - Adresse');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editContact", name="user_majeur_edit_contact")
+     */
+    public function editContact(MajeurEntity $majeur, Request $request)
+    {
+        $form = $this->createForm(ContactType::class, $majeur->getContact());
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_contact.html.twig', $majeur, $majeur->__toString() . ' - Contact');
+    }
+
+    private function doRequest(FormInterface $form, string $template, MajeurEntity $majeur, string $titre)
+    {
+        if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            $template,
+            [
+                'form' => $form->createView(),
+                'page_title' => $titre,
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
     }
 }

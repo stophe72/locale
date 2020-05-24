@@ -97,7 +97,7 @@ class GroupeController extends AbstractController
         return $this->render('groupe/new_or_edit.html.twig', [
             'page_title' => 'Editer un groupe de mandataires',
             'form' => $form->createView(),
-            'baseEntity' => $Ggroupe,
+            'baseEntity' => $groupe,
             'url_back' => $this->generateUrl('admin_groupes'),
         ]);
     }

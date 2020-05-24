@@ -81,6 +81,7 @@ class MajeurType extends AbstractType
             )
             ->add('adresse', AdresseType::class)
             ->add('contact', ContactType::class)
+            ->add('contact', DecesType::class)
             ->add('jugement', JugementType::class)
             ->add(
                 'parametreMission',

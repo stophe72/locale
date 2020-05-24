@@ -31,6 +31,11 @@
                     <p>R.G. {{ majeur.jugement.numeroRG }}</p>
                     <p>{{ majeur.parametreMission.mesure.code }} - {{ majeur.parametreMission.mesure.libelle }}</p>
                     <p>Mesure du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</p>
+                    <div class="row">
+                        <div class="col text-right">
+                            <a href="{{ path("user_majeur_edit_jugement", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,11 +51,19 @@
                         <p class="ml-3">{{ majeur.adresse.adresse2 }}</p>
                     {% endif %}
                     <p><i class="fas fa-city"></i> {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}</p>
-                    {% if majeur.contact is not null %}
-                        <p><i class="fas fa-phone"></i> {{ majeur.contact.telephone }}</p>
-                        <p><i class="fas fa-mobile-alt"></i> {{ majeur.contact.mobile }}</p>
-                        <p><i class="fas fa-at"></i> {{ majeur.contact.email }}</p>
-                    {% endif %}
+                    <div class="row">
+                        <div class="col text-right">
+                            <a href="{{ path("user_majeur_edit_adresse", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+                        </div>
+                    </div>
+                    <p><i class="fas fa-phone"></i> {{ majeur.contact.telephone }}</p>
+                    <p><i class="fas fa-mobile-alt"></i> {{ majeur.contact.mobile }}</p>
+                    <p><i class="fas fa-at"></i> {{ majeur.contact.email }}</p>
+                    <div class="row">
+                        <div class="col text-right">
+                            <a href="{{ path("user_majeur_edit_contact", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

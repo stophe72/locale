@@ -1,0 +1,119 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 col-sm-6 mb-4">
+        <h3 class="text-primary"><i class="fas fa-skull"></i> {{ page_title }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    <div class="row mb-4">
+        <div class="col text-right">
+            <a href="{{ path("user_pompefunebre_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+        </div>
+    </div>
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Libellé</th>
+                    <th></th>
+                </tr>
+            </thead>
+            {% for pompefunebre in pompeFunebres %}
+                <tr>
+                    <td>{{ pompefunebre.libelle }}</td>
+                    <td class="text-right">
+                        <a href="{{ path('user_pompefunebre_show', {'id': pompefunebre.id}) }}" title="Détails de la pompe funèbre" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Détails
+                        </a>
+                        <a href="{{ path('user_pompefunebre_edit', {'id': pompefunebre.id}) }}" title="Editer la pompe funèbre" class="btn btn-outline-primary btn-sm mr-2">
+                            <i class="fa fa-pen"></i> Editer
+                        </a>
+                        <a href="#" onclick='del_confirm({{ pompefunebre.id }}, "{{ pompefunebre.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
+                            <i class="fa fa-trash"></i> Supprimer
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="modal fade" id="yesNoModal" tabindex="-1" role="dialog" aria-labelledby="yesNoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer la pompefunebre ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" tabindex="-1" role="dialog" id="myModal">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>Suppression impossible</p>
+                    <p>La pompe funèbre "<span id="pompefunebre_name"></span>" est utilisée.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.pompeFunebreId;
+
+        var url = "{{ path('user_pompefunebre_delete', { 'id': 0 }) }}";
+        url = url.replace('0', id);
+
+        window.location.href = url;
+    });
+
+    function del_confirm(id, name) {
+        document.getElementById('btn_delete').dataset.pompeFunebreId = id;
+
+        $.ajax({
+            url: "{{ path('ajaxCanDeletePompeFunebre') }}",
+            dataType: "json",
+            data: {
+                "pompeFunebreId": id
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['data']) {
+                    var dialog = $('#yesNoModal');
+
+                    dialog.find('.modal-body').text("Supprimer la pompe funèbre " + name + " ?");
+                    dialog.modal('show');
+                } else {
+                    $("#pompefunebre_name").html(name);
+                    $("#myModal").modal();
+                }
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    }
+</script>
+{% endblock %}
