@@ -79,16 +79,16 @@ class GroupeController extends AbstractController
     /**
      * @Route("admin/groupe/edit/{id}", name="admin_groupe_edit")
      */
-    public function edit(GroupeEntity $Groupe, Request $request)
+    public function edit(GroupeEntity $groupe, Request $request)
     {
-        $form = $this->createForm(GroupeType::class, $Groupe);
+        $form = $this->createForm(GroupeType::class, $groupe);
         $form->handleRequest($request);
 
         $user = $this->security->getUser();
 
-        if ($Groupe->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($groupe->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($Groupe);
+            $em->persist($groupe);
             $em->flush();
 
             return $this->redirectToRoute('admin_groupes');
@@ -97,7 +97,7 @@ class GroupeController extends AbstractController
         return $this->render('groupe/new_or_edit.html.twig', [
             'page_title' => 'Editer un groupe de mandataires',
             'form' => $form->createView(),
-            'baseEntity' => $Groupe,
+            'baseEntity' => $Ggroupe,
             'url_back' => $this->generateUrl('admin_groupes'),
         ]);
     }
