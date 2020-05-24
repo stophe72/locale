@@ -4,8 +4,8 @@ namespace App\Repository;
 
 use App\Entity\CompteGestionEntity;
 use App\Entity\ImportOperationEntity;
+use App\Entity\MandataireEntity;
 use App\Entity\TypeOperationEntity;
-use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\Persistence\ManagerRegistry;
@@ -23,39 +23,36 @@ class TypeOperationRepository extends ServiceEntityRepository
         parent::__construct($registry, TypeOperationEntity::class);
     }
 
-    public function getQueryBuilder(UserEntity $user)
+    public function getQueryBuilder(MandataireEntity $mandataire)
     {
         return $this->createQueryBuilder('ope')
-            ->innerJoin('ope.user', 'user')
             ->innerJoin('ope.familleTypeOperation', 'fto')
-            ->where('user = :userId')
-            ->setParameter('userId', $user->getId());
+            ->where('ope.groupe = :groupeId')
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
     }
 
-    public function countByCompteGestion(UserEntity $user, int $id)
+    public function countByCompteGestion(MandataireEntity $mandataire, int $id)
     {
         $qb = $this->createQueryBuilder('to');
         $qb->select('COUNT(to.id)')
             ->innerJoin(CompteGestionEntity::class, 'cg', Join::WITH, 'cg.typeOperation = to')
-            ->innerJoin('to.user', 'u')
             ->where('to = :typeOperationId')
-            ->andWhere('u = :userId')
+            ->andWhere('to.groupe = :groupeId')
             ->setParameter('typeOperationId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }
 
-    public function countByImportOperation(UserEntity $user, int $id)
+    public function countByImportOperation(MandataireEntity $mandataire, int $id)
     {
         $qb = $this->createQueryBuilder('to');
         $qb->select('COUNT(to.id)')
             ->innerJoin(ImportOperationEntity::class, 'io', Join::WITH, 'io.typeOperation = to')
-            ->innerJoin('to.user', 'u')
             ->where('to = :typeOperationId')
-            ->andWhere('u = :userId')
+            ->andWhere('to.groupe = :groupeId')
             ->setParameter('typeOperationId', $id)
-            ->setParameter('userId', $user->getId());
+            ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         return intval($qb->getQuery()->getSingleScalarResult());
     }

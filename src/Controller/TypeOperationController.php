@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\TypeOperationEntity;
 use App\Form\TypeOperationType;
+use App\Repository\MandataireRepository;
 use App\Repository\TypeOperationRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,13 +21,25 @@ class TypeOperationController extends AbstractController
     private $security;
 
     /**
-     * Constructeur
-     *
-     * @param $session SessionInterface
+     * @var MandataireRepository
      */
-    public function __construct(Security $security)
+    private $mandataireRepository;
+
+    public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
+        $this->mandataireRepository = $mandataireRepository;
+    }
+
+    private function getMandataire()
+    {
+        $user = $this->security->getUser();
+        return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
+    }
+
+    private function isInSameGroupe(TypeOperationEntity $typeOperation)
+    {
+        return $typeOperation && $this->getMandataire()->getGroupe() == $typeOperation->getGroupe();
     }
 
     /**
@@ -37,9 +50,8 @@ class TypeOperationController extends AbstractController
         TypeOperationRepository $typeOperationRepository,
         PaginatorInterface $paginator
     ) {
-        $user = $this->security->getUser();
         $pagination = $paginator->paginate(
-            $typeOperationRepository->getQueryBuilder($user),
+            $typeOperationRepository->getQueryBuilder($this->getMandataire()),
             $request->get('page', 1),
             12,
             [
@@ -60,6 +72,7 @@ class TypeOperationController extends AbstractController
     public function add(Request $request)
     {
         $typeOperation = new TypeOperationEntity();
+        $typeOperation->setGroupe($this->getMandataire()->getGroupe());
 
         $form = $this->createForm(TypeOperationType::class, $typeOperation);
         $form->handleRequest($request);
@@ -91,9 +104,7 @@ class TypeOperationController extends AbstractController
         $form = $this->createForm(TypeOperationType::class, $typeOperation);
         $form->handleRequest($request);
 
-        $user = $this->security->getUser();
-
-        if ($typeOperation->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($this->isInSameGroupe($typeOperation) && $form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_typesoperation');
@@ -117,11 +128,10 @@ class TypeOperationController extends AbstractController
         Request $request,
         TypeOperationRepository $typeOperationRepository
     ) {
-        $user = $this->security->getUser();
-
         $typeOperationId = $request->get('typeOperationId', -1);
-        $count = $typeOperationRepository->countByCompteGestion($user, $typeOperationId)
-            + $typeOperationRepository->countByImportOperation($user, $typeOperationId);
+        $mandataire = $this->getMandataire();
+        $count = $typeOperationRepository->countByCompteGestion($mandataire, $typeOperationId)
+            + $typeOperationRepository->countByImportOperation($mandataire, $typeOperationId);
 
         return new JsonResponse(['data' => $count == 0]);
     }
@@ -134,9 +144,9 @@ class TypeOperationController extends AbstractController
         TypeOperationRepository $typeOperationRepository
     ) {
         if ($typeOperation) {
-            $user = $this->security->getUser();
-            $count = $typeOperationRepository->countByCompteGestion($user, $typeOperation->getId())
-                + $typeOperationRepository->countByImportOperation($user, $typeOperation->getId());
+            $mandataire = $this->getMandataire();
+            $count = $typeOperationRepository->countByCompteGestion($mandataire, $typeOperation->getId())
+                + $typeOperationRepository->countByImportOperation($mandataire, $typeOperation->getId());
 
             if ($count == 0) {
                 $em = $this->getDoctrine()->getManager();
