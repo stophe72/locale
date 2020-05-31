@@ -11,6 +11,12 @@ use Doctrine\ORM\Mapping as ORM;
 class DecesEntity extends BaseEntity
 {
     /**
+     * @ORM\OneToOne(targetEntity=MajeurEntity::class)
+     * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
+     */
+    private $majeur;
+
+    /**
      * @ORM\ManyToOne(targetEntity=PompeFunebreEntity::class)
      * @ORM\JoinColumn(name="pompeFunebreId", referencedColumnName="id", nullable=false)
      */
@@ -27,7 +33,7 @@ class DecesEntity extends BaseEntity
     private $cimetiere;
 
     /**
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\Column(name="referenceConcession", type="string", length=100, nullable=true)
      */
     private $referenceConcession;
 
@@ -76,6 +82,26 @@ class DecesEntity extends BaseEntity
     public function setReferenceConcession(?string $referenceConcession): self
     {
         $this->referenceConcession = $referenceConcession;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of majeur
+     */
+    public function getMajeur()
+    {
+        return $this->majeur;
+    }
+
+    /**
+     * Set the value of majeur
+     *
+     * @return  self
+     */
+    public function setMajeur($majeur)
+    {
+        $this->majeur = $majeur;
 
         return $this;
     }

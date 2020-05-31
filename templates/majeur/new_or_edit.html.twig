@@ -5,16 +5,48 @@
 {% block form_content %}
     {{ form_errors(form) }}
     <h5 class="my-3 text-primary">Civilités</h5>
-    {{ form_row(form.civilite) }}
-    {{ form_errors(form.civilite) }}
-    {{ form_row(form.nom) }}
-    {{ form_errors(form.nom) }}
-    {{ form_row(form.nomEtatCivil) }}
-    {{ form_errors(form.nomEtatCivil) }}
-    {{ form_row(form.prenom) }}
-    {{ form_errors(form.prenom) }}
-    {{ form_row(form.nationalite) }}
-    {{ form_errors(form.nationalite) }}
+    <div class="row my-3">
+        <div class="col-sm-2 col-form-label">
+            Civilité
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.civilite) }}
+        </div>
+        <div class="col-sm-2 col-form-label">
+            Prénom
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.prenom) }}
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col-sm-2 col-form-label">
+            Nom
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.nom) }}
+        </div>
+        <div class="col-sm-2 col-form-label">
+            Nom d'état civil
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.nomEtatCivil) }}
+        </div>
+    </div>
+    <div class="row my-3">
+        <div class="col-sm-2 col-form-label">
+            Nationalité
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.nationalite) }}
+        </div>
+        <div class="col-sm-2 col-form-label">
+            N° Sécurité Sociale
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.numeroSS) }}
+        </div>
+    </div>
     <div class="row my-3">
         <div class="col-sm-2 col-form-label">
             Date de naissance
@@ -32,17 +64,40 @@
         </div>
     </div>
     {{ form_row(form.image) }}
-    <h5 class="my-3 text-primary">Adresse et contacts</h5>
-    {{ form_widget(form.adresse) }}
-    {{ form_errors(form.adresse) }}
-    {{ form_widget(form.contact) }}
-    {{ form_errors(form.contact) }}
-    <h5 class="my-3 text-primary">Sécurité Sociale - Couverture Maladie Universelle</h5>
-    {{ form_row(form.numeroSS) }}
-    {{ form_errors(form.numeroSS) }}
-    {{ form_row(form.dateFinCMU) }}
-    {{ form_errors(form.dateFinCMU) }}
-    <h5 class="my-3 text-primary">Jugement</h5>
+    <h5 class="my-3 text-primary">Adresse</h5>
+    {{ form_row(form.adresse.adresse1) }}
+    {{ form_row(form.adresse.adresse2) }}
+    <div class="row">
+        <div class="col-sm-2 align-self-center">
+            Code postal
+        </div>
+        <div class="col-sm-2">
+            {{ form_widget(form.adresse.codePostal) }}
+        </div>
+        <div class="col-sm-1 align-self-center">
+            Ville
+        </div>
+        <div class="col-sm-7">
+            {{ form_widget(form.adresse.ville) }}
+        </div>
+    </div>
+    <h5 class="my-3 text-primary">Contacts</h5>
+    <div class="row mb-3">
+        <div class="col-sm-2 align-self-center">
+            Téléphone
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.contact.telephone) }}
+        </div>
+        <div class="col-sm-2 align-self-center">
+            Mobile
+        </div>
+        <div class="col-sm-4">
+            {{ form_widget(form.contact.mobile) }}
+        </div>
+    </div>
+    {{ form_row(form.contact.email) }}
+    {#<h5 class="my-3 text-primary">Mesure</h5>
     <div class="row my-3">
         <div class="col-sm-2 col-form-label">
             N° Répertoire Général
@@ -62,7 +117,6 @@
     {{ form_row(form.jugement.tribunal) }}
     {{ form_errors(form.jugement.tribunal) }}
 
-    <h5 class="my-3 text-primary">Mesure</h5>
     <div class="row my-3">
         <div class="col-sm-2 px-0">
             {{ form_label(form.jugement.debutMesure) }}
@@ -82,9 +136,7 @@
     <h5 class="my-3 text-primary">Paramètres de la mission</h5>
     {{ form_widget(form.parametreMission) }}
     {{ form_errors(form.parametreMission) }}
-    <h5 class="my-3 text-primary">Décès</h5>
-    {# {{ form_widget(form.deces) }}
-    {{ form_errors(form.deces) }} #}
+    #}
 {% endblock %}
 
 {% block javascripts %}

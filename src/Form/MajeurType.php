@@ -81,21 +81,12 @@ class MajeurType extends AbstractType
             )
             ->add('adresse', AdresseType::class)
             ->add('contact', ContactType::class)
-            ->add('contact', DecesType::class)
+            /*
             ->add('jugement', JugementType::class)
             ->add(
                 'parametreMission',
                 ParametreMissionType::class
-            )
-            ->add(
-                'dateFinCMU',
-                DateType::class,
-                [
-                    'required' => false,
-                    'label' => 'Date de fin C.M.U.',
-                    'widget' => 'single_text',
-                ]
-            )
+            )*/
             ->add(
                 'image',
                 FileType::class,

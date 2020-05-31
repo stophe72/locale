@@ -1,0 +1,10 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-skull" %}
+
+{% block form_content %}
+    {{ form_row(form.pompeFunebre) }}
+    {{ form_row(form.cimetiere) }}
+    {{ form_row(form.concession) }}
+    {{ form_row(form.referenceConcession) }}
+{% endblock %}

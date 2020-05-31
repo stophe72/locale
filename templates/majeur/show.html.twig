@@ -1,82 +1,218 @@
 {% extends 'layout_fluid.html.twig' %}
 
 {% block content %}
-    <div class="row mb-4 mt-4 offset-3">
+    <div class="row mb-4 mt-4 offset-2">
         <h3 class="text-primary"><i class="fa fa-info-circle"></i> {{ page_title }} - {{ majeur.prenom }} {{ majeur.nom }}</h3>
     </div>
 
     <div class="row">
-        <div class="col-sm-3">
-            <img class="rounded" src="{% if majeur.image %}{{ asset('uploads/' ~ majeur.image) | imagine_filter('squared_thumbnail_small') }}{% else %}{{ asset("images/person-128.png")| imagine_filter('squared_thumbnail_small') }}{% endif %}">
-            <div class="mt-5">
-                <div class="card">
-                    <div class="card-header text-white bg-warning ">
-                        <strong>ALERTES</strong>
-                    </div>
-                    <div class="card-body">
-                        <p>Fin C.M.U.</p>
-                        <p>Fin A.A.H</p>
-                    </div>
+        <div class="col-sm-2">
+            <div class="row mt-3">
+                <div class="col text-center">
+                    <img class="rounded" src="{% if majeur.image %}{{ asset('uploads/' ~ majeur.image) | imagine_filter('squared_thumbnail_small') }}{% else %}{{ asset("images/person-128.png")| imagine_filter('squared_thumbnail_small') }}{% endif %}">
                 </div>
             </div>
-        </div>
-
-        <div class="col-sm-3 mb-3">
-            <div class="card">
-                <div class="card-header text-white bg-primary ">
-                    <strong>MESURE</strong>
-                </div>
-                <div class="card-body" style="background: #e6f3ff;">
-                    <p><i class="fas fa-gavel"></i> Tribunal de {{ majeur.jugement.tribunal.libelle }}</p>
-                    <p>R.G. {{ majeur.jugement.numeroRG }}</p>
-                    <p>{{ majeur.parametreMission.mesure.code }} - {{ majeur.parametreMission.mesure.libelle }}</p>
-                    <p>Mesure du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</p>
-                    <div class="row">
-                        <div class="col text-right">
-                            <a href="{{ path("user_majeur_edit_jugement", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+            <div class="row mt-3">
+                <div class="col">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #FB8C00;">
+                            <strong>ALERTES</strong>
+                        </div>
+                        <div class="card-body" style="background: #FFF3E0;">
+                            <p><i class="fas fa-bell"></i> Fin C.M.U.</p>
+                            <p><i class="fas fa-bell"></i> Fin A.A.H</p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="col-sm-3 mb-3">
-            <div class="card">
-                <div class="card-header text-white bg-success ">
-                    <strong>ADRESSE - CONTACT</strong>
-                </div>
-                <div class="card-body" style="background: #bfffcd;">
-                    <p><i class="fas fa-map-marker-alt"></i> {{ majeur.adresse.adresse1 }}</p>
-                    {% if majeur.adresse.adresse2 is not null %}
-                        <p class="ml-3">{{ majeur.adresse.adresse2 }}</p>
-                    {% endif %}
-                    <p><i class="fas fa-city"></i> {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}</p>
-                    <div class="row">
-                        <div class="col text-right">
-                            <a href="{{ path("user_majeur_edit_adresse", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+        <div class="col-sm-10">
+            <div class="row mt-3">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #43A047;">
+                            <strong>ADRESSE - CONTACT</strong>
+                        </div>
+                        <div class="card-body" style="background: #E8F5E9;">
+                            <div class="row">
+                                <div class="col-sm-10 text-secondary mb-2">
+                                    <strong>Adresse</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <a href="{{ path("user_majeur_edit_adresse", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                </div>
+                            </div>
+                            <p><i class="fas fa-map-marker-alt"></i> {{ majeur.adresse.adresse1 }}</p>
+                            {% if majeur.adresse.adresse2 is not null %}
+                                <p class="ml-3">{{ majeur.adresse.adresse2 }}</p>
+                            {% endif %}
+                            <p><i class="fas fa-city"></i> {{ majeur.adresse.codePostal }} {{ majeur.adresse.ville }}</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-10 text-secondary mb-2">
+                                    <strong>Contact</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <a href="{{ path("user_majeur_edit_contact", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                </div>
+                            </div>
+                            <p><i class="fas fa-phone"></i> {{ majeur.contact.telephone }}</p>
+                            <p><i class="fas fa-mobile-alt"></i> {{ majeur.contact.mobile }}</p>
+                            <p><i class="fas fa-at"></i> {{ majeur.contact.email }}</p>
                         </div>
                     </div>
-                    <p><i class="fas fa-phone"></i> {{ majeur.contact.telephone }}</p>
-                    <p><i class="fas fa-mobile-alt"></i> {{ majeur.contact.mobile }}</p>
-                    <p><i class="fas fa-at"></i> {{ majeur.contact.email }}</p>
-                    <div class="row">
-                        <div class="col text-right">
-                            <a href="{{ path("user_majeur_edit_contact", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #6D4C41;">
+                            <strong>SITUATION PERSONNELLE</strong>
+                        </div>
+                        <div class="card-body" style="background: #EFEBE9;">
+                            <p class="card-text">Nom de naissance : {{ majeur.nomEtatCivil }}</p>
+                            <p><i class="fas fa-birthday-cake"></i> Né(e) le {{ majeur.dateNaissance|date('d/m/Y') }}</p>
+                            <p><i class="fas fa-city"></i> {{ majeur.lieuNaissance }}</p>
+                            <p><i class="fas fa-user-shield"></i> S. Sociale {{ majeur.numeroSS }}</p>
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-10 text-secondary mb-2">
+                                    <strong>Décès</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            {% if deces is null %}
+                                                <a href="{{ path("user_majeur_add_deces", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-plus-square"></i></a>
+                                            {% else %}
+                                                <a href="{{ path("user_majeur_edit_deces", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if deces is not null %}
+                                <p class="card-text">Pompes funèbres : {{ deces.pompeFunebre }}</p>
+                                <p class="card-text">Cimetière : {{ deces.cimetiere }}</p>
+                                <p class="card-text">Concession : {{ deces.concession }}</p>
+                                <p class="card-text">Référence concession : {{ deces.referenceConcession }}</p>
+                                <div class="row">
+                                    <div class="col text-right">
+                                        <a href="{{ path("user_majeur_edit_deces", { "slug": majeur.slug }) }}" class="btn btn-link">Modifier</a>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #1E88E5;">
+                            <strong>MESURE</strong>
+                        </div>
+                        <div class="card-body" style="background: #E3F2FD;">
+                            <div class="row">
+                                <div class="col-sm-10 text-secondary mb-2">
+                                    <strong>Jugement</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            {% if jugement is null %}
+                                                <a href="{{ path("user_majeur_add_mesure", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-plus-square"></i></a>
+                                            {% else %}
+                                                <a href="{{ path("user_majeur_edit_mesure", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if jugement is not null %}
+                                <p><i class="fas fa-gavel"></i> Tribunal de {{ jugement.tribunal.libelle }}</p>
+                                <p><i class="fas fa-folder-open"></i> R.G. {{ jugement.numeroRG }}</p>
+                                <p><i class="fas fa-calendar-alt"></i> Mesure du {{ jugement.debutMesure|date('m/d/Y') }} au {{ jugement.finMesure|date('m/d/Y') }}</p>
+                            {% endif %}
+                            <hr>
+                            <div class="row">
+                                <div class="col-sm-10 text-secondary mb-2">
+                                    <strong>Paramètres de la mission</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <div class="row">
+                                        <div class="col text-right">
+                                            {% if parametreMission is null %}
+                                                <a href="{{ path("user_majeur_add_parametre_mission", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-plus-square"></i></a>
+                                            {% else %}
+                                                <a href="{{ path("user_majeur_edit_parametre_mission", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if parametreMission is not null %}
+                                <p>{{ parametreMission.mesure.code }} - {{ parametreMission.mesure.libelle }}</p>
+                                <p>{{ parametreMission.protection.libelle }}</p>
+                                <p>{{ parametreMission.lieuVie.libelle }}</p>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-sm-3 mb-3">
-            <div class="card">
-                <div class="card-header text-white" style="background: #677d51;">
-                    <strong>SITUATION PERSONNELLE</strong>
+            <div class="row mt-3">
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #00897B;">
+                            <strong>DONNEES BANCAIRES</strong>
+                        </div>
+                        <div class="card-body" style="background: #E0F2F1;">
+                            {% if majeur.donneeBancaireEntities is not empty %}
+                                {% for db in majeur.donneeBancaireEntities %}
+                                    <p>
+                                        <i class="fas fa-university"></i> {{ db }}
+                                        <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
+                                        <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
+                                    </p>
+                                {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body" style="background: #c8caaa;">
-                    <p class="card-text">Nom de naissance : {{ majeur.nomEtatCivil }}</p>
-                    <p><i class="fas fa-birthday-cake"></i> Né(e) le {{ majeur.dateNaissance|date('d/m/Y') }}</p>
-                    <p>S. Sociale {{ majeur.numeroSS }}</p>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-white" style="background: #677d51;">
+                            <strong>PROTECTIONS</strong>
+                        </div>
+                        <div class="card-body" style="background: #e0e1be;">
+                            <p class="card-text">Nom de naissance : {{ majeur.nomEtatCivil }}</p>
+                            <p><i class="fas fa-birthday-cake"></i> Né(e) le {{ majeur.dateNaissance|date('d/m/Y') }}</p>
+                            <p>S. Sociale {{ majeur.numeroSS }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <div class="card">
+                        <div class="card-header text-light" style="background: #AB47BC;">
+                            <strong>CONTACTS PRINCIPAUX</strong>
+                        </div>
+                        <div class="card-body" style="background: #F3E5F5;">
+                            {% for contactExterne in contactExternes %}
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <i class="fas fa-address-card"></i> {{ contactExterne.nom }} - {{ contactExterne.contact.telephone }}
+                                    </div>
+                                    <div class="col-sm-3 text-right">
+                                        <a class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                        <a class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row">
+                                <div class="col text-right">
+                                    <a href="{{ path("user_majeur_add_contact_externe", { "slug": majeur.slug }) }}" class="btn btn-link">Ajouter</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,10 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-address-card" %}
+
+{% block form_content %}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.contact.telephone) }}
+    {{ form_row(form.contact.mobile) }}
+    {{ form_row(form.contact.email) }}
+{% endblock %}

@@ -55,14 +55,6 @@ class MajeurEntity extends BaseGroupeEntity
     private $adresse;
 
     /**
-     * @Assert\NotNull
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\JugementEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="jugementId", nullable=false, referencedColumnName="id")
-     */
-    private $jugement;
-
-    /**
      * @ORM\OneToOne(targetEntity="App\Entity\ContactEntity", cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="contactId", nullable=true, referencedColumnName="id")
      */
@@ -90,19 +82,6 @@ class MajeurEntity extends BaseGroupeEntity
     private $numeroSS;
 
     /**
-     * @Assert\NotNull
-     *
-     * @ORM\OneToOne(targetEntity="App\Entity\ParametreMissionEntity", cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="parametreMissionId", referencedColumnName="id", nullable=false)
-     */
-    private $parametreMission;
-
-    /**
-     * @ORM\Column(name="dateFinCMU", type="date", nullable=true)
-     */
-    private $dateFinCMU;
-
-    /**
      * @Assert\NotBlank
      *
      * @ORM\Column(type="string", length=100)
@@ -124,14 +103,15 @@ class MajeurEntity extends BaseGroupeEntity
     private $slug;
 
     /**
-     * @ORM\OneToOne(targetEntity=DecesEntity::class, cascade={"persist", "remove"})
-     * @ORM\JoinColumn(name="decesId", referencedColumnName="id", nullable=false)
+     * @ORM\OneToMany(targetEntity=ContactExterneEntity::class, mappedBy="majeur", orphanRemoval=true)
      */
-    private $deces;
+    private $contactExterneEntities;
+
 
     public function __construct()
     {
         $this->donneeBancaireEntities = new ArrayCollection();
+        $this->contactExterneEntities = new ArrayCollection();
     }
 
     /**
@@ -225,18 +205,6 @@ class MajeurEntity extends BaseGroupeEntity
         return $this;
     }
 
-    public function getJugement(): ?JugementEntity
-    {
-        return $this->jugement;
-    }
-
-    public function setJugement(JugementEntity $jugement): self
-    {
-        $this->jugement = $jugement;
-
-        return $this;
-    }
-
     public function getContact(): ?ContactEntity
     {
         return $this->contact;
@@ -281,30 +249,6 @@ class MajeurEntity extends BaseGroupeEntity
     public function setNumeroSS(string $numeroSS): self
     {
         $this->numeroSS = $numeroSS;
-
-        return $this;
-    }
-
-    public function getParametreMission(): ?ParametreMissionEntity
-    {
-        return $this->parametreMission;
-    }
-
-    public function setParametreMission(ParametreMissionEntity $parametreMission): self
-    {
-        $this->parametreMission = $parametreMission;
-
-        return $this;
-    }
-
-    public function getDateFinCMU(): ?\DateTimeInterface
-    {
-        return $this->dateFinCMU;
-    }
-
-    public function setDateFinCMU(?\DateTimeInterface $dateFinCMU): self
-    {
-        $this->dateFinCMU = $dateFinCMU;
 
         return $this;
     }
@@ -381,14 +325,33 @@ class MajeurEntity extends BaseGroupeEntity
         return $this;
     }
 
-    public function getDeces(): ?DecesEntity
+    /**
+     * @return Collection|ContactExterneEntity[]
+     */
+    public function getContactExterneEntities(): Collection
     {
-        return $this->deces;
+        return $this->contactExterneEntities;
     }
 
-    public function setDeces(DecesEntity $deces): self
+    public function addContactExterneEntity(ContactExterneEntity $contactExterneEntity): self
     {
-        $this->deces = $deces;
+        if (!$this->contactExterneEntities->contains($contactExterneEntity)) {
+            $this->contactExterneEntities[] = $contactExterneEntity;
+            $contactExterneEntity->setMajeur($this);
+        }
+
+        return $this;
+    }
+
+    public function removeContactExterneEntity(ContactExterneEntity $contactExterneEntity): self
+    {
+        if ($this->contactExterneEntities->contains($contactExterneEntity)) {
+            $this->contactExterneEntities->removeElement($contactExterneEntity);
+            // set the owning side to null (unless already changed)
+            if ($contactExterneEntity->getMajeur() === $this) {
+                $contactExterneEntity->setMajeur(null);
+            }
+        }
 
         return $this;
     }

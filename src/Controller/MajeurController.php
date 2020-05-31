@@ -2,17 +2,25 @@
 
 namespace App\Controller;
 
+use App\Entity\ContactExterneEntity;
+use App\Entity\DecesEntity;
+use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
+use App\Entity\ParametreMissionEntity;
 use App\Form\AdresseType;
+use App\Form\ContactExterneType;
 use App\Form\ContactType;
+use App\Form\DecesType;
 use App\Form\JugementType;
-use App\Form\MajeurAdresseContactType;
 use App\Form\MajeurType;
-use App\Form\TribunalType;
-use App\Models\MajeurAdresseContact;
+use App\Form\ParametreMissionType;
+use App\Repository\ContactExterneRepository;
+use App\Repository\DecesRepository;
 use App\Repository\DonneeBancaireRepository;
+use App\Repository\JugementRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
+use App\Repository\ParametreMissionRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -90,7 +98,6 @@ class MajeurController extends AbstractController
 
             return $this->redirectToRoute('user_majeurs');
         }
-
         return $this->render(
             'majeur/new_or_edit.html.twig',
             [
@@ -158,15 +165,30 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/show/{slug}", name="user_majeur_show")
      */
-    public function show(MajeurEntity $majeur, DonneeBancaireRepository $donneeBancaireRepository)
-    {
+    public function show(
+        MajeurEntity $majeur,
+        DonneeBancaireRepository $donneeBancaireRepository,
+        DecesRepository $decesRepository,
+        JugementRepository $jugementRepository,
+        ParametreMissionRepository $parametreMissionRepository,
+        ContactExterneRepository $contactExterneRepository
+    ) {
         if ($this->isInSameGroupe($majeur)) {
+            $deces = $decesRepository->findOneBy(['majeur' => $majeur->getId()]);
+            $jugement = $jugementRepository->findOneBy(['majeur' => $majeur->getId()]);
+            $parametreMission = $parametreMissionRepository->findOneBy(['majeur' => $majeur->getId()]);
+            $contactsExternes = $contactExterneRepository->findBy(['majeur' => $majeur->getId()]);
             $dbs = $donneeBancaireRepository->findBy(['majeur' => $majeur,]);
+
             return $this->render(
                 'majeur/show.html.twig',
                 [
+                    'contactExternes' => $contactsExternes,
                     'donneeBancaires' => $dbs,
+                    'jugement' => $jugement,
+                    'parametreMission' => $parametreMission,
                     'majeur' => $majeur,
+                    'deces' => $deces,
                     'page_title' => 'Détails d\'un majeur',
                     'url_back'   => $this->generateUrl('user_majeurs'),
                 ]
@@ -195,14 +217,165 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/{slug}/editJugement", name="user_majeur_edit_jugement")
+     * @Route("user/majeur/{slug}/addMesure", name="user_majeur_add_mesure")
      */
-    public function editTribunal(MajeurEntity $majeur, Request $request)
+    public function addMesure(MajeurEntity $majeur, Request $request)
     {
-        $form = $this->createForm(JugementType::class, $majeur->getJugement());
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $jugement = new JugementEntity();
+        $jugement->setMajeur($majeur);
+
+        $form = $this->createForm(JugementType::class, $jugement);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_jugement.html.twig', $majeur, $majeur->__toString() . ' - Mesure');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($jugement);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_mesure.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Jugement',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editMesure", name="user_majeur_edit_mesure")
+     */
+    public function editMesure(MajeurEntity $majeur, JugementEntity $jugement, Request $request)
+    {
+        $form = $this->createForm(JugementType::class, $jugement);
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_mesure.html.twig', $majeur, $majeur->__toString() . ' - Jugement');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/addContactExterne", name="user_majeur_add_contact_externe")
+     */
+    public function addContactExterne(MajeurEntity $majeur, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $contactExterne = new ContactExterneEntity();
+        $contactExterne->setMajeur($majeur);
+
+        $form = $this->createForm(ContactExterneType::class, $contactExterne);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($contactExterne);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_contact_externe.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Contact externe',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editContactExterne", name="user_majeur_edit_contact_externe")
+     */
+    public function editContactExterne(MajeurEntity $majeur, ContactExterneEntity $contactExterne, Request $request)
+    {
+        $form = $this->createForm(ContactExterneType::class, $contactExterne);
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_contact_externe.html.twig', $majeur, $majeur->__toString() . ' - Contact externe');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/addParametreMission", name="user_majeur_add_parametre_mission")
+     */
+    public function addParametreMission(MajeurEntity $majeur, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $pm = new ParametreMissionEntity();
+        $pm->setMajeur($majeur);
+
+        $form = $this->createForm(ParametreMissionType::class, $pm);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pm);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_parametre_mission.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Paramètres de la mission',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editParametreMission", name="user_majeur_edit_parametre_mission")
+     */
+    public function editParametreMission(MajeurEntity $majeur, ParametreMissionEntity $parametreMission, Request $request)
+    {
+        $form = $this->createForm(ParametreMissionType::class, $parametreMission);
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_parametre_mission.html.twig', $majeur, $majeur->__toString() . ' - Paramètres de la mission');
     }
 
     /**
@@ -225,6 +398,87 @@ class MajeurController extends AbstractController
         $form->handleRequest($request);
 
         return $this->doRequest($form, 'majeur/majeur_edit_contact.html.twig', $majeur, $majeur->__toString() . ' - Contact');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/addDeces", name="user_majeur_add_deces")
+     */
+    public function addDeces(MajeurEntity $majeur, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $deces = new DecesEntity();
+        $deces->setMajeur($majeur);
+
+        $form = $this->createForm(DecesType::class, $deces);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($deces);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_deces.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Décès',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editDeces", name="user_majeur_edit_deces")
+     */
+    public function editDeces(MajeurEntity $majeur, DecesEntity $deces, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $form = $this->createForm(DecesType::class, $deces);
+        $form->handleRequest($request);
+
+        if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_deces.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Décès',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
     }
 
     private function doRequest(FormInterface $form, string $template, MajeurEntity $majeur, string $titre)

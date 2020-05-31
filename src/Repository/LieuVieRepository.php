@@ -4,7 +4,6 @@ namespace App\Repository;
 
 use App\Entity\LieuVie;
 use App\Entity\LieuVieEntity;
-use App\Entity\MajeurEntity;
 use App\Entity\ParametreMissionEntity;
 use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;

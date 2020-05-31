@@ -12,6 +12,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ParametreMissionEntity extends BaseEntity
 {
     /**
+     * @var MajeurEntity
+     *
+     * @Assert\NotNull
+     *
+     * @ORM\ManyToOne(targetEntity="App\Entity\MajeurEntity")
+     * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
+     */
+    private $majeur;
+
+    /**
      * @Assert\NotNull
      *
      * @ORM\ManyToOne(targetEntity="App\Entity\MesureEntity")
@@ -69,6 +79,30 @@ class ParametreMissionEntity extends BaseEntity
     public function setLieuVie(?LieuVieEntity $lieuVie): self
     {
         $this->lieuVie = $lieuVie;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of majeur
+     *
+     * @return  MajeurEntity
+     */
+    public function getMajeur()
+    {
+        return $this->majeur;
+    }
+
+    /**
+     * Set the value of majeur
+     *
+     * @param  MajeurEntity  $majeur
+     *
+     * @return  self
+     */
+    public function setMajeur(MajeurEntity $majeur)
+    {
+        $this->majeur = $majeur;
 
         return $this;
     }

@@ -12,6 +12,16 @@ use Symfony\Component\Validator\Constraints as Assert;
 class JugementEntity extends BaseEntity
 {
     /**
+     * @var MajeurEntity
+     *
+     * @Assert\NotNull
+     *
+     * @ORM\OneToOne(targetEntity="App\Entity\MajeurEntity")
+     * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
+     */
+    private $majeur;
+
+    /**
      * @Assert\NotBlank
      *
      * @ORM\Column(name="numeroRG", type="string", length=100, nullable=false)
@@ -143,6 +153,30 @@ class JugementEntity extends BaseEntity
     public function setFinMesure($finMesure)
     {
         $this->finMesure = $finMesure;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of majeur
+     *
+     * @return  MajeurEntity
+     */
+    public function getMajeur()
+    {
+        return $this->majeur;
+    }
+
+    /**
+     * Set the value of majeur
+     *
+     * @param  MajeurEntity  $majeur
+     *
+     * @return  self
+     */
+    public function setMajeur(MajeurEntity $majeur)
+    {
+        $this->majeur = $majeur;
 
         return $this;
     }

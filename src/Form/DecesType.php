@@ -40,6 +40,9 @@ class DecesType extends AbstractType
                     'label' => 'Pompes funèbres',
                     'required' => false,
                     'class' => PompeFunebreEntity::class,
+                    'attr' => [
+                        'class' => 'custom-select',
+                    ],
                     'query_builder' => function (PompeFunebreRepository $pompeFunebre) {
                         return $pompeFunebre->createQueryBuilder('pf')
                             ->orderBy('pf.libelle', 'ASC');
