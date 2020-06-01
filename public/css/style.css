@@ -20,3 +20,87 @@ html {
 .custom-file-label::after {
     content:"Parcourir...";
 }
+
+.adresse-contact-title {
+    background-color: #429f46;
+}
+
+.adresse-contact-icon {
+    color: #429f46;
+}
+
+.adresse-contact-bg {
+    background-color: #E8F5E9;
+}
+
+.alerte-title {
+    background-color: #FB8C00;
+}
+
+.alerte-bg {
+    background-color: #fff3e0;
+}
+
+.alerte-icon {
+    color: #FB8C00;
+}
+
+.situation-perso-title {
+    background-color: #6c4b40;
+}
+
+.situation-perso-icon {
+    color: #6c4b40;
+}
+
+.situation-perso-bg {
+    background-color: #e8f5e9;
+}
+
+.mesure-title {
+    background-color: #1e88e5;
+}
+
+.mesure-icon {
+    color: #1e88e5;
+}
+
+.mesure-bg {
+    background-color: #e3f2fd;
+}
+
+.donnee-bancaire-title {
+    background-color: #00897b;
+}
+
+.donnee-bancaire-icon {
+    color: #00897b;
+}
+
+.donnee-bancaire-bg {
+    background-color: #e0f2f1;
+}
+
+.protection-title {
+    background-color: #657b50;
+}
+
+.protection-icon {
+    color: #657b50;
+}
+
+.protection-bg {
+    background-color: #dfe0bd;
+}
+
+.contact-externe-title {
+    background-color: #ab47bc;
+}
+
+.contact-externe-icon {
+    color: #ab47bc;
+}
+
+.contact-externe-bg {
+    background-color: #f3e5f5;
+}

@@ -15,13 +15,6 @@ class AgenceBancaireType extends BaseLibelleType
 
         $builder
             ->add(
-                'telephone',
-                TextType::class,
-                [
-                    'label' => 'Téléphone',
-                ]
-            )
-            ->add(
                 'codeBanque',
                 TextType::class,
                 [
@@ -29,14 +22,17 @@ class AgenceBancaireType extends BaseLibelleType
                 ]
             )
             ->add(
-                'email',
-                TextType::class
+                'contact',
+                ContactType::class
             )
             ->add(
-                'contact',
+                'conseiller',
                 TextType::class,
                 [
                     'required' => false,
+                    'attr' => [
+                        'style' => 'text-transform:uppercase',
+                    ]
                 ]
             );
     }

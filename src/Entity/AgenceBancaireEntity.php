@@ -14,16 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AgenceBancaireEntity extends BaseGroupeLibelleEntity
 {
     /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(type="string", length=30, nullable=false)
-     */
-    private $telephone;
-
-    /**
-     * @Assert\NotBlank
-     *
-     * @ORM\Column(type="string", length=100, nullable=true)
+     * @ORM\OneToOne(targetEntity=ContactEntity::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="contactId", nullable=false)
      */
     private $contact;
 
@@ -35,30 +27,33 @@ class AgenceBancaireEntity extends BaseGroupeLibelleEntity
     private $codeBanque;
 
     /**
-     * @Assert\Email(
-     *     message = "L'adresse email '{{ value }}' n'est une adresse valide."
-     * )
+     * @var string
      *
-     * @ORM\Column(type="string", length=100, nullable=false)
+     * @ORM\Column(name="conseiller", type="string", length=100, nullable=true)
      */
-    private $email;
+    private $conseiller;
 
-    /**
-     * Get message = "L'adresse email '{{ value }}' n'est une adresse valide."
-     */
-    public function getEmail()
+    public function __toString()
     {
-        return $this->email;
+        return $this->getLibelle();
     }
 
     /**
-     * Set message = "L'adresse email '{{ value }}' n'est une adresse valide."
+     * Get the value of codeBanque
+     */
+    public function getCodeBanque()
+    {
+        return $this->codeBanque;
+    }
+
+    /**
+     * Set the value of codeBanque
      *
      * @return  self
      */
-    public function setEmail($email)
+    public function setCodeBanque($codeBanque)
     {
-        $this->email = $email;
+        $this->codeBanque = strtoupper($codeBanque);
 
         return $this;
     }
@@ -84,46 +79,25 @@ class AgenceBancaireEntity extends BaseGroupeLibelleEntity
     }
 
     /**
-     * Get the value of telephone
+     * Get the value of conseiller
+     *
+     * @return  string
      */
-    public function getTelephone()
+    public function getConseiller()
     {
-        return $this->telephone;
+        return $this->conseiller;
     }
 
     /**
-     * Set the value of telephone
+     * Set the value of conseiller
+     *
+     * @param  string  $conseiller
      *
      * @return  self
      */
-    public function setTelephone($telephone)
+    public function setConseiller(string $conseiller)
     {
-        $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    public function __toString()
-    {
-        return $this->getLibelle();
-    }
-
-    /**
-     * Get the value of codeBanque
-     */
-    public function getCodeBanque()
-    {
-        return $this->codeBanque;
-    }
-
-    /**
-     * Set the value of codeBanque
-     *
-     * @return  self
-     */
-    public function setCodeBanque($codeBanque)
-    {
-        $this->codeBanque = strtoupper($codeBanque);
+        $this->conseiller = strtoupper($conseiller);
 
         return $this;
     }

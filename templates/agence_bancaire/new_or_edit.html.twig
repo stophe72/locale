@@ -6,7 +6,29 @@
     {{ form_errors(form) }}
     {{ form_row(form.codeBanque) }}
     {{ form_row(form.libelle) }}
-    {{ form_row(form.telephone) }}
-    {{ form_row(form.email) }}
-    {{ form_row(form.contact) }}
+    {{ form_row(form.conseiller) }}
+    <div class="row form-group">
+        <div class="col-sm-2">
+            Téléphone
+        </div>
+        <div class="col-sm-10">
+            {{ form_widget(form.contact.telephone) }}
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-2">
+            Mobile
+        </div>
+        <div class="col-sm-10">
+            {{ form_widget(form.contact.mobile) }}
+        </div>
+    </div>
+    <div class="row form-group">
+        <div class="col-sm-2">
+            Email
+        </div>
+        <div class="col-sm-10">
+            {{ form_widget(form.contact.email) }}
+        </div>
+    </div>
 {% endblock %}

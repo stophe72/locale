@@ -16,9 +16,10 @@
                 <tr>
                     <th>Code banque</th>
                     <th>Libellé</th>
+                    <th>Conseiller</th>
                     <th>Téléphone</th>
+                    <th>Mobile</th>
                     <th>Email</th>
-                    <th>Contact</th>
                     <th></th>
                 </tr>
             </thead>
@@ -26,9 +27,26 @@
                 <tr>
                     <td>{{ banque.codeBanque }}</td>
                     <td>{{ banque.libelle }}</td>
-                    <td>{{ banque.telephone }}</td>
-                    <td>{{ banque.email }}</td>
-                    <td>{{ banque.contact }}</td>
+                    <td>
+                        {% if banque.conseiller is not null %}
+                            {{ banque.conseiller }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if banque.contact.telephone is not null %}
+                            {{ banque.contact.telephone }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if banque.contact.mobile is not null %}
+                            {{ banque.contact.mobile }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if banque.contact.email is not null %}
+                            {{ banque.contact.email }}
+                        {% endif %}
+                    </td>
                     <td class="text-right">
                         <a href="{{ path('user_agencebancaire_edit', {'id': banque.id}) }}" title="Détails de l'agence bancaire" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer

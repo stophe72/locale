@@ -46,14 +46,15 @@ CREATE TABLE `agenceBancaire` (
   `groupeId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `codeBanque` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `telephone` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `email` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `contact` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `conseiller` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `contactId` int(11) NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `agenceBancaire_FK` (`groupeId`),
-  CONSTRAINT `agenceBancaire_FK` FOREIGN KEY (`groupeId`) REFERENCES `groupe` (`id`)
+  KEY `agenceBancaire_FK_contact` (`contactId`),
+  CONSTRAINT `agenceBancaire_FK` FOREIGN KEY (`groupeId`) REFERENCES `groupe` (`id`),
+  CONSTRAINT `agenceBancaire_FK_contact` FOREIGN KEY (`contactId`) REFERENCES `contact` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -122,7 +123,7 @@ CREATE TABLE `contact` (
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -145,7 +146,7 @@ CREATE TABLE `contactExterne` (
   KEY `jugement_FK_majeur` (`majeurId`) USING BTREE,
   CONSTRAINT `contactExterne_FK` FOREIGN KEY (`contactId`) REFERENCES `contact` (`id`),
   CONSTRAINT `jugement_FK_majeur_copy` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -921,4 +922,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-05-31 22:41:41
+-- Dump completed on 2020-06-01 15:38:16
