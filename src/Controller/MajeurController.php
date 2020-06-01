@@ -7,6 +7,8 @@ use App\Entity\DecesEntity;
 use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\ParametreMissionEntity;
+use App\Entity\PriseEnChargeEntity;
+use App\Entity\TypePriseEnChargeEntity;
 use App\Form\AdresseType;
 use App\Form\ContactExterneType;
 use App\Form\ContactType;
@@ -14,6 +16,7 @@ use App\Form\DecesType;
 use App\Form\JugementType;
 use App\Form\MajeurType;
 use App\Form\ParametreMissionType;
+use App\Form\PriseEnChargeType;
 use App\Repository\ContactExterneRepository;
 use App\Repository\DecesRepository;
 use App\Repository\DonneeBancaireRepository;
@@ -21,6 +24,7 @@ use App\Repository\JugementRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
 use App\Repository\ParametreMissionRepository;
+use App\Repository\PriseEnChargeRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -171,7 +175,8 @@ class MajeurController extends AbstractController
         DecesRepository $decesRepository,
         JugementRepository $jugementRepository,
         ParametreMissionRepository $parametreMissionRepository,
-        ContactExterneRepository $contactExterneRepository
+        ContactExterneRepository $contactExterneRepository,
+        PriseEnChargeRepository $priseEnChargeRepository
     ) {
         if ($this->isInSameGroupe($majeur)) {
             $deces = $decesRepository->findOneBy(['majeur' => $majeur->getId()]);
@@ -179,12 +184,14 @@ class MajeurController extends AbstractController
             $parametreMission = $parametreMissionRepository->findOneBy(['majeur' => $majeur->getId()]);
             $contactsExternes = $contactExterneRepository->findBy(['majeur' => $majeur->getId()]);
             $dbs = $donneeBancaireRepository->findBy(['majeur' => $majeur,]);
+            $pecs = $priseEnChargeRepository->findBy(['majeur' => $majeur,]);
 
             return $this->render(
                 'majeur/show.html.twig',
                 [
                     'contactExternes' => $contactsExternes,
                     'donneeBancaires' => $dbs,
+                    'prisesEnCharge' => $pecs,
                     'jugement' => $jugement,
                     'parametreMission' => $parametreMission,
                     'majeur' => $majeur,
@@ -332,15 +339,15 @@ class MajeurController extends AbstractController
         if (!$this->isInSameGroupe($majeur)) {
             return $this->redirectToRoute('user_majeurs');
         }
-        $pm = new ParametreMissionEntity();
-        $pm->setMajeur($majeur);
+        $pec = new ParametreMissionEntity();
+        $pec->setMajeur($majeur);
 
-        $form = $this->createForm(ParametreMissionType::class, $pm);
+        $form = $this->createForm(ParametreMissionType::class, $pec);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($pm);
+            $em->persist($pec);
             $em->flush();
 
             return $this->redirectToRoute(
@@ -376,6 +383,60 @@ class MajeurController extends AbstractController
         $form->handleRequest($request);
 
         return $this->doRequest($form, 'majeur/majeur_edit_parametre_mission.html.twig', $majeur, $majeur->__toString() . ' - Paramètres de la mission');
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/addPriseEnCharge", name="user_majeur_add_prise_en_charge")
+     */
+    public function addPriseEnCharge(MajeurEntity $majeur, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $pec = new PriseEnChargeEntity();
+        $pec->setMajeur($majeur);
+
+        $form = $this->createForm(PriseEnChargeType::class, $pec);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($pec);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_prise_en_charge.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Prises en charge',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/editPriseEnCharge", name="user_majeur_edit_prise_en_charge")
+     */
+    public function editPriseEnCharge(MajeurEntity $majeur, PriseEnChargeEntity $priseEnChargeEntity, Request $request)
+    {
+        $form = $this->createForm(PriseEnChargeType::class, $priseEnChargeEntity);
+        $form->handleRequest($request);
+
+        return $this->doRequest($form, 'majeur/majeur_edit_prise_en_charge.html.twig', $majeur, $majeur->__toString() . ' - Prise en charge');
     }
 
     /**

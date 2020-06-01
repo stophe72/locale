@@ -5,7 +5,7 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=ContactExterneRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\ContactExterneRepository")
  * @ORM\Table(name="contactExterne")
  */
 class ContactExterneEntity extends BaseEntity

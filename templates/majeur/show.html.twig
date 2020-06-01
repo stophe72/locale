@@ -151,7 +151,7 @@
                             {% if parametreMission is not null %}
                                 <p>{{ parametreMission.mesure.code }} - {{ parametreMission.mesure.libelle }}</p>
                                 <p>{{ parametreMission.protection.libelle }}</p>
-                                <p>{{ parametreMission.lieuVie.libelle }}</p>
+                                <p><i class="mesure-icon fas fa-home"></i> {{ parametreMission.lieuVie.libelle }}</p>
                             {% endif %}
                         </div>
                     </div>
@@ -173,7 +173,7 @@
                                         <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
                                     </p>
                                     <div class="row">
-                                        <div class="col-sm-7 offset-1">
+                                        <div class="col-sm-8">
                                             {% if db.agenceBancaire.conseiller is not null%}
                                                 <i class="donnee-bancaire-icon text-secondary fas fa-user"></i> {{ db.agenceBancaire.conseiller }}
                                             {% endif %}
@@ -198,9 +198,22 @@
                             <strong>PROTECTIONS</strong>
                         </div>
                         <div class="card-body protection-bg">
-                            <p class="card-text">Nom de naissance : {{ majeur.nomEtatCivil }}</p>
-                            <p><i class="protection-icon fas fa-birthday-cake"></i> Né(e) le {{ majeur.dateNaissance|date('d/m/Y') }}</p>
-                            <p><i class="protection-icon fas fa-user-shield"></i> S. Sociale {{ majeur.numeroSS }}</p>
+                            {% for pec in prisesEnCharge %}
+                                <div class="row">
+                                    <div class="col-sm-9">
+                                        <i class="protection-icon fas fa-life-ring"></i> {{ pec.typePriseEnCharge.libelle }}
+                                    </div>
+                                    <div class="col-sm-3 text-right">
+                                        <a href="{{ path("user_majeur_edit_contact_externe", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                        <a class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                            <div class="row mt-3">
+                                <div class="col text-right">
+                                    <a href="{{ path("user_majeur_add_prise_en_charge", { "slug": majeur.slug }) }}" class="btn btn-link py-1 px-2"><i class="fas fa-plus-square"></i></a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -213,17 +226,25 @@
                             {% for contactExterne in contactExternes %}
                                 <div class="row">
                                     <div class="col-sm-9">
-                                        <i class="contact-externe-icon fas fa-address-card"></i> {{ contactExterne.nom }} - {{ contactExterne.contact.telephone }}
+                                        <i class="contact-externe-icon fas fa-user"></i> {{ contactExterne.nom }}
                                     </div>
                                     <div class="col-sm-3 text-right">
-                                        <a class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                        <a href="{{ path("user_majeur_edit_contact_externe", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
                                         <a class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
+                                <div class="row">
+                                    <div class="col">
+                                        <i class="contact-externe-icon fas fa-phone"></i> {{ contactExterne.contact.telephone }}
+                                    </div>
+                                </div>
+                                {% if not loop.last %}
+                                    <hr>
+                                {% endif %}
                             {% endfor %}
-                            <div class="row">
+                            <div class="row mt-3">
                                 <div class="col text-right">
-                                    <a href="{{ path("user_majeur_add_contact_externe", { "slug": majeur.slug }) }}" class="btn btn-link">Ajouter</a>
+                                    <a href="{{ path("user_majeur_add_contact_externe", { "slug": majeur.slug }) }}" class="btn btn-link py-1 px-2"><i class="fas fa-plus-square"></i></a>
                                 </div>
                             </div>
                         </div>
