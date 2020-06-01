@@ -123,7 +123,7 @@ CREATE TABLE `contact` (
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -146,7 +146,7 @@ CREATE TABLE `contactExterne` (
   KEY `jugement_FK_majeur` (`majeurId`) USING BTREE,
   CONSTRAINT `contactExterne_FK` FOREIGN KEY (`contactId`) REFERENCES `contact` (`id`),
   CONSTRAINT `jugement_FK_majeur_copy` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -682,7 +682,7 @@ CREATE TABLE `priseEnCharge` (
   KEY `priseEnCharge_FK_typePriseEnCharge` (`typePriseEnChargeId`),
   CONSTRAINT `priseEnCharge_FK_majeur` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
   CONSTRAINT `priseEnCharge_FK_typePriseEnCharge` FOREIGN KEY (`typePriseEnChargeId`) REFERENCES `typePriseEnCharge` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -860,6 +860,7 @@ DROP TABLE IF EXISTS `typePriseEnCharge`;
 CREATE TABLE `typePriseEnCharge` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `groupeId` int(11) NOT NULL,
+  `code` varchar(10) COLLATE utf8mb4_unicode_ci NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `alertable` int(11) NOT NULL,
   `dateCreation` datetime NOT NULL,
@@ -867,7 +868,7 @@ CREATE TABLE `typePriseEnCharge` (
   PRIMARY KEY (`id`),
   KEY `tribunal_FK` (`groupeId`) USING BTREE,
   CONSTRAINT `tribunal_FK_copy` FOREIGN KEY (`groupeId`) REFERENCES `groupe` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -922,4 +923,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-01 15:38:16
+-- Dump completed on 2020-06-01 23:41:53
