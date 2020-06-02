@@ -116,7 +116,7 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/edit/{slug}", name="user_majeur_edit")
      */
-    public function edit(Request $request, MajeurEntity $majeur, MandataireRepository $mandataireRepository)
+    public function edit(Request $request, MajeurEntity $majeur)
     {
         $form = $this->createForm(MajeurType::class, $majeur);
         $form->handleRequest($request);
@@ -274,7 +274,7 @@ class MajeurController extends AbstractController
         $form = $this->createForm(JugementType::class, $jugement);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_mesure.html.twig', $majeur, $majeur->__toString() . ' - Jugement');
+        return $this->doRequest($form, 'majeur/majeur_edit_mesure.html.twig', $jugement->getMajeur(), $majeur->__toString() . ' - Jugement');
     }
 
     /**
@@ -328,7 +328,27 @@ class MajeurController extends AbstractController
         $form = $this->createForm(ContactExterneType::class, $contactExterne);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_contact_externe.html.twig', $majeur, $majeur->__toString() . ' - Contact externe');
+        return $this->doRequest($form, 'majeur/majeur_edit_contact_externe.html.twig', $contactExterne->getMajeur(), $majeur->__toString() . ' - Contact externe');
+    }
+
+    /**
+     * @Route("user/majeur/deleteContactExterne/{id}", name="user_majeur_delete_contact_externe")
+     */
+    public function deleteContactExterne(ContactExterneEntity $contactExterne)
+    {
+        if (!$this->isInSameGroupe($contactExterne->getMajeur())) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($contactExterne);
+        $em->flush();
+
+        return $this->redirectToRoute(
+            'user_majeur_show',
+            [
+                'slug' => $contactExterne->getMajeur()->getSlug(),
+            ]
+        );
     }
 
     /**
@@ -382,7 +402,7 @@ class MajeurController extends AbstractController
         $form = $this->createForm(ParametreMissionType::class, $parametreMission);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_parametre_mission.html.twig', $majeur, $majeur->__toString() . ' - Paramètres de la mission');
+        return $this->doRequest($form, 'majeur/majeur_edit_parametre_mission.html.twig', $parametreMission->getMajeur(), $majeur->__toString() . ' - Paramètres de la mission');
     }
 
     /**
@@ -431,12 +451,32 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeur/{slug}/editPriseEnCharge", name="user_majeur_edit_prise_en_charge")
      */
-    public function editPriseEnCharge(MajeurEntity $majeur, PriseEnChargeEntity $priseEnChargeEntity, Request $request)
+    public function editPriseEnCharge(MajeurEntity $majeur, PriseEnChargeEntity $priseEnCharge, Request $request)
     {
-        $form = $this->createForm(PriseEnChargeType::class, $priseEnChargeEntity);
+        $form = $this->createForm(PriseEnChargeType::class, $priseEnCharge);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_prise_en_charge.html.twig', $majeur, $majeur->__toString() . ' - Prise en charge');
+        return $this->doRequest($form, 'majeur/majeur_edit_prise_en_charge.html.twig', $priseEnCharge->getMajeur(), $majeur->__toString() . ' - Prise en charge');
+    }
+
+    /**
+     * @Route("user/majeur/deletePriseEnCharge/{id}", name="user_majeur_delete_prise_en_charge")
+     */
+    public function deletePriseEnCharge(PriseEnChargeEntity $priseEnCharge)
+    {
+        if (!$this->isInSameGroupe($priseEnCharge->getMajeur())) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($priseEnCharge);
+        $em->flush();
+
+        return $this->redirectToRoute(
+            'user_majeur_show',
+            [
+                'slug' => $priseEnCharge->getMajeur()->getSlug(),
+            ]
+        );
     }
 
     /**
@@ -509,7 +549,7 @@ class MajeurController extends AbstractController
      */
     public function editDeces(MajeurEntity $majeur, DecesEntity $deces, Request $request)
     {
-        if (!$this->isInSameGroupe($majeur)) {
+        if (!$this->isInSameGroupe($deces->getMajeur())) {
             return $this->redirectToRoute('user_majeurs');
         }
         $form = $this->createForm(DecesType::class, $deces);

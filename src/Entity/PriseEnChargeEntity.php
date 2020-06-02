@@ -6,7 +6,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass=PriseEnChargeRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\PriseEnChargeRepository")
  * @ORM\Table(name="priseEnCharge")
  */
 class PriseEnChargeEntity extends BaseEntity

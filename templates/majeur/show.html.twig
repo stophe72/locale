@@ -211,10 +211,13 @@
                                         <i class="protection-icon fas fa-life-ring"></i> {{ pec.typePriseEnCharge.libelle }}
                                     </div>
                                     <div class="col-sm-3 text-right">
-                                        <a href="{{ path("user_majeur_edit_contact_externe", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
-                                        <a class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
+                                        <a href="{{ path("user_majeur_edit_prise_en_charge", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                        <a href="#" onclick='del_confirm("pec", {{ pec.id }}, "Supprimer la prise en charge \"{{ pec.typePriseEnCharge.libelle }}\" ?")' class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
+                                {% if not loop.last %}
+                                    <hr>
+                                {% endif %}
                             {% endfor %}
                         </div>
                     </div>
@@ -239,7 +242,7 @@
                                     </div>
                                     <div class="col-sm-3 text-right">
                                         <a href="{{ path("user_majeur_edit_contact_externe", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
-                                        <a class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
+                                        <a href="#" onclick='del_confirm("contactExterne", {{ contactExterne.id }}, "Supprimer le contact externe \"{{ contactExterne.nom }}\" ?")' class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
                                     </div>
                                 </div>
                                 <div class="row">
@@ -257,133 +260,59 @@
             </div>
         </div>
     </div>
-
-{#
-<div class="row">
-        <h4 class="text-primary">Civilités</h4>
-        <table class="table mt-3">
-            <tr>
-                <th class="col-sm-5">Civilité</th>
-                <td class="col-sm-7">{{ majeur.civilite }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Nom</th>
-                <td class="col-sm-7">{{ majeur.nom }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Nom état civil</th>
-                <td class="col-sm-7">{{ majeur.nomEtatCivil }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Prénom</th>
-                <td class="col-sm-7">{{ majeur.prenom }}</td>
-            </tr>
-        </table>
-        <h4 class="text-primary">Adresse et contacts</h4>
-        <table class="table mt-3">
-            <tr>
-                <th class="col-sm-5">Adresse</th>
-                <td class="col-sm-7">{{ majeur.adresse.adresse1 }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Complément d'adresse</th>
-                <td class="col-sm-7">{{ majeur.adresse.adresse2 }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Code postal</th>
-                <td class="col-sm-7">{{ majeur.adresse.codePostal }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Ville</th>
-                <td class="col-sm-7">{{ majeur.adresse.ville }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Téléphone</th>
-                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.telephone }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Mobile</th>
-                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.mobile }}{% endif %}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Email</th>
-                <td class="col-sm-7">{% if majeur.contact is not null %}{{ majeur.contact.email }}{% endif %}</td>
-            </tr>
-        </table>
-        <h4 class="text-primary">Sécurité Sociale - Couverture Maladie Universelle</h4>
-        <table class="table mt-3">
-            <tr>
-                <th class="col-sm-5">Date de naissance</th>
-                <td class="col-sm-7">{{ majeur.dateNaissance|date('d/m/Y') }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">N° de Sécurité Sociale</th>
-                <td class="col-sm-7">{{ majeur.numeroSS }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Date de fin C.M.U.</th>
-                <td class="col-sm-7">{{ majeur.dateFinCMU|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Nationalité</th>
-                <td class="col-sm-7">{{ majeur.nationalite }}</td>
-            </tr>
-        </table>
-        <h4 class="text-primary">Jugement</h4>
-        <table class="table mt-3">
-            <tr>
-                <th class="col-sm-5">N° de Répertoire Général</th>
-                <td class="col-sm-7">{{ majeur.jugement.numeroRG }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Date de jugement</th>
-                <td class="col-sm-7">{{ majeur.jugement.dateJugement|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Tribunal</th>
-                <td class="col-sm-7">{{ majeur.jugement.tribunal.libelle }}</td>
-            </tr>
-        </table>
-        <h4 class="text-primary">Mesure</h4>
-        <table class="table mt-3">
-            <tr>
-                <th class="col-sm-5">Mesure</th>
-                <td class="col-sm-7">{{ majeur.parametreMission.mesure }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Durée de la mesure</th>
-                <td class="col-sm-7">Du {{ majeur.jugement.debutMesure|date('m/d/Y') }} au {{ majeur.jugement.finMesure|date('m/d/Y') }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Protection</th>
-                <td class="col-sm-7">{{ majeur.parametreMission.protection.libelle }}</td>
-            </tr>
-            <tr>
-                <th class="col-sm-5">Lieu de vie</th>
-                <td class="col-sm-7">{{ majeur.parametreMission.lieuVie.libelle }}</td>
-            </tr>
-        </table>
-        <div class="row">
-            <div class="col-2">
-                <small>Date de création</small>
-            </div>
-            <div class="col">
-                <small>{{ majeur.dateCreation|date("d/m/Y H:i:s") }}</small>
-            </div>
-        </div>
-        {% if majeur.dateModification is not null %}
-            <div class="row">
-                <div class="col-2">
-                    <small>Date de modification</small>
-                </div>
-                <div class="col">
-                    <small>{{ majeur.dateModification|date("d/m/Y H:i:s") }}</small>
-                </div>
-            </div>
-        {% endif %}
-    </div>
-#}
     <div class="row float-right mx-0 mb-3">
         <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
     </div>
+
+    <div class="modal fade" id="yesNoModal" tabindex="-1" role="dialog" aria-labelledby="yesNoModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer ?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button id="btn_delete" type="button" class="btn btn-primary">Valider</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+
+<script type="text/javascript">
+    function del_confirm(kind, id, msg) {
+        var el = document.getElementById('btn_delete');
+        el.dataset.id = id;
+        el.dataset.kind = kind;
+
+        var dialog = $('#yesNoModal');
+
+        dialog.find('.modal-body').text(msg);
+        dialog.modal('show');
+    }
+
+    $("#btn_delete").on("click", function(e) {
+        var el = document.querySelector('#btn_delete');
+        const id = el.dataset.id;
+        const kind = el.dataset.kind;
+
+        var url = "#";
+        switch (kind) {
+            case "contactExterne":
+                var url = "{{ path("user_majeur_delete_contact_externe", { 'id': 0 }) }}";
+                break;
+            case "pec":
+                var url = "{{ path("user_majeur_delete_prise_en_charge", { 'id': 0 }) }}";
+                break;
+        }
+        url = url.replace("0", id);
+        window.location.href = url;
+    });
+</script>
 {% endblock %}
