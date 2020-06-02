@@ -6,19 +6,10 @@
 
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul id="navbar" class="navbar-nav mr-auto">
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_majeurs" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path("user_majeurs") }}">
                         <i class="fas fa-users"></i> Majeurs
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_majeurs">
-                        <a class="dropdown-item" href="{{ path('user_majeurs') }}"><i class="fas fa-users"></i> Gérer</a>
-                        <div class="dropdown-divider"></div>
-                        <div class="dropdown-header">VISITES</div>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ path('user_rapports') }}"><i class="fas fa-print"></i> Rapports</a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item" href="{{ path('user_importcomptegestion') }}"><i class="fas fa-file-csv"></i> Import Comptes gestion</a>
-                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path("user_fichesdefrais") }}">

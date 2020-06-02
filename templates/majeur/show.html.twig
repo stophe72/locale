@@ -195,7 +195,14 @@
                 <div class="col-sm-4">
                     <div class="card">
                         <div class="card-header text-white protection-title">
-                            <strong>PROTECTIONS</strong>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <strong>PROTECTIONS</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <a href="{{ path("user_majeur_add_prise_en_charge", { "slug": majeur.slug }) }}" class="py-1 px-2"><i class="text-light fas fa-plus-square"></i></a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body protection-bg">
                             {% for pec in prisesEnCharge %}
@@ -209,18 +216,20 @@
                                     </div>
                                 </div>
                             {% endfor %}
-                            <div class="row mt-3">
-                                <div class="col text-right">
-                                    <a href="{{ path("user_majeur_add_prise_en_charge", { "slug": majeur.slug }) }}" class="btn btn-link py-1 px-2"><i class="fas fa-plus-square"></i></a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-4">
                     <div class="card">
                         <div class="card-header text-light contact-externe-title">
-                            <strong>CONTACTS PRINCIPAUX</strong>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <strong>CONTACTS PRINCIPAUX</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <a href="{{ path("user_majeur_add_contact_externe", { "slug": majeur.slug }) }}" class="py-1 px-2"><i class="text-light fas fa-plus-square"></i></a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body contact-externe-bg">
                             {% for contactExterne in contactExternes %}
@@ -242,11 +251,6 @@
                                     <hr>
                                 {% endif %}
                             {% endfor %}
-                            <div class="row mt-3">
-                                <div class="col text-right">
-                                    <a href="{{ path("user_majeur_add_contact_externe", { "slug": majeur.slug }) }}" class="btn btn-link py-1 px-2"><i class="fas fa-plus-square"></i></a>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
