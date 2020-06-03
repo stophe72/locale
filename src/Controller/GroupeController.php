@@ -56,6 +56,7 @@ class GroupeController extends AbstractController
     public function add(Request $request)
     {
         $groupe = new GroupeEntity();
+        $groupe->setUser($this->security->getUser());
 
         $form = $this->createForm(GroupeType::class, $groupe);
         $form->handleRequest($request);
@@ -86,7 +87,7 @@ class GroupeController extends AbstractController
 
         $user = $this->security->getUser();
 
-        if ($groupe->isOwnBy($user) && $form->isSubmitted() && $form->isValid()) {
+        if ($groupe->getUser()->getId() == $user->getId() && $form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
             $em->persist($groupe);
             $em->flush();

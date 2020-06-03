@@ -20,6 +20,7 @@ use App\Form\PriseEnChargeType;
 use App\Repository\ContactExterneRepository;
 use App\Repository\DecesRepository;
 use App\Repository\DonneeBancaireRepository;
+use App\Repository\GroupeRepository;
 use App\Repository\JugementRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
@@ -65,11 +66,22 @@ class MajeurController extends AbstractController
     /**
      * @Route("user/majeurs", name="user_majeurs")
      */
-    public function index(MajeurRepository $majeurRepository)
-    {
+    public function index(
+        MajeurRepository $majeurRepository,
+        GroupeRepository $groupeRepository
+    ) {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
 
-        $majeurs = $majeurRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['nom' => 'ASC']);
+        $mandataire = $this->getMandataire();
+
+        if (!$mandataire && $this->security->isGranted('ROLE_ADMIN')) {
+            $groupes = $groupeRepository->findAll(); // A voir dans le cas de plusieurs mjpms
+            if (empty($groupes)) {
+                return $this->redirectToRoute('admin_groupes');
+            }
+            return $this->redirectToRoute('admin_mandataires');
+        }
+        $majeurs = $majeurRepository->findBy(['groupe' => $mandataire->getGroupe()], ['nom' => 'ASC']);
 
         return $this->render('majeur/index.html.twig', [
             'majeurs' => $majeurs,
