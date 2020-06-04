@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\ContactExterneRepository")
@@ -11,17 +12,23 @@ use Doctrine\ORM\Mapping as ORM;
 class ContactExterneEntity extends BaseEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity=MajeurEntity::class, inversedBy="contactExterneEntities")
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
     private $majeur;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\Column(type="string", length=100)
      */
     private $nom;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity=ContactEntity::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="contactId", nullable=false)
      */

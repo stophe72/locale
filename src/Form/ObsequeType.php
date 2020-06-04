@@ -2,21 +2,32 @@
 
 namespace App\Form;
 
-use App\Entity\DecesEntity;
+use App\Entity\ObsequeEntity;
 use App\Entity\PompeFunebreEntity;
 use App\Repository\PompeFunebreRepository;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class DecesType extends AbstractType
+class ObsequeType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('concession')
+            ->add(
+                'dureeConcession',
+                IntegerType::class,
+                [
+                    'label' => 'Durée concession',
+                    'attr' => [
+                        'min' => 1,
+                        'max' => 500,
+                    ],
+                ]
+            )
             ->add(
                 'cimetiere',
                 TextType::class,
@@ -30,6 +41,13 @@ class DecesType extends AbstractType
                 TextType::class,
                 [
                     'label' => 'Référence concession',
+                    'required' => false,
+                ]
+            )
+            ->add(
+                'contrat',
+                TextType::class,
+                [
                     'required' => false,
                 ]
             )
@@ -54,7 +72,7 @@ class DecesType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => DecesEntity::class,
+            'data_class' => ObsequeEntity::class,
         ]);
     }
 }

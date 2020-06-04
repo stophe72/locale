@@ -3,20 +3,27 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity(repositoryClass="App\Repository\PompeFunebreRepository")
  * @ORM\Table(name="pompeFunebre")
+ * @UniqueEntity(fields={"groupe", "libelle"})
  */
 class PompeFunebreEntity extends BaseGroupeLibelleEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity=AdresseEntity::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="adresseId", nullable=false)
      */
     private $adresse;
 
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity=ContactEntity::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="contactId", nullable=false)
      */

@@ -10,7 +10,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TypeOperationRepository")
  * @ORM\Table(name="typeOperation")
- * @UniqueEntity("libelle")
+ * @UniqueEntity(fields={"groupe", "libelle"})
  */
 class TypeOperationEntity extends BaseGroupeLibelleEntity
 {

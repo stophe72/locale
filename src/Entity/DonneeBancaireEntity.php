@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\DonneeBancaireRepository")
  * @ORM\Table(name="donneeBancaire")
- * @UniqueEntity(fields={"agenceBancaire", "numeroCompte"})
+ * @UniqueEntity(fields={"majeur", "agenceBancaire", "numeroCompte"})
  */
 class DonneeBancaireEntity extends BaseEntity
 {

@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\MesureRepository")
  * @ORM\Table(name="mesure")
- * @UniqueEntity("code")
+ * @UniqueEntity(fields={"groupe", "code"})
  */
 class MesureEntity extends BaseCodeLibelleEntity
 {

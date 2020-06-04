@@ -14,6 +14,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class AgenceBancaireEntity extends BaseGroupeLibelleEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity=ContactEntity::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(name="contactId", nullable=false)
      */

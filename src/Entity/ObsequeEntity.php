@@ -3,14 +3,19 @@
 namespace App\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="deces")
+ * @ORM\Entity(repositoryClass="App\Repository\ObsequeRepository")
+ * @ORM\Table(name="obseque")
+ * @UniqueEntity("majeur")
  */
-class DecesEntity extends BaseEntity
+class ObsequeEntity extends BaseEntity
 {
     /**
+     * @Assert\NotNull
+     *
      * @ORM\OneToOne(targetEntity=MajeurEntity::class)
      * @ORM\JoinColumn(name="majeurId", referencedColumnName="id", nullable=false)
      */
@@ -23,9 +28,24 @@ class DecesEntity extends BaseEntity
     private $pompeFunebre;
 
     /**
+     * @var string
+     *
      * @ORM\Column(type="string", length=100, nullable=true)
      */
-    private $concession;
+    private $contrat;
+
+    /**
+     * @var int
+     *
+     * @Assert\Range(
+     *      min = 1,
+     *      max = 500,
+     *      notInRangeMessage = "La durée de la concession doit être entre {{ min }} an et {{ max }} ans",
+     * )
+     *
+     * @ORM\Column(name="dureeConcession", type="integer", nullable=true)
+     */
+    private $dureeConcession;
 
     /**
      * @ORM\Column(type="string", length=100, nullable=true)
@@ -50,14 +70,14 @@ class DecesEntity extends BaseEntity
         return $this;
     }
 
-    public function getConcession(): ?string
+    public function getDureeConcession(): ?int
     {
-        return $this->concession;
+        return $this->dureeConcession;
     }
 
-    public function setConcession(?string $concession): self
+    public function setDureeConcession(?int $dureeConcession): self
     {
-        $this->concession = $concession;
+        $this->dureeConcession = $dureeConcession;
 
         return $this;
     }
@@ -102,6 +122,30 @@ class DecesEntity extends BaseEntity
     public function setMajeur($majeur)
     {
         $this->majeur = $majeur;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of contrat
+     *
+     * @return  string
+     */
+    public function getContrat()
+    {
+        return $this->contrat;
+    }
+
+    /**
+     * Set the value of contrat
+     *
+     * @param  string  $contrat
+     *
+     * @return  self
+     */
+    public function setContrat(string $contrat)
+    {
+        $this->contrat = $contrat;
 
         return $this;
     }

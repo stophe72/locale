@@ -9,7 +9,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\TypeCompteRepository")
  * @ORM\Table(name="typeCompte")
- * @UniqueEntity("libelle")
+ * @UniqueEntity(fields={"groupe", "libelle"})
  */
 class TypeCompteEntity extends BaseGroupeLibelleEntity
 {

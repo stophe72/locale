@@ -2,7 +2,7 @@
 
 namespace App\Repository;
 
-use App\Entity\DecesEntity;
+use App\Entity\ObsequeEntity;
 use App\Entity\MandataireEntity;
 use App\Entity\PompeFunebreEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
@@ -26,7 +26,7 @@ class PompeFunebreRepository extends ServiceEntityRepository
     {
         $qb = $this->createQueryBuilder('pf')
             ->select('COUNT(pf.id)')
-            ->innerJoin(DecesEntity::class, 'd', Join::WITH, 'd.pompeFunebre = pf')
+            ->innerJoin(ObsequeEntity::class, 'd', Join::WITH, 'd.pompeFunebre = pf')
             ->where('pf.id = :pompeFunebreId')
             ->andWhere('pf.groupe = :groupeId')
             ->setParameter('pompeFunebreId', $id)

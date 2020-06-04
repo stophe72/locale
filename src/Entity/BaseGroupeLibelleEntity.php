@@ -14,6 +14,7 @@ class BaseGroupeLibelleEntity extends BaseEntity
      * @var GroupeEntity
      *
      * @Assert\NotNull
+     *
      * @ORM\ManyToOne(targetEntity="App\Entity\GroupeEntity")
      * @ORM\JoinColumn(name="groupeId", referencedColumnName="id", nullable=false)
      */

@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ContactExterneEntity;
-use App\Entity\DecesEntity;
+use App\Entity\ObsequeEntity;
 use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\ParametreMissionEntity;
@@ -12,13 +12,13 @@ use App\Entity\TypePriseEnChargeEntity;
 use App\Form\AdresseType;
 use App\Form\ContactExterneType;
 use App\Form\ContactType;
-use App\Form\DecesType;
+use App\Form\ObsequeType;
 use App\Form\JugementType;
 use App\Form\MajeurType;
 use App\Form\ParametreMissionType;
 use App\Form\PriseEnChargeType;
 use App\Repository\ContactExterneRepository;
-use App\Repository\DecesRepository;
+use App\Repository\ObsequeRepository;
 use App\Repository\DonneeBancaireRepository;
 use App\Repository\GroupeRepository;
 use App\Repository\JugementRepository;
@@ -184,14 +184,14 @@ class MajeurController extends AbstractController
     public function show(
         MajeurEntity $majeur,
         DonneeBancaireRepository $donneeBancaireRepository,
-        DecesRepository $decesRepository,
+        ObsequeRepository $ObsequeRepository,
         JugementRepository $jugementRepository,
         ParametreMissionRepository $parametreMissionRepository,
         ContactExterneRepository $contactExterneRepository,
         PriseEnChargeRepository $priseEnChargeRepository
     ) {
         if ($this->isInSameGroupe($majeur)) {
-            $deces = $decesRepository->findOneBy(['majeur' => $majeur->getId()]);
+            $obseque = $ObsequeRepository->findOneBy(['majeur' => $majeur->getId()]);
             $jugement = $jugementRepository->findOneBy(['majeur' => $majeur->getId()]);
             $parametreMission = $parametreMissionRepository->findOneBy(['majeur' => $majeur->getId()]);
             $contactsExternes = $contactExterneRepository->findBy(['majeur' => $majeur->getId()]);
@@ -207,7 +207,7 @@ class MajeurController extends AbstractController
                     'jugement' => $jugement,
                     'parametreMission' => $parametreMission,
                     'majeur' => $majeur,
-                    'deces' => $deces,
+                    'obseque' => $obseque,
                     'page_title' => 'Détails d\'un majeur',
                     'url_back'   => $this->generateUrl('user_majeurs'),
                 ]
@@ -514,22 +514,22 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/{slug}/addDeces", name="user_majeur_add_deces")
+     * @Route("user/majeur/{slug}/addObseque", name="user_majeur_add_obseque")
      */
-    public function addDeces(MajeurEntity $majeur, Request $request)
+    public function addObseque(MajeurEntity $majeur, Request $request)
     {
         if (!$this->isInSameGroupe($majeur)) {
             return $this->redirectToRoute('user_majeurs');
         }
-        $deces = new DecesEntity();
-        $deces->setMajeur($majeur);
+        $obseque = new ObsequeEntity();
+        $obseque->setMajeur($majeur);
 
-        $form = $this->createForm(DecesType::class, $deces);
+        $form = $this->createForm(ObsequeType::class, $obseque);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $em = $this->getDoctrine()->getManager();
-            $em->persist($deces);
+            $em->persist($obseque);
             $em->flush();
 
             return $this->redirectToRoute(
@@ -541,10 +541,10 @@ class MajeurController extends AbstractController
         }
 
         return $this->render(
-            'majeur/majeur_edit_deces.html.twig',
+            'majeur/majeur_edit_obseque.html.twig',
             [
                 'form' => $form->createView(),
-                'page_title' => $majeur->__toString() . ' - Décès',
+                'page_title' => $majeur->__toString() . ' - Obsèques',
                 'baseEntity' => $majeur,
                 'url_back' => $this->generateUrl(
                     'user_majeur_show',
@@ -557,14 +557,14 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/{slug}/editDeces", name="user_majeur_edit_deces")
+     * @Route("user/majeur/{slug}/editObseque", name="user_majeur_edit_obseque")
      */
-    public function editDeces(MajeurEntity $majeur, DecesEntity $deces, Request $request)
+    public function editObseque(MajeurEntity $majeur, ObsequeEntity $obseque, Request $request)
     {
-        if (!$this->isInSameGroupe($deces->getMajeur())) {
+        if (!$this->isInSameGroupe($obseque->getMajeur())) {
             return $this->redirectToRoute('user_majeurs');
         }
-        $form = $this->createForm(DecesType::class, $deces);
+        $form = $this->createForm(ObsequeType::class, $obseque);
         $form->handleRequest($request);
 
         if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
@@ -579,10 +579,10 @@ class MajeurController extends AbstractController
         }
 
         return $this->render(
-            'majeur/majeur_edit_deces.html.twig',
+            'majeur/majeur_edit_obseque.html.twig',
             [
                 'form' => $form->createView(),
-                'page_title' => $majeur->__toString() . ' - Décès',
+                'page_title' => $majeur->__toString() . ' - Obsèques',
                 'baseEntity' => $majeur,
                 'url_back' => $this->generateUrl(
                     'user_majeur_show',

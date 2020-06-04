@@ -8,7 +8,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\NatureOperationRepository")
  * @ORM\Table(name="natureOperation")
- * @UniqueEntity("libelle")
+ * @UniqueEntity(fields={"groupe", "libelle"})
  */
 class NatureOperationEntity extends BaseGroupeLibelleEntity
 {

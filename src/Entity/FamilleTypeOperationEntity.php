@@ -11,7 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="App\Repository\FamilleTypeOperationRepository")
  * @ORM\Table(name="familleTypeOperation")
- * @UniqueEntity("libelle")
+ * @UniqueEntity(fields={"groupe", "libelle"})
  */
 class FamilleTypeOperationEntity extends BaseGroupeLibelleEntity
 {
