@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use DateTime;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\MappedSuperclass
@@ -12,8 +11,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class BaseEntity
 {
     /**
-     * @Assert\NotNull
-     *
      * @ORM\Id()
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
@@ -23,16 +20,12 @@ class BaseEntity
     /**
      * @var DateTime
      *
-     * @Assert\NotNull
-     *
      * @ORM\Column(name="dateModification", type="datetime", nullable=false)
      */
     private $dateModification;
 
     /**
      * @var DateTime
-     *
-     *  @Assert\NotNull
      *
      * @ORM\Column(name="dateCreation", type="datetime", nullable=false)
      */
