@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\ContactExterneEntity;
+use App\Entity\DonneeBancaireEntity;
 use App\Entity\ObsequeEntity;
 use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
@@ -11,6 +12,7 @@ use App\Entity\PriseEnChargeEntity;
 use App\Form\AdresseType;
 use App\Form\ContactExterneType;
 use App\Form\ContactType;
+use App\Form\DonneeBancaireType;
 use App\Form\ObsequeType;
 use App\Form\JugementType;
 use App\Form\MajeurType;
@@ -358,6 +360,49 @@ class MajeurController extends AbstractController
             'user_majeur_show',
             [
                 'slug' => $contactExterne->getMajeur()->getSlug(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/{slug}/addDonneeBancaire", name="user_majeur_add_donnee_bancaire")
+     */
+    public function addDonneeBancaire(MajeurEntity $majeur, Request $request)
+    {
+        if (!$this->isInSameGroupe($majeur)) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $db = new DonneeBancaireEntity();
+        $db->setMajeur($majeur);
+
+        $form = $this->createForm(DonneeBancaireType::class, $db);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($db);
+            $em->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_donnee_bancaire.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => $majeur->__toString() . ' - Donnée bancaire',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
             ]
         );
     }

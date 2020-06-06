@@ -1,0 +1,10 @@
+{% extends 'generic/new_or_edit.html.twig' %}
+
+{% set icone = "fas fa-university" %}
+
+{% block form_content %}
+    {{ form_errors(form) }}
+    {{ form_row(form.libelle) }}
+    {{ form_widget(form.adresse) }}
+    {{ form_widget(form.contact) }}
+{% endblock %}

@@ -162,7 +162,14 @@
                 <div class="col-sm-4">
                     <div class="card">
                         <div class="card-header text-white donnee-bancaire-title">
-                            <strong>DONNEES BANCAIRES</strong>
+                            <div class="row">
+                                <div class="col-sm-10">
+                                    <strong>DONNEES BANCAIRES</strong>
+                                </div>
+                                <div class="col-sm-2 text-right">
+                                    <a href="{{ path("user_majeur_add_donnee_bancaire", { "slug": majeur.slug }) }}" class="py-1 px-2"><i class="text-light fas fa-plus-square"></i></a>
+                                </div>
+                            </div>
                         </div>
                         <div class="card-body donnee-bancaire-bg">
                             {% if majeur.donneeBancaireEntities is not empty %}
