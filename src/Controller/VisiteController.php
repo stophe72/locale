@@ -53,7 +53,7 @@ class VisiteController extends AbstractController
     }
 
     /**
-     * @Route("user/visites/{id}/{annee?}", name="user_visites")
+     * @Route("user/visites/{slug}/{annee?}", name="user_visites")
      * @param PaginatorInterface $paginator
      * @param VisiteRepository   $visiteRepository
      * @return Response

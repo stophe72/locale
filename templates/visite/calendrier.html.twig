@@ -18,13 +18,13 @@
             <div class="row">
                 <div class="col offset-1">
                     <input name="presence" type="radio" id="radio_present" value="1" checked>
-                    <label for="radio_present"><h5><span class="badge bg-success text-light p-2"><i class="fas fa-map-marker-alt"></i> Présent</span></h5></label>
+                    <label for="radio_present"><h5><span class="badge bg-success text-light p-2"><i class="fas fa-map-marker-alt"></i> Visite effectuée</span></h5></label>
                 </div>
             </div>
             <div class="row">
                 <div class="col offset-1">
                     <input name="presence" type="radio" id="radio_absent" value="2">
-                    <label for="radio_absent"><h5><span class="badge alerte-title text-light p-2"><i class="fas fa-user-times"></i> Absent</span></h5></label>
+                    <label for="radio_absent"><h5><span class="badge alerte-title text-light p-2"><i class="fas fa-user-times"></i> Majeur absent</span></h5></label>
                 </div>
             </div>
             <div class="row">
@@ -113,7 +113,7 @@
         dialog.modal('show');
 
         let annee = this.dataset.annee;
-        let url = "{{ path("user_visites", { "id": majeur.id, "annee": 0 }) }}";
+        let url = "{{ path("user_visites", { "slug": majeur.slug, "annee": 0 }) }}";
         url = url.replace("0", annee);
 
         window.location.href = url;
