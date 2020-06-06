@@ -28,6 +28,16 @@ class VisiteEntity extends BaseEntity
      */
     private $date;
 
+    /**
+     * @var int
+     *
+     * @Assert\PositiveOrZero
+     *
+     * @ORM\Column(type="integer", nullable=false)
+     */
+    private $presence;
+
+
     public function getMajeur(): ?MajeurEntity
     {
         return $this->majeur;
@@ -48,6 +58,30 @@ class VisiteEntity extends BaseEntity
     public function setDate(\DateTimeInterface $date): self
     {
         $this->date = $date;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of presence
+     *
+     * @return  int
+     */
+    public function getPresence()
+    {
+        return $this->presence;
+    }
+
+    /**
+     * Set the value of presence
+     *
+     * @param  int  $presence
+     *
+     * @return  self
+     */
+    public function setPresence(int $presence)
+    {
+        $this->presence = $presence;
 
         return $this;
     }

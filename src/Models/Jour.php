@@ -4,13 +4,24 @@ namespace App\Models;
 
 class Jour
 {
+    /**
+     * @var int
+     * 1..365
+     */
     private $numero;
-    private $visite;
 
-    public function __construct($numero = '', $visite = false)
+    /**
+     * @var int
+     * 0: rien
+     * 1: present
+     * 2: absent
+     */
+    private $presence;
+
+    public function __construct($numero = '', $presence = 0)
     {
         $this->numero = $numero;
-        $this->visite = $visite;
+        $this->presence = $presence;
     }
 
     /**
@@ -34,21 +45,21 @@ class Jour
     }
 
     /**
-     * Get the value of visite
+     * Get the value of presence
      */
-    public function getVisite()
+    public function getPresence(): int
     {
-        return $this->visite;
+        return $this->presence;
     }
 
     /**
-     * Set the value of visite
+     * Set the value of presence
      *
      * @return  self
      */
-    public function setVisite($visite)
+    public function setPresence(int $presence)
     {
-        $this->visite = $visite;
+        $this->presence = $presence;
 
         return $this;
     }

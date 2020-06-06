@@ -8,7 +8,6 @@ use App\Entity\JugementEntity;
 use App\Entity\MajeurEntity;
 use App\Entity\ParametreMissionEntity;
 use App\Entity\PriseEnChargeEntity;
-use App\Entity\TypePriseEnChargeEntity;
 use App\Form\AdresseType;
 use App\Form\ContactExterneType;
 use App\Form\ContactType;

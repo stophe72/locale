@@ -13,7 +13,28 @@
     </div>
     <input type="hidden" id="cur_annee" value="{{ annee }}"></input>
     <div class="row">
-        <div class="col-sm-8 offset-2">
+        <div class="col-sm-2">
+            <p>Marquer comme :</p>
+            <div class="row">
+                <div class="col offset-1">
+                    <input name="presence" type="radio" id="radio_present" value="1" checked>
+                    <label for="radio_present"><h5><span class="badge bg-success text-light p-2"><i class="fas fa-map-marker-alt"></i> Présent</span></h5></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col offset-1">
+                    <input name="presence" type="radio" id="radio_absent" value="2">
+                    <label for="radio_absent"><h5><span class="badge alerte-title text-light p-2"><i class="fas fa-user-times"></i> Absent</span></h5></label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col offset-1">
+                    <input name="presence" type="radio" id="radio_effacer" value="0">
+                    <label for="radio_effacer"><h5><span class="badge badge-light p-2"><i class="fas fa-calendar-times"></i> Effacer</span></h5></label>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-8">
             <div class="row">
             {% for mois, jours in calendrier %}
                 <div class="col-sm-3">
@@ -37,9 +58,9 @@
                         <tbody>
                             <tr>
                             {% for key, jour in jours %}
-                                {% if jour.visite %}
+                                {% if jour.presence > 0 %}
                                     <td class="text-light m-0">
-                                        <button type="button" data-mois="{{ mois }}" data-jour="{{ jour.numero }}" style="width:100%;" class="jour p-0 btn btn-success font-weight-bold">{{ jour.numero }}</button>
+                                        <button type="button" data-mois="{{ mois }}" data-jour="{{ jour.numero }}" style="width:100%;" class="jour p-0 btn {% if jour.presence == 1 %}btn-success{% else %}alerte-title{% endif %} text-light font-weight-bold">{{ jour.numero }}</button>
                                     </td>
                                 {% else %}
                                     {% if jour.numero is empty %}
@@ -106,6 +127,7 @@
         const mois = this.dataset.mois;
         const jour = this.dataset.jour;
         const annee = $("#cur_annee").val();
+        const presence = $('input[name="presence"]:checked').val();
 
         $.ajax({
             url: "{{ path('ajax_visite_toggle_visite') }}",
@@ -114,17 +136,31 @@
                 "jour": jour,
                 "mois": mois,
                 "annee": annee,
+                "presence": presence,
                 "majeurId": {{ majeur.id }}
             },
 
             success: function (reponse)
             {
-                if (reponse['data'] == 1) { // visite supprimee
-                    $(event.target).removeClass('btn-success');
-                    $(event.target).removeClass('font-weight-bold');
-                } else {
-                    $(event.target).addClass('btn-success');
-                    $(event.target).addClass('font-weight-bold');
+                switch(reponse['data']) {
+                    case "1":
+                        $(event.target).removeClass('alerte-title');
+                        $(event.target).addClass('btn-success');
+                        $(event.target).addClass('font-weight-bold');
+                        $(event.target).addClass('text-light');
+                        break;
+                    case "2":
+                        $(event.target).removeClass('btn-success');
+                        $(event.target).addClass('alerte-title');
+                        $(event.target).addClass('font-weight-bold');
+                        $(event.target).addClass('text-light');
+                        break;
+                    default:
+                        $(event.target).removeClass('btn-success');
+                        $(event.target).removeClass('alerte-title');
+                        $(event.target).removeClass('font-weight-bold');
+                        $(event.target).removeClass('text-light');
+                        break;
                 }
                 dialog.modal('hide');
             },

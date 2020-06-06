@@ -3,9 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\MajeurEntity;
-use App\Entity\MandataireEntity;
 use App\Entity\VisiteEntity;
-use App\Repository\GroupeRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
 use App\Repository\VisiteRepository;
@@ -23,6 +21,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class VisiteController extends AbstractController
 {
+    const VISITE_EFFACER = 0;
+    const VISITE_PRESENT = 1;
+    const VISITE_ABSENT = 2;
+
     /**
      * @var Security
      */
@@ -61,6 +63,9 @@ class VisiteController extends AbstractController
         ?int $annee,
         VisiteRepository $visiteRepository
     ) {
+        if ($this->getMandataire()->getGroupe() != $majeur->getGroupe()) {
+            return $this->redirectToRoute('user_majeurs');
+        }
         if (!$annee || $annee < 2000 || $annee > 2050) {
             $annee = intval(date('Y'));
         }
@@ -88,10 +93,11 @@ class VisiteController extends AbstractController
     {
         $em = $this->getDoctrine()->getManager();
 
-        $data = 0;
+        $data = -1;
         $jour = $request->get('jour', 0);
         $mois = $request->get('mois', 0);
         $annee = $request->get('annee', 0);
+        $presence = $request->get('presence', 0);
         $majeurId = $request->get('majeurId', 0);
 
         $majeur = $majeurRepository->find($majeurId);
@@ -104,19 +110,39 @@ class VisiteController extends AbstractController
             $date->setDate($annee, $mois, $jour);
 
             $visiteRepo = $em->getRepository(VisiteEntity::class);
-            $visite = $visiteRepo->findBy(['majeur' => $majeur, 'date' => $date]);
-            if ($visite) {
-                $em->remove($visite[0]);
+            /** @var VisiteEntity */
+            $visite = $visiteRepo->findOneBy(['majeur' => $majeur, 'date' => $date]);
 
-                $data = 1;
+            if ($visite) {
+                switch ($presence) {
+                    case self::VISITE_EFFACER:
+                        $data = $presence;
+                        $em->remove($visite);
+                        break;
+                    case self::VISITE_PRESENT:
+                    case self::VISITE_ABSENT:
+                        $data = $presence;
+                        $visite->setPresence($presence);
+                        break;
+                    default:
+                        $data = -1;
+                        break;
+                }
             } else {
                 $visite = new VisiteEntity();
                 $visite->setMajeur($majeur);
                 $visite->setDate($date);
-
-                $em->persist($visite);
-
-                $data = 2;
+                switch ($presence) {
+                    case self::VISITE_ABSENT:
+                    case self::VISITE_PRESENT:
+                        $data = $presence;
+                        $visite->setPresence($presence);
+                        $em->persist($visite);
+                        break;
+                    default:
+                        $data = -1;
+                        break;
+                }
             }
             $em->flush();
         }

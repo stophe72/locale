@@ -18,7 +18,7 @@ class Calendrier
             $this->annee = $annee;
         }
         foreach ($visites as $visite) {
-            $this->visites[] = $visite->getDate()->format('Y-m-d');
+            $this->visites[$visite->getDate()->format('Y-m-d')] = $visite->getPresence();
         }
     }
 
@@ -28,7 +28,7 @@ class Calendrier
         $mois = [];
         for ($i = 1; $i <= 12; $i++) {
             $jours = [];
-            $premierJour = date('N',  mktime(0, 0, 0, $i, 1, $this->annee));
+            $premierJour = date('N', mktime(0, 0, 0, $i, 1, $this->annee));
             $nbJours = cal_days_in_month(CAL_GREGORIAN, $i, $this->annee);
             $j = 1;
             while ($j < $premierJour) {
@@ -38,7 +38,12 @@ class Calendrier
             $j = 1;
             while ($j <= $nbJours) {
                 $date->setDate($this->annee, $i, $j);
-                $jours[] = new Jour($j, in_array($date->format('Y-m-d'), $this->visites));
+                $visite = array_key_exists($date->format('Y-m-d'), $this->visites);
+                $presence = 0;
+                if ($visite !== false) {
+                    $presence = $this->visites[$date->format('Y-m-d')];
+                }
+                $jours[] = new Jour($j, $presence);
                 $j++;
             }
             $j = count($jours);
