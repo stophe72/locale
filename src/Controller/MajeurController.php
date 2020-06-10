@@ -27,6 +27,7 @@ use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
 use App\Repository\ParametreMissionRepository;
 use App\Repository\PriseEnChargeRepository;
+use App\Util\FileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -47,10 +48,13 @@ class MajeurController extends AbstractController
      */
     private $mandataireRepository;
 
+    private $fileManager;
+
     public function __construct(Security $security, MandataireRepository $mandataireRepository)
     {
         $this->security = $security;
         $this->mandataireRepository = $mandataireRepository;
+        $this->fileManager = new FileManager();
     }
 
     private function getMandataire()
@@ -105,8 +109,7 @@ class MajeurController extends AbstractController
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
-                $newFilename = $this->saveUploadedImage($imageFile);
-                $majeur->setImage($newFilename);
+                $majeur->setImage($this->fileManager->saveUploadedFile($imageFile, $this->getParameter('upload_directory')));
             }
 
             $em = $this->getDoctrine()->getManager();
@@ -138,13 +141,10 @@ class MajeurController extends AbstractController
             /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
-                $newFilename = $this->saveUploadedImage($imageFile);
-                $majeur->setImage($newFilename);
+                $majeur->setImage($this->fileManager->saveUploadedFile($imageFile, $this->getParameter('upload_directory')));
             }
 
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($majeur);
-            $em->flush();
+            $this->getDoctrine()->getManager()->flush();
 
             return $this->redirectToRoute('user_majeurs');
         }
@@ -215,25 +215,6 @@ class MajeurController extends AbstractController
             );
         }
         return $this->redirectToRoute('user_majeurs');
-    }
-
-    private function saveUploadedImage($imageFile)
-    {
-        $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-        // this is needed to safely include the file name as part of the URL
-        $safeFilename = transliterator_transliterate('Any-Latin; Latin-ASCII; [^A-Za-z0-9_] remove; Lower()', $originalFilename);
-        $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-        // Move the file to the directory where brochures are stored
-        try {
-            $a = $imageFile->move(
-                $this->getParameter('upload_directory'),
-                $newFilename
-            );
-        } catch (FileException $e) {
-            // ... handle exception if something happens during file upload
-        }
-        return $newFilename;
     }
 
     /**
