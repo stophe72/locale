@@ -158,13 +158,17 @@ DROP TABLE IF EXISTS `document`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `groupeId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
+  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `fichier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `document_FK_majeur` (`majeurId`),
-  CONSTRAINT `document_FK_majeur` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`)
+  KEY `document_FK_majeur` (`groupeId`),
+  KEY `document_FK` (`majeurId`),
+  CONSTRAINT `document_FK` FOREIGN KEY (`majeurId`) REFERENCES `majeur` (`id`),
+  CONSTRAINT `document_FK_groupe` FOREIGN KEY (`groupeId`) REFERENCES `groupe` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -362,12 +366,13 @@ CREATE TABLE `lienExterne` (
   `groupeId` int(11) NOT NULL,
   `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `url` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `visible` int(11) NOT NULL COMMENT 'Visible dans le menu',
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `lienExterne_FK_groupe` (`groupeId`),
   CONSTRAINT `lienExterne_FK_groupe` FOREIGN KEY (`groupeId`) REFERENCES `groupe` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -965,4 +970,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-09 23:21:14
+-- Dump completed on 2020-06-10 20:10:17
