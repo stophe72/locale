@@ -1,4 +1,4 @@
-{% for lien in liens|slice(0, 12) %}
+{% for lien in liens %}
     <a class="dropdown-item" target="blank" href="{{ lien.url }}">
         <i class="fas fa-link"></i> {{ lien.libelle }}
     </a>

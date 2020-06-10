@@ -20,14 +20,31 @@ class LienExterneEntity extends BaseGroupeLibelleEntity
      */
     private $url;
 
+    /**
+     * @ORM\Column(name="visible", type="boolean")
+     */
+    private $visible;
+
     public function getUrl(): ?string
     {
         return $this->url;
     }
 
-    public function setLien(string $url): self
+    public function setUrl(string $url): self
     {
         $this->url = $url;
+
+        return $this;
+    }
+
+    public function isVisible(): ?bool
+    {
+        return $this->visible;
+    }
+
+    public function setVisible(bool $visible): self
+    {
+        $this->visible = $visible;
 
         return $this;
     }

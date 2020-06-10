@@ -7,7 +7,7 @@
     </div>
     <div class="row mb-4">
         <div class="col text-right">
-            <a href="{{ path("user_agencebancaire_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+            <a href="{{ path("user_lienexterne_add") }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
         </div>
     </div>
     <div class="row">
@@ -15,16 +15,18 @@
             <thead>
                 <tr>
                     <th>Libellé</th>
-                    <th>Lien</th>
+                    <th>URL</th>
+                    <th>Visible</th>
                     <th></th>
                 </tr>
             </thead>
             {% for lien in lienExternes %}
                 <tr>
                     <td>{{ lien.libelle }}</td>
-                    <td>{{ lien.url }}</td>
+                    <td><a href="{{ lien.url }}" target="blank">{{ lien.url }}</a></td>
+                    <td>{% if lien.visible %}<i class="fas fa-check text-success"></i>{% endif %}</td>
                     <td class="text-right">
-                        <a href="{{ path('user_agencebancaire_edit', {'id': lien.id}) }}" title="Détails du lien externe" class="btn btn-outline-primary btn-sm mr-2">
+                        <a href="{{ path('user_lienexterne_edit', {'id': lien.id}) }}" title="Détails du lien externe" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer
                         </a>
                         <a href="#" onclick='del_confirm({{ lien.id }}, "{{ lien.libelle }}")' type="button" class="btn btn-sm btn-outline-danger">
@@ -60,7 +62,7 @@
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.lienId;
 
-        var url = "{{ path('user_agencebancaire_delete', { 'id': 0 }) }}";
+        var url = "{{ path('user_lienexterne_delete', { 'id': 0 }) }}";
         url = url.replace('0', id);
 
         window.location.href = url;
@@ -69,30 +71,10 @@
     function del_confirm(id, name) {
         document.getElementById('btn_delete').dataset.lienId = id;
 
-        $.ajax({
-            url: "{{ path('ajaxCanDeleteAgenceBancaire') }}",
-            dataType: "json",
-            data: {
-                "lienId": id
-            },
+        var dialog = $('#yesNoModal');
 
-            success: function (reponse)
-            {
-                if (reponse['data']) {
-                    var dialog = $('#yesNoModal');
-
-                    dialog.find('.modal-body').text("Supprimer le lien externe " + name + " ?");
-                    dialog.modal('show');
-                } else {
-                    $("#banque_name").html(name);
-                    $("#myModal").modal();
-                }
-            },
-
-            error: function(xhr, textStatus, errorThrown) {
-                alert('Ajax request failed.');
-            }
-        });
+        dialog.find('.modal-body').text("Supprimer le lien externe " + name + " ?");
+        dialog.modal('show');
     }
 </script>
 {% endblock %}
