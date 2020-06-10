@@ -97,46 +97,6 @@
         </div>
     </div>
     {{ form_row(form.contact.email) }}
-    {#<h5 class="my-3 text-primary">Mesure</h5>
-    <div class="row my-3">
-        <div class="col-sm-2 col-form-label">
-            N° Répertoire Général
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.jugement.numeroRG) }}
-            {{ form_errors(form.jugement.numeroRG) }}
-        </div>
-        <div class="col-sm-2 col-form-label">
-            Date du jugement
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.jugement.dateJugement) }}
-            {{ form_errors(form.jugement.dateJugement) }}
-        </div>
-    </div>
-    {{ form_row(form.jugement.tribunal) }}
-    {{ form_errors(form.jugement.tribunal) }}
-
-    <div class="row my-3">
-        <div class="col-sm-2 px-0">
-            {{ form_label(form.jugement.debutMesure) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.jugement.debutMesure) }}
-            {{ form_errors(form.jugement.debutMesure) }}
-        </div>
-        <div class="col-sm-2">
-            {{ form_label(form.jugement.finMesure) }}
-        </div>
-        <div class="col-sm-4">
-            {{ form_widget(form.jugement.finMesure) }}
-            {{ form_errors(form.jugement.finMesure) }}
-        </div>
-    </div>
-    <h5 class="my-3 text-primary">Paramètres de la mission</h5>
-    {{ form_widget(form.parametreMission) }}
-    {{ form_errors(form.parametreMission) }}
-    #}
 {% endblock %}
 
 {% block javascripts %}
