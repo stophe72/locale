@@ -11,15 +11,14 @@
                         <i class="fas fa-users"></i> Majeurs
                     </a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path("user_fichesdefrais") }}">
-                        <i class="fas fa-receipt"></i> Fiches de frais
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_liensexternes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <i class="fas fa-user-shield"></i> Mandataires
                     </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path("user_fichesdefrais") }}">
-                        <i class="far fa-file-alt"></i> Documents
-                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown_liensexternes">
+                        <a class="dropdown-item" href="{{ path("user_lienexternes") }}"><i class="fas fa-file-alt"></i> Documents</a>
+                        <a class="dropdown-item" href="{{ path("user_fichesdefrais") }}"><i class="fas fa-receipt"></i> Fiches de frais </a>
+                    </div>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown_liensexternes" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
