@@ -158,9 +158,10 @@ DROP TABLE IF EXISTS `document`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
+  `observations` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `groupeId` int(11) NOT NULL,
   `majeurId` int(11) NOT NULL,
-  `libelle` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `libelle` varchar(45) COLLATE utf8mb4_unicode_ci NOT NULL,
   `fichier` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `dateCreation` datetime NOT NULL,
   `dateModification` datetime NOT NULL,
@@ -970,4 +971,4 @@ CREATE TABLE `visite` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-06-10 20:10:17
+-- Dump completed on 2020-06-10 20:30:39
