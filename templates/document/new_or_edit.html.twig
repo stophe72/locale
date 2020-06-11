@@ -7,7 +7,17 @@
     {{ form_row(form.majeur) }}
     {{ form_row(form.libelle) }}
     {{ form_row(form.observations) }}
-    {{ form_row(form.fichier, { 'value': 'coucou' }) }}
+    {% if baseEntity is not null and baseEntity.fichier is not null %}
+        <div class="form-row form-group">
+            <div class="col-sm-2 col-form-label">
+                Fichier actuel
+            </div>
+            <div class="col-sm-8 ml-1 mt-1">
+                {{ baseEntity.fichier }}
+            </div>
+        </div>
+    {% endif %}
+    {{ form_row(form.fichier) }}
 {% endblock %}
 
 {% block javascripts %}
