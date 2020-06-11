@@ -3,17 +3,29 @@
 namespace App\Controller;
 
 use App\Entity\DocumentEntity;
+use App\Form\DocumentFilterType;
 use App\Form\DocumentType;
+use App\Models\DocumentFilter;
 use App\Repository\DocumentRepository;
+use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
 use App\Util\FileManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
 class DocumentController extends AbstractController
 {
+    const FILTER_DOCUMENT = 'session_filter_document';
+
+    /**
+     * @var SessionInterface
+     */
+    private $session;
+
     /**
      * @var Security
      */
@@ -26,8 +38,9 @@ class DocumentController extends AbstractController
 
     private $fileManager;
 
-    public function __construct(Security $security, MandataireRepository $mandataireRepository)
+    public function __construct(SessionInterface $session, Security $security, MandataireRepository $mandataireRepository)
     {
+        $this->session = $session;
         $this->security = $security;
         $this->mandataireRepository = $mandataireRepository;
         $this->fileManager = new FileManager();
@@ -47,11 +60,22 @@ class DocumentController extends AbstractController
     /**
      * @Route("user/documents", name="user_documents")
      */
-    public function index(DocumentRepository $documentRepository)
+    public function index(Request $request, DocumentRepository $documentRepository, MajeurRepository $majeurRepository)
     {
-        $documents = $documentRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()], ['libelle' => 'ASC']);
+        $filter = $this->session->get(self::FILTER_DOCUMENT, new DocumentFilter());
 
+        $majeurs = $majeurRepository->findBy(['groupe' => $this->getMandataire()->getGroupe()]);
+
+        $form = $this->createForm(DocumentFilterType::class, $filter, ['majeurs' => $majeurs]);
+        $form->handleRequest($request);
+
+        $documents = $documentRepository->getFromFilter($this->getMandataire(), $filter);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->session->set(self::FILTER_DOCUMENT, $filter);
+        }
         return $this->render('document/index.html.twig', [
+            'form' => $form->createView(),
             'documents' => $documents,
             'page_title' => 'Liste des documents',
         ]);
@@ -122,6 +146,22 @@ class DocumentController extends AbstractController
                 'page_title'  => 'Modifier un document',
                 'baseEntity' => $document,
                 'url_back'    => $this->generateUrl('user_documents'),
+            ]
+        );
+    }
+
+
+    /**
+     * @Route("user/document/ajaxDocumentClearFilter", name="ajaxDocumentClearFilter")
+     */
+    public function ajaxDocumentClearFilter(Request $request)
+    {
+        if ($request->get('clearDocumentFilter', 0)) {
+            $this->session->remove(self::FILTER_DOCUMENT);
+        }
+        return new JsonResponse(
+            [
+                'success' => 1,
             ]
         );
     }

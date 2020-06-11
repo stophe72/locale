@@ -14,21 +14,15 @@
 .vscode
 .composer.lock
 composer.lock
-node_modules/
 symfony.lock
 phpunit*
 yarn.lock
-.scannerwork/.sonar_lock
-.scannerwork/report-task.txt
 
 ###> liip/imagine-bundle ###
 /public/media/cache/
 ###< liip/imagine-bundle ###
-public/uploads/plantes/*
-.idea/*
-.settings/org.eclipse.wst.common.project.facet.core.xml
-.settings/org.eclipse.wst.validation.prefs
+.settings/
 .buildpath
 .project
 .env.test
-public/uploads/docs/rapport-5ee15674620e6.pdf
+public/uploads/*

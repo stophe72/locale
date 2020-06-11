@@ -7,7 +7,7 @@
     {{ form_row(form.majeur) }}
     {{ form_row(form.libelle) }}
     {{ form_row(form.observations) }}
-    {{ form_row(form.fichier) }}
+    {{ form_row(form.fichier, { 'value': 'coucou' }) }}
 {% endblock %}
 
 {% block javascripts %}

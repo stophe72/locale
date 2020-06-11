@@ -32,7 +32,7 @@ class DocumentEntity extends BaseGroupeLibelleEntity
         return $this->fichier;
     }
 
-    public function setFichier(string $fichier): self
+    public function setFichier(?string $fichier): self
     {
         $this->fichier = $fichier;
 

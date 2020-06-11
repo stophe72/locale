@@ -53,7 +53,8 @@ class DocumentType extends AbstractType
                 FileType::class,
                 [
                     'label' => 'Fichier',
-                    'mapped'      => false,
+                    // 'mapped'      => false,
+                    'data_class' => null,
                     'attr'        => [
                         'placeholder' => 'Choisir un fichier',
                     ],
