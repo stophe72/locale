@@ -6,11 +6,15 @@ use App\Entity\CompteGestionEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Form\CompteGestionFilterType;
 use App\Form\CompteGestionType;
+use App\Form\ImportCompteGestionType;
 use App\Models\CompteGestionFilter;
+use App\Models\ImportCompteGestion;
 use App\Repository\CompteGestionRepository;
 use App\Repository\FamilleTypeOperationRepository;
+use App\Repository\ImportOperationRepository;
 use App\Repository\MandataireRepository;
 use App\Repository\TypeOperationRepository;
+use App\Util\ImportManager;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -65,6 +69,7 @@ class CompteGestionController extends AbstractController
         PaginatorInterface $paginator,
         TypeOperationRepository $typeOperationRepository,
         FamilleTypeOperationRepository $familleTypeOperationRepository,
+        ImportOperationRepository $importOperationRepository,
         CompteGestionRepository $compteGestionRepository
     ) {
         $filter = $this->session->get(self::FILTER_COMPTE_GESTION, new CompteGestionFilter());
@@ -81,6 +86,41 @@ class CompteGestionController extends AbstractController
             ]
         );
         $form->handleRequest($request);
+
+        $import = new ImportCompteGestion();
+        $formImport = $this->createForm(ImportCompteGestionType::class, $import);
+        $formImport->handleRequest($request);
+
+        if ($formImport->isSubmitted() && $formImport->isValid()) {
+            $fichier = $formImport['nomFichier']->getData();
+            if ($fichier) {
+                $file = file($fichier->getPathname());
+
+                $im = new ImportManager();
+                $comptesGestion = $im->parseCsv($donneeBancaire, $file, $importOperationRepository);
+
+                $em = $this->getDoctrine()->getManager();
+                foreach ($comptesGestion['ok'] as $cg) {
+                    $em->persist($cg);
+                }
+                $em->flush();
+
+                return $this->render(
+                    'compte_gestion/resultat_import.html.twig',
+                    [
+                        'page_title' => 'Résultat import',
+                        'comptesGestion' => $comptesGestion,
+                        'donneeBancaire' => $donneeBancaire,
+                        'url_back' => $this->generateUrl(
+                            'user_comptesgestion',
+                            [
+                                'id' => $donneeBancaire->getId(),
+                            ]
+                        )
+                    ]
+                );
+            }
+        }
 
         $startPage = $request->get('page', 1);
         if ($form->isSubmitted() && $form->isValid()) {
@@ -100,6 +140,7 @@ class CompteGestionController extends AbstractController
 
         return $this->render('compte_gestion/index.html.twig', [
             'form' => $form->createView(),
+            'formImport' => $formImport->createView(),
             'pagination' => $pagination,
             'page_title' => 'Comptes gestion - ' . $donneeBancaire->getMajeur()->__toString() . ' - ' . $donneeBancaire->getNumeroCompte(),
             'donneeBancaire' => $donneeBancaire,

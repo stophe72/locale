@@ -6,7 +6,6 @@
     <div class="row my-4">
         <div class="col-sm-6 offset-2">
             <h3 class="text-primary"><i class="fa fa-tasks"></i> {{ page_title }}</h3>
-            <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
         </div>
     </div>
     <div class="row">
@@ -28,14 +27,24 @@
             {{ form_end(form) }}
         </div>
         <div class="col-sm-8">
-            {% include 'generic/pagination_header.html.twig' with
-                {
-                    'no_row' : 'Aucune opération',
-                    'one_row': 'Une opération',
-                    'rows'   : 'opérations',
-                    'url_add': path("user_comptegestion_add", { "donneeBancaire": donneeBancaire.id })
-                }
-            %}
+            <div class="row my-3">
+                <div class="count col-sm-6 align-self-center small">
+                    {% if pagination.items|length > 0 %}
+                        {% if pagination.items|length == 1 %}
+                            Une opération
+                        {% else %}
+                            {% set items = (pagination.getCurrentPageNumber - 1) * pagination.getItemNumberPerPage + 1 %}
+                            {{ items }} à {{ items + pagination.items|length - 1 }}
+                            sur {{ pagination.getTotalItemCount }} opérations
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <div class="col-sm-6 text-right">
+                    <button type="button" id="btn_importer" class="btn btn-outline-primary mr-3"><i class="fas fa-file-csv"></i> Importer</button>
+                    <a href="{{ path("user_comptegestion_add", { "donneeBancaire": donneeBancaire.id }) }}" class="btn btn-primary"><i class="fas fa-plus-square"></i> Ajouter</a>
+                </div>
+            </div>
+
             {% if pagination.items|length == 0 %}
                 <div class="alert alert-info mt-3">Aucune opération</div>
             {% else %}
@@ -103,10 +112,42 @@
             </div>
         </div>
     </div>
+
+    {{ form_start(formImport) }}
+    <div class="modal" tabindex="-1" role="dialog" id="selectFileModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Importer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_errors(formImport) }}
+                    {{ form_row(formImport.nomFichier) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Valider</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(formImport) }}
 {% endblock %}
 
 {% block javascripts %}
 <script type="text/javascript">
+    $('.custom-file-input').on('change', function() {
+    let fileName = $(this).val().split('\\').pop();
+       $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $("#btn_importer").on("click", function(e) {
+        $('#selectFileModal').modal('show');
+    });
+
     $("#btn_delete").on("click", function(e) {
         var el = document.querySelector('#btn_delete');
         const id = el.dataset.operationId;

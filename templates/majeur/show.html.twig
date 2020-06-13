@@ -174,12 +174,17 @@
                         <div class="card-body donnee-bancaire-bg">
                             {% if majeur.donneeBancaireEntities is not empty %}
                                 {% for db in majeur.donneeBancaireEntities %}
-                                    <p>
-                                        <i class="donnee-bancaire-icon fas fa-university"></i> {{ db }}
-                                        <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
-                                        <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
-                                    </p>
                                     <div class="row">
+                                        <div class="col-sm-10 py-1">
+                                            <i class="donnee-bancaire-icon fas fa-university"></i> {{ db }}</a>
+                                            <span class="ml-3 mr-1 badge badge-info">{{ db.typeCompte.libelle }}</span>
+                                            <span class="badge badge-secondary">{{ db.agenceBancaire.codeBanque }}</span>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <a href="{{ path("user_donneebancaire_edit", { "id": db.id }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-2">
                                         <div class="col-sm-8">
                                             {% if db.agenceBancaire.conseiller is not null%}
                                                 <i class="donnee-bancaire-icon text-secondary fas fa-user"></i> {{ db.agenceBancaire.conseiller }}
@@ -220,6 +225,11 @@
                                     <div class="col-sm-3 text-right">
                                         <a href="{{ path("user_majeur_edit_prise_en_charge", { "slug": majeur.slug }) }}" class="text-primary px-3 py-1"><i class="fas fa-pen"></i></a>
                                         <a href="#" onclick='del_confirm("pec", {{ pec.id }}, "Supprimer la prise en charge \"{{ pec.typePriseEnCharge.libelle }}\" ?")' class="text-danger px-3 py-1"><i class="fas fa-trash"></i></a>
+                                    </div>
+                                </div>
+                                <div class="row mt-2 py-1">
+                                    <div class="col">
+                                        <i class="protection-icon fas fa-calendar-times"></i> {{ pec.dateFin|date('d/m/Y') }}
                                     </div>
                                 </div>
                                 {% if not loop.last %}
