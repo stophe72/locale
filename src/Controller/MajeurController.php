@@ -72,6 +72,7 @@ class MajeurController extends AbstractController
      */
     public function index(
         MajeurRepository $majeurRepository,
+        PriseEnChargeRepository $priseEnChargeRepository,
         GroupeRepository $groupeRepository
     ) {
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
@@ -86,9 +87,11 @@ class MajeurController extends AbstractController
             return $this->redirectToRoute('admin_mandataires');
         }
         $majeurs = $majeurRepository->findBy(['groupe' => $mandataire->getGroupe()], ['nom' => 'ASC']);
+        $alertes = $priseEnChargeRepository->getAlertes($mandataire);
 
         return $this->render('majeur/index.html.twig', [
             'majeurs' => $majeurs,
+            'alertes' => $alertes,
             'page_title' => 'Liste des majeurs',
         ]);
     }

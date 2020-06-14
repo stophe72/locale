@@ -13,20 +13,42 @@
 
     <div class="row">
         <div class="col-sm-2">
-                    <div class="card">
-                        <div class="card-header text-white alerte-title">
-                            <strong>ALERTES</strong>
-                        </div>
-                        <div class="card-body alerte-bg">
-<div class="alert alert-secondary" role="alert">
-  Christophe DASSISE
-</div>
-
-                            <p><i class="fas fa-bell alerte-icon"></i> Fin C.M.U.</p>
-                            <p><i class="fas fa-bell alerte-icon"></i> Fin A.A.H</p>
-                        </div>
+            {% if alertes|length > 0 %}
+                <div class="card">
+                    <div class="card-header text-white alerte-title">
+                        <strong>ALERTES</strong>
                     </div>
-
+                    <div class="card-body alerte-bg">
+                    {% set majeurId = -1 %}
+                    {% for alerte in alertes %}
+                        {% if alerte.majeur.id != majeurId %}
+                            <table class="table table-sm table-borderless">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            {{ alerte.majeur }}
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            {% set majeurId = alerte.majeur.id %}
+                        {% endif %}
+                                    <tr>
+                                        <td>
+                                            <i class="fas fa-bell alerte-icon"></i> {{ alerte.typePriseEnCharge.code }} <i class="text-secondary fas fa-long-arrow-alt-right"></i> {{ alerte.dateFin|date('d/m/Y') }}
+                                        </td>
+                                    </tr>
+                        {% if alerte.majeur.id != majeurId or loop.last %}
+                                </tbody>
+                            </table>
+                            {% if not loop.last %}
+                                <hr>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    </div>
+                </div>
+            {% endif %}
         </div>
         <div class="col-sm-8">
             <table class="table table-striped">

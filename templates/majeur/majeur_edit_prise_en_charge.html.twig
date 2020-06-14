@@ -6,5 +6,30 @@
     {{ form_errors(form) }}
     {{ form_row(form.typePriseEnCharge) }}
     {{ form_row(form.dateFin) }}
+    <div class="form-group row">
+        {{ form_label(form.seuilAlerte) }}
+        <div class="col-sm-8">
+            {{ form_widget(form.seuilAlerte) }}
+            {{ form_errors(form.seuilAlerte) }}
+        </div>
+        <div class="col-sm-2">
+            <span id="sliderValue">
+            </span>
+        </div>
+    </div>
     {{ form_row(form.traite) }}
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script>
+    var slider = document.getElementById("prise_en_charge_seuilAlerte");
+    var output = document.getElementById("sliderValue");
+    output.innerHTML = slider.value;
+
+    slider.oninput = function() {
+        output.innerHTML = this.value;
+    }
+</script>
 {% endblock %}

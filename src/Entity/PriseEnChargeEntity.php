@@ -35,6 +35,11 @@ class PriseEnChargeEntity extends BaseEntity
      */
     private $traite;
 
+    /**
+     * @ORM\Column(name="seuilAlerte", type="integer", nullable=true)
+     */
+    private $seuilAlerte;
+
 
     public function getTypePriseEnCharge(): ?TypePriseEnChargeEntity
     {
@@ -88,6 +93,18 @@ class PriseEnChargeEntity extends BaseEntity
     public function setMajeur($majeur)
     {
         $this->majeur = $majeur;
+
+        return $this;
+    }
+
+    public function getSeuilAlerte(): ?int
+    {
+        return $this->seuilAlerte;
+    }
+
+    public function setSeuilAlerte(?int $seuilAlerte): self
+    {
+        $this->seuilAlerte = $seuilAlerte;
 
         return $this;
     }
