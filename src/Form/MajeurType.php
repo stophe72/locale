@@ -64,7 +64,15 @@ class MajeurType extends AbstractType
                     'widget' => 'single_text',
                 ]
             )
-            ->add('lieuNaissance', TextType::class)
+            ->add(
+                'lieuNaissance',
+                TextType::class,
+                [
+                    'attr' => [
+                        'style' => 'text-transform:uppercase',
+                    ],
+                ]
+            )
             ->add(
                 'numeroSS',
                 TextType::class,
@@ -81,12 +89,6 @@ class MajeurType extends AbstractType
             )
             ->add('adresse', AdresseType::class)
             ->add('contact', ContactType::class)
-            /*
-            ->add('jugement', JugementType::class)
-            ->add(
-                'parametreMission',
-                ParametreMissionType::class
-            )*/
             ->add(
                 'image',
                 FileType::class,

@@ -3,7 +3,7 @@
 namespace App\Form;
 
 use App\Entity\TypePriseEnChargeEntity;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -15,11 +15,14 @@ class TypePriseEnChargeType extends BaseCodeLibelleType
 
         $builder
             ->add(
-                'alertable',
-                CheckboxType::class,
+                'seuilAlerte',
+                RangeType::class,
                 [
-                    'label' => 'Alerte',
-                    'required' => false,
+                    'label' => 'Seuil d`alerte (en semaines)',
+                    'attr'  => [
+                        'min' => 0,
+                        'max' => 52,
+                    ]
                 ]
             );
     }

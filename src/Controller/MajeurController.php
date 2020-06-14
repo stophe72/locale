@@ -86,7 +86,7 @@ class MajeurController extends AbstractController
             }
             return $this->redirectToRoute('admin_mandataires');
         }
-        $majeurs = $majeurRepository->findBy(['groupe' => $mandataire->getGroupe()], ['nom' => 'ASC']);
+        $majeurs = $majeurRepository->findBy(['groupe' => $mandataire->getGroupe()], ['nom' => 'ASC', 'prenom' => 'ASC']);
         $alertes = $priseEnChargeRepository->getAlertes($mandataire);
 
         return $this->render('majeur/index.html.twig', [
@@ -200,6 +200,7 @@ class MajeurController extends AbstractController
             $contactsExternes = $contactExterneRepository->findBy(['majeur' => $majeur->getId()]);
             $dbs = $donneeBancaireRepository->findBy(['majeur' => $majeur,]);
             $pecs = $priseEnChargeRepository->findBy(['majeur' => $majeur,]);
+            $alertes = $priseEnChargeRepository->getAlertes($this->getMandataire(), $majeur);
 
             return $this->render(
                 'majeur/show.html.twig',
@@ -207,6 +208,7 @@ class MajeurController extends AbstractController
                     'contactExternes' => $contactsExternes,
                     'donneeBancaires' => $dbs,
                     'prisesEnCharge' => $pecs,
+                    'alertes' => $alertes,
                     'jugement' => $jugement,
                     'parametreMission' => $parametreMission,
                     'majeur' => $majeur,
@@ -488,14 +490,39 @@ class MajeurController extends AbstractController
     }
 
     /**
-     * @Route("user/majeur/{slug}/editPriseEnCharge", name="user_majeur_edit_prise_en_charge")
+     * @Route("user/majeur/{slug}/editPriseEnCharge/{pec}", name="user_majeur_edit_prise_en_charge")
      */
     public function editPriseEnCharge(MajeurEntity $majeur, PriseEnChargeEntity $priseEnCharge, Request $request)
     {
         $form = $this->createForm(PriseEnChargeType::class, $priseEnCharge);
         $form->handleRequest($request);
 
-        return $this->doRequest($form, 'majeur/majeur_edit_prise_en_charge.html.twig', $priseEnCharge->getMajeur(), $majeur->__toString() . ' - Prise en charge');
+        if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
+
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute(
+                'user_majeur_show',
+                [
+                    'slug' => $majeur->getSlug(),
+                ]
+            );
+        }
+
+        return $this->render(
+            'majeur/majeur_edit_prise_en_charge.html.twig',
+            [
+                'form' => $form->createView(),
+                'page_title' => 'Editer une prise en charge',
+                'baseEntity' => $majeur,
+                'url_back' => $this->generateUrl(
+                    'user_majeur_show',
+                    [
+                        'slug' => $majeur->getSlug(),
+                    ]
+                ),
+            ]
+        );
     }
 
     /**
@@ -514,6 +541,26 @@ class MajeurController extends AbstractController
             'user_majeur_show',
             [
                 'slug' => $priseEnCharge->getMajeur()->getSlug(),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/majeur/deleteObseque/{id}", name="user_majeur_delete_obseque")
+     */
+    public function deleteObseque(ObsequeEntity $obseque)
+    {
+        if (!$this->isInSameGroupe($obseque->getMajeur())) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $em = $this->getDoctrine()->getManager();
+        $em->remove($obseque);
+        $em->flush();
+
+        return $this->redirectToRoute(
+            'user_majeur_show',
+            [
+                'slug' => $obseque->getMajeur()->getSlug(),
             ]
         );
     }

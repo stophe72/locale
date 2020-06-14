@@ -59,6 +59,7 @@ class TypePriseEnChargeController extends AbstractController
     {
         $typePriseEnCharge = new TypePriseEnChargeEntity();
         $typePriseEnCharge->setGroupe($this->getMandataire()->getGroupe());
+        $typePriseEnCharge->setSeuilAlerte(8);
 
         $form = $this->createForm(TypePriseEnChargeType::class, $typePriseEnCharge);
         $form->handleRequest($request);

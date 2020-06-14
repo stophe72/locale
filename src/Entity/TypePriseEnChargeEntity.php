@@ -13,24 +13,28 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class TypePriseEnChargeEntity extends BaseCodeLibelleEntity
 {
+
     /**
-     * @var bool
-     *
-     * @Assert\NotNull
-     *
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(name="seuilAlerte", type="integer", nullable=true)
      */
-    private $alertable;
+    private $seuilAlerte;
 
-
-    public function getAlertable(): ?bool
+    /**
+     * Get the value of seuilAlerte
+     */
+    public function getSeuilAlerte()
     {
-        return $this->alertable;
+        return $this->seuilAlerte;
     }
 
-    public function setAlertable(bool $alertable): self
+    /**
+     * Set the value of seuilAlerte
+     *
+     * @return  self
+     */
+    public function setSeuilAlerte($seuilAlerte)
     {
-        $this->alertable = $alertable;
+        $this->seuilAlerte = $seuilAlerte;
 
         return $this;
     }

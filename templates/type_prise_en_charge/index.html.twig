@@ -16,7 +16,7 @@
                 <tr>
                     <th>Code</th>
                     <th>Libellé</th>
-                    <th>Alerte</th>
+                    <th>Seuil d'alerte</th>
                     <th></th>
                 </tr>
             </thead>
@@ -24,7 +24,7 @@
                 <tr>
                     <td>{{ typePriseEnCharge.code }}</td>
                     <td>{{ typePriseEnCharge.libelle }}</td>
-                    <td>{% if typePriseEnCharge.alertable %}<i class="fas fa-check text-success"></i>{% endif %}</td>
+                    <td>{% if typePriseEnCharge.seuilAlerte %}{{ typePriseEnCharge.seuilAlerte}} semaine(s){% else %}Aucun{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ path('user_typepriseencharge_edit', {'id': typePriseEnCharge.id}) }}" title="Détails du type de prise en charge" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer

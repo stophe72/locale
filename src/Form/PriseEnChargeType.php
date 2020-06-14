@@ -9,7 +9,6 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\RangeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -18,17 +17,6 @@ class PriseEnChargeType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add(
-                'seuilAlerte',
-                RangeType::class,
-                [
-                    'label' => 'Seuil d`alerte (en semaines)',
-                    'attr'  => [
-                        'min' => 0,
-                        'max' => 52,
-                    ]
-                ]
-            )
             ->add(
                 'dateFin',
                 DateType::class,
@@ -42,7 +30,7 @@ class PriseEnChargeType extends AbstractType
                 CheckboxType::class,
                 [
                     'label_attr' => [
-                        'class' => 'switch-custom'
+                        'class' => 'switch-custom',
                     ],
                     'label' => 'Traité',
                     'required' => false,

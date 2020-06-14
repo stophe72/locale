@@ -21,6 +21,9 @@ class LienExterneType extends BaseLibelleType
                 CheckboxType::class,
                 [
                     'required' => false,
+                    'label_attr' => [
+                        'class' => 'switch-custom',
+                    ],
                 ]
             );
     }
