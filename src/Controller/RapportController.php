@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Repository\CompteGestionRepository;
+use App\Repository\JugementRepository;
 use App\Repository\MajeurRepository;
 use App\Repository\MandataireRepository;
+use App\Repository\ParametreMissionRepository;
 use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
@@ -51,9 +53,17 @@ class RapportController extends AbstractController
     /**
      * @Route("user/rapports", name="user_rapports")
      */
-    public function index(MajeurRepository $majeurRepository, CompteGestionRepository $compteGestionRepository)
-    {
-        $majeur = $majeurRepository->find(1);
+    public function index(
+        MajeurRepository $majeurRepository,
+        CompteGestionRepository $compteGestionRepository,
+        ParametreMissionRepository $parametreMissionRepository,
+        JugementRepository $jugementRepository
+    ) {
+        // TODO les jugements, parametre mission, ... ne doivent pas être nulls
+        $majeur = $majeurRepository->find(6);
+
+        $jugement = $jugementRepository->findOneBy(['majeur' => $majeur->getId()]);
+        $pm = $parametreMissionRepository->findOneBy(['majeur' => $majeur->getId()]);
 
         // A partir du 01/01/2020, on présente les comptes de 2019 ?
         $anneeCourante = date("Y");
@@ -93,6 +103,8 @@ class RapportController extends AbstractController
             'rapport/cr_gestion.html.twig',
             [
                 'majeur' => $majeur,
+                'jugement' => $jugement,
+                'parametreMission' => $pm,
                 'annee' => $anneeCourante,
                 'debut' => $debut,
                 'fin' => $fin,
