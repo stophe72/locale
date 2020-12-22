@@ -3,9 +3,8 @@
 namespace App\Repository;
 
 use App\Entity\NoteDeFraisEntity;
-use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 
 /**
  * @method NoteDeFraisEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -15,7 +14,7 @@ use Doctrine\Common\Persistence\ManagerRegistry;
  */
 class NoteDeFraisRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(PersistenceManagerRegistry $registry)
     {
         parent::__construct($registry, NoteDeFraisEntity::class);
     }

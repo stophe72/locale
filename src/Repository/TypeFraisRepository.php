@@ -7,8 +7,8 @@ use App\Entity\TypeFrais;
 use App\Entity\TypeFraisEntity;
 use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 
 /**
  * @method TypeFrais|null find($id, $lockMode = null, $lockVersion = null)
@@ -18,7 +18,7 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class TypeFraisRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(PersistenceManagerRegistry $registry)
     {
         parent::__construct($registry, TypeFraisEntity::class);
     }

@@ -6,8 +6,8 @@ use App\Entity\AgenceBancaireEntity;
 use App\Entity\DonneeBancaireEntity;
 use App\Entity\MandataireEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 
 /**
  * @method AgenceBancaireEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +17,7 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class AgenceBancaireRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(PersistenceManagerRegistry $registry)
     {
         parent::__construct($registry, AgenceBancaireEntity::class);
     }

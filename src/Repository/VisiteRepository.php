@@ -6,8 +6,8 @@ use App\Entity\MajeurEntity;
 use App\Entity\MandataireEntity;
 use App\Entity\VisiteEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 
 /**
  * @method VisiteEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +17,7 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class VisiteRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(PersistenceManagerRegistry $registry)
     {
         parent::__construct($registry, VisiteEntity::class);
     }

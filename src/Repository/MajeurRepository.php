@@ -6,8 +6,7 @@ use App\Entity\MajeurEntity;
 use App\Entity\MandataireEntity;
 use App\Entity\UserEntity;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\Common\Persistence\ManagerRegistry;
-use Doctrine\ORM\Query\Expr\Join;
+use Doctrine\Persistence\ManagerRegistry as PersistenceManagerRegistry;
 
 /**
  * @method MajeurEntity|null find($id, $lockMode = null, $lockVersion = null)
@@ -17,7 +16,7 @@ use Doctrine\ORM\Query\Expr\Join;
  */
 class MajeurRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(PersistenceManagerRegistry $registry)
     {
         parent::__construct($registry, MajeurEntity::class);
     }
