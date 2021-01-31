@@ -1,0 +1,153 @@
+{% extends 'base.html.twig' %}
+
+{% import _self as formMacros %}
+{% macro printValeurRow(subform) %}
+    <div class="form-row px-3 mb-3">
+        {{ form_errors(subform) }}
+        <div class="col-sm-2">
+            {{ form_widget(subform.locale) }}
+        </div>
+        <div class="col-sm-3">
+            {{ form_widget(subform.texte) }}
+        </div>
+        <div class="col-sm-1 text-right">
+            <a href="#" class="btn btn-danger remove-tag"><i class="fas fa-trash"></i></a>
+        </div>
+    </div>
+{% endmacro %}
+
+{% block title %}Nouveau produit{% endblock %}
+
+{% block body %}
+    <div class="container py-3">
+    {{ form_start(form) }}
+    <div class="row">
+        <div class="col-sm-2">
+            {{ form_label(form.code) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(form.code) }}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-2">
+            {{ form_label(form.libelle) }}
+        </div>
+        <div class="col-sm-6">
+            {{ form_widget(form.libelle) }}
+        </div>
+    </div>
+
+    <h5 class="mt-3">Traductions</h5>
+
+    <ul class="list-unstyled valeurParametres"
+        data-prototype="{{ formMacros.printValeurRow(form.produitTranslations.vars.prototype)|e('html_attr') }}">
+        {% for vp in form.produitTranslations %}
+            <li>
+                {{ formMacros.printValeurRow(vp) }}
+            </li>
+        {% endfor %}
+    </ul>
+    <button onclick="addParam()" id="addParamBtn" type="button" class="btn btn-primary add_tag_link my-3">
+        <i class="fa fa-plus-square"></i> Ajouter une traduction
+    </button>
+
+    <button type="submit" class="btn btn-primary ml-auto"><i class="fa fa-check"></i> Valider</button>
+    {{ form_end(form) }}
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+
+<script type="text/javascript">
+    const typeParamCombobox = $("#parametre_typeParametre");
+
+    typeParamCombobox.on("change", function() {
+        typeParamCombobox.prop('disabled', 'disabled');
+
+        let form = $('ul.valeurParametres').closest('form');
+        let data = {
+            typeParametreId: typeParamCombobox.val()
+        };
+
+        $.ajax({
+            url     : form.attr('action'),
+            type    : form.attr('method'),
+            dataType: "html",
+            data    : data,
+            success : function (html) {
+                // Utiliser le selecteur JQuery car l'élément "appbundle_perimetreContractuel_article" est remplacé.
+                // On perd la référence en utilisant une variable comme comboPm pour les articles
+                $("#ajoutParam").html($(html).find('#ajoutParam'));
+                onLoading();
+            },
+            error: function (a, b, c) {
+                alert(a + " /// " + b);
+            },
+            complete: function(xhr, textStatus) {
+                typeParamCombobox.prop('disabled', false);
+            }
+        });
+    });
+
+    // const $addParamButton = $('<button type="button" class="btn btn-primary add_tag_link my-3"><i class="fa fa-plus-square"></i> Ajouter une valeur</button>');
+    const $newLinkLi = $('<li></li>').append($(""));
+
+    function onLoading() {
+        // Get the ul that holds the collection of valeurParametres
+        let $collectionHolder = $('ul.valeurParametres');
+
+        // count the current form inputs we have (e.g. 2), use that as the new
+        // index when inserting a new item (e.g. 2)
+        $collectionHolder.data('index', $collectionHolder.find(':input').length);
+    }
+
+    $(document).ready(function() {
+        onLoading();
+    });
+
+    function addTagForm($collectionHolder) {
+        // Get the data-prototype explained earlier
+        const prototype = $collectionHolder.data('prototype');
+
+        // get the new index
+        const index = $collectionHolder.data('index');
+
+        // Replace '$$name$$' in the prototype's HTML to
+        // instead be a number based on how many items we have
+        const newForm = prototype.replace(/__name__/g, index);
+
+        // increase the index with one for the next item
+        $collectionHolder.data('index', index + 1);
+
+        // Display the form in the page in an li, before the "Add a tag" link li
+        const $newFormLi = $('<li></li>').append(newForm);
+
+        $collectionHolder.append($newFormLi);
+
+        // handle the removal, just for this example
+        // Pour les lignes ajoutées dynamiquement
+        $('.remove-tag').click(function(e) {
+            e.preventDefault();
+
+            $(this).parent().parent().remove();
+
+            return false;
+        });
+    }
+
+    // Pour les lignes déjà existantes
+    $('.remove-tag').on("click", function(e) {
+        e.preventDefault();
+
+        $(this).parent().parent().remove();
+
+        return false;
+    });
+    function addParam() {
+        // add a new tag form (see code block below)
+        addTagForm($('ul.valeurParametres'));
+    }
+</script>
+{% endblock %}

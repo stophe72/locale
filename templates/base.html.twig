@@ -3,7 +3,17 @@
     <head>
         <meta charset="UTF-8">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        {% block stylesheets %}{% endblock %}
+        {% block stylesheet %}
+            <link href="{{ asset('css/fa-5.9.0-all.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('css/bootstrap.min.css') }}" rel="stylesheet">
+            <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet">
+            <link href="{{ asset('css/style.css') }}" rel="stylesheet">
+
+            <script src="{{ asset('js/jquery-3.3.1.min.js')}}"></script>
+            <script src="{{ asset('js/popper-1.14.7.min.js') }}"></script>
+            <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+            <script src="{{ asset('js/jquery-ui.min.js') }}"></script>
+        {% endblock %}
 
         {% block javascripts %}{% endblock %}
     </head>
