@@ -31,6 +31,16 @@ CREATE TABLE `locale` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `locale`
+--
+
+LOCK TABLES `locale` WRITE;
+/*!40000 ALTER TABLE `locale` DISABLE KEYS */;
+INSERT INTO `locale` VALUES (1,'FR','France'),(2,'EN','Anglais'),(3,'DE','Allemand'),(4,'ES','Espagnol');
+/*!40000 ALTER TABLE `locale` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `produit`
 --
 
@@ -44,6 +54,16 @@ CREATE TABLE `produit` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `produit`
+--
+
+LOCK TABLES `produit` WRITE;
+/*!40000 ALTER TABLE `produit` DISABLE KEYS */;
+INSERT INTO `produit` VALUES (1,'P1','Produit 1'),(2,'P2','Produit 2'),(3,'P3','Produit 3'),(4,'P4','Produit 4'),(5,'P5','Produit 5');
+/*!40000 ALTER TABLE `produit` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `produit_translation`
@@ -66,6 +86,15 @@ CREATE TABLE `produit_translation` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `produit_translation`
+--
+
+LOCK TABLES `produit_translation` WRITE;
+/*!40000 ALTER TABLE `produit_translation` DISABLE KEYS */;
+/*!40000 ALTER TABLE `produit_translation` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Dumping routines for database 'locale'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -78,4 +107,4 @@ CREATE TABLE `produit_translation` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2021-01-31 22:34:24
+-- Dump completed on 2021-01-31 22:37:09
