@@ -2,13 +2,12 @@
 
 namespace App\Entity;
 
-use App\Repository\LocaleRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass=LocaleRepository::class)
+ * @ORM\Entity(repositoryClass="App\Repository\LocaleRepository")
  */
 class Locale
 {
@@ -81,7 +80,7 @@ class Locale
     {
         if (!$this->produitTranslations->contains($produitTranslation)) {
             $this->produitTranslations[] = $produitTranslation;
-            $produitTranslation->setLocaleId($this);
+            $produitTranslation->setLocale($this);
         }
 
         return $this;
@@ -91,11 +90,16 @@ class Locale
     {
         if ($this->produitTranslations->removeElement($produitTranslation)) {
             // set the owning side to null (unless already changed)
-            if ($produitTranslation->getLocaleId() === $this) {
-                $produitTranslation->setLocaleId(null);
+            if ($produitTranslation->getLocale() === $this) {
+                $produitTranslation->setLocale(null);
             }
         }
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return $this->getId();
     }
 }

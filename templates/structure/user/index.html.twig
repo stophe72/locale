@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello TestController!{% endblock %}
+
+{% block body %}
+<style>
+    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
+    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
+</style>
+
+<div class="example-wrapper">
+    <h1>Hello {{ controller_name }}! ✅</h1>
+
+    {% for message in app.flashes('success') %}
+    <div class="flash-notice">
+        {{ message }}
+    </div>
+    {% endfor %}
+
+    {{ form_start(form) }}
+    {{ form_row(form.nom) }}
+    {{ form_row(form.contact) }}
+    {% if form.email is defined %}
+        {{ form_row(form.email) }}
+    {% endif %}
+    <input type="submit" title="Valider"/>
+    {{ form_end(form) }}
+</div>
+{% endblock %}
+
+{% block javascripts %}
+
+<script type="text/javascript">
+$(document).ready(function() {
+    $("#user_contact").on("change", function(e) {
+        if ($("#user_contact").prop('checked') === true) {
+            $("#user_email").prop('disabled', false);
+            $("#user_email").prop('required', 'required');
+        } else {
+            $("#user_email").prop('disabled', 'disabled');
+            $("#user_email").prop('required', "");
+        }
+
+
+        {# let form = $(this).closest('form');
+      // Simulate form data, but only include the selected variete value.
+        let data = {};
+        data[$("#user_contact").attr('name')] = $("#user_contact").prop('checked');
+
+        $.ajax({
+            url : form.attr('action'),
+            type: form.attr('method'),
+            data : {
+                "user[contact]": $("#user_contact").prop('checked')
+            },
+            success: function(html) {
+                $("#user_email").replaceWith(
+                    $(html).find("#user_email")
+                );
+            }
+        }); #}
+    });
+});
+</script>
+{% endblock %}
+

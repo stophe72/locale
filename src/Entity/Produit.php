@@ -2,7 +2,6 @@
 
 namespace App\Entity;
 
-use App\Repository\ProduitRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,11 +21,6 @@ class Produit
      * @ORM\Column(type="string", length=45)
      */
     private $code;
-
-    /**
-     * @ORM\Column(type="string", length=100)
-     */
-    private $libelle;
 
     /**
      * @var Collection
@@ -49,18 +43,6 @@ class Produit
     public function setCode(string $code): self
     {
         $this->code = $code;
-
-        return $this;
-    }
-
-    public function getLibelle(): ?string
-    {
-        return $this->libelle;
-    }
-
-    public function setLibelle(string $libelle): self
-    {
-        $this->libelle = $libelle;
 
         return $this;
     }

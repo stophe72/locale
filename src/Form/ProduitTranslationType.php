@@ -2,33 +2,33 @@
 
 namespace App\Form;
 
-use App\Entity\Locale as EntityLocale;
 use App\Entity\ProduitTranslation;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProduitTranslationType extends AbstractType
 {
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $locales = $this->entityManager->getRepository(EntityLocale::class)->findAll();
-
         $builder
-            ->add('locale', ChoiceType::class, [
-                'choice_label' => 'code',
-                'choices' => $locales,
-            ])
-            ->add('texte');
+            // ->add('locale', EntityType::class, [
+            //     'attr'          => [
+            //         'class' => 'custom-select',
+            //     ],
+            //     'label'         => 'Traduction',
+            //     'class'         => Locale::class,
+            //     'query_builder' => function (LocaleRepository $localeRepository) {
+            //         return $localeRepository->createQueryBuilder('l')
+            //             ->orderBy('l.libelle', 'ASC');
+            //     },
+            // ])
+            ->add('locale', HiddenType::class)
+            ->add('texte', TextType::class, [
+                'label' => 'Libellé',
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

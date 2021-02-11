@@ -14,7 +14,6 @@ class ProduitType extends AbstractType
     {
         $builder
             ->add('code')
-            ->add('libelle')
             ->add('produitTranslations', CollectionType::class, [
                 'entry_type'    => ProduitTranslationType::class,
                 'entry_options' => [
@@ -23,7 +22,7 @@ class ProduitType extends AbstractType
                 'allow_add'     => true,
                 'allow_delete'  => true,
                 'by_reference'  => false,
-                'label'         => false,
+                // 'label'         => false,
             ]);
     }
 
