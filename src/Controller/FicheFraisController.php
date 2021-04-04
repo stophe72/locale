@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\FicheFraisEntity;
 use App\Entity\NoteDeFraisEntity;
+use App\Form\FicheFraisType;
 use App\Form\NoteDeFraisType;
 use App\Repository\FicheFraisRepository;
 use App\Repository\MandataireRepository;
@@ -71,13 +72,49 @@ class FicheFraisController extends AbstractController
         $ficheFrais = new FicheFraisEntity();
         $ficheFrais->setMandataire($this->getMandataire());
 
-        $em = $this->getDoctrine()->getManager();
-        $em->persist($ficheFrais);
-        $em->flush();
+        $form = $this->createForm(FicheFraisType::class, $ficheFrais);
+        $form->handleRequest($request);
 
-        $this->addFlash('success', 'Nouvelle fiche de frais créée');
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ficheFrais);
+            $em->flush();
 
-        return $this->redirectToRoute('user_fichesdefrais');
+            return $this->redirectToRoute('user_fichesdefrais');
+        }
+        return $this->render(
+            'fiche_de_frais/fiche_frais_new_or_edit.html.twig',
+            [
+                'form'       => $form->createView(),
+                'page_title' => 'Nouvelle fiche de frais',
+                'baseEntity' => $ficheFrais,
+                'url_back'   => $this->generateUrl('user_fichesdefrais'),
+            ]
+        );
+    }
+
+    /**
+     * @Route("user/fichedefrais/editfiche/{ficheFrais}", name="user_fichefrais_edit_fiche")
+     */
+    public function editFiche(Request $request, FicheFraisEntity $ficheFrais, MandataireRepository $mandataireRepository)
+    {
+        $form = $this->createForm(FicheFraisType::class, $ficheFrais);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $this->getDoctrine()->getManager()->flush();
+
+            return $this->redirectToRoute('user_fichesdefrais');
+        }
+        return $this->render(
+            'fiche_de_frais/fiche_frais_new_or_edit.html.twig',
+            [
+                'form'       => $form->createView(),
+                'page_title' => 'Renommer la fiche de frais',
+                'baseEntity' => $ficheFrais,
+                'url_back'   => $this->generateUrl('user_fichesdefrais'),
+            ]
+        );
     }
 
     /**
