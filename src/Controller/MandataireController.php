@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\MandataireEntity;
 use App\Form\MandataireType;
+use App\Repository\GroupeRepository;
 use App\Repository\MandataireRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -34,13 +35,15 @@ class MandataireController extends AbstractController
     /**
      * @Route("admin/mandataires", name="admin_mandataires")
      */
-    public function index(MandataireRepository $mandataireRepository)
+    public function index(MandataireRepository $mandataireRepository, GroupeRepository $groupeRepository)
     {
         $user = $this->security->getUser();
 
+        $monGroupe = $groupeRepository->findBy(['user' => $user->getId()]);
+
         $mandataires = $mandataireRepository->findBy(
             [
-                'user' => $user->getId(),
+                'groupe' => $monGroupe,
             ]
         );
 
