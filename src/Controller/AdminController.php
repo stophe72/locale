@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\UserEntity;
 use App\Form\UserType;
-use App\Repository\AdresseRepository;
 use App\Repository\UserRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -75,11 +74,9 @@ class AdminController extends AbstractController
     /**
      * @Route("admin/user/edit/{id}", name="admin_user_edit")
      */
-    public function editUser(UserEntity $user, Request $request, UserPasswordEncoderInterface $passwordEncoder, AdresseRepository $adresseRepository)
+    public function editUser(UserEntity $user, Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
-        if ($this->isGranted('ROLE_ADMIN')) {
-            $user->setAdministrateur(true);
-        }
+        $user->setAdministrateur(in_array('ROLE_ADMIN', $user->getRoles()));
 
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
