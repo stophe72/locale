@@ -33,6 +33,11 @@
                     <label for="radio_effacer"><h5><span class="badge badge-light p-2"><i class="fas fa-calendar-times"></i> Effacer</span></h5></label>
                 </div>
             </div>
+            <div class="row">
+                <div class="col offset-1">
+                    <button onclick='del_confirm({{ majeur.id }}, {{ annee }})' type="button" id="btn_tout_effacer" class="btn btn-danger mt-5"><i class="fas  fa-trash"></i> Tout effacer</button>
+                </div>
+            </div>
         </div>
         <div class="col-sm-8">
             <div class="row">
@@ -95,11 +100,28 @@
         </div>
     </div>
 
-    <div id="mySmallModal" class="modal bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+    <div id="mySmallModal" class="modal bd-example-modal-sm" data-backdrop="false" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content">
                 <div class="text-primary spinner-border spinner-border-sm align-self-center my-3"></div>
                 <div id="modal_text" class="text-center text-secondary mb-2">Enregistrement</div>
+            </div>
+        </div>
+    </div>
+    <div aria-hidden="true" aria-labelledby="yesNoModalLabel" class="modal fade" id="yesNoModal" role="dialog"
+        tabindex="-1">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="yesNoModalLabel">Confirmation</h5>
+                </div>
+                <div class="modal-body">
+                    Supprimer toutes les visites pour cette année ?
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" data-dismiss="modal" type="button">Annuler</button>
+                    <button class="btn btn-primary" id="btn_delete" type="button">Valider</button>
+                </div>
             </div>
         </div>
     </div>
@@ -170,5 +192,42 @@
             }
         });
     });
+
+    $("#btn_delete").on("click", function (e) {
+        const el = document.querySelector('#btn_delete');
+        const majeurId = el.dataset.majeurId;
+        const annee = el.dataset.annee;
+
+        $.ajax({
+            url: "{{ path('ajax_visite_tout_effacer') }}",
+            dataType: "json",
+            data: {
+                'majeurId': majeurId,
+                'annee': annee
+            },
+
+            success: function (reponse)
+            {
+                if (reponse['success']) {
+                    $('.jour.btn-success,.jour.alerte-title').removeClass('text-light');
+                    $('.jour.btn-success,.jour.alerte-title').removeClass('font-weight-bold');
+                    $('.jour.btn-success,.jour.alerte-title').removeClass('btn-success');
+                    $('.jour.btn-success,.jour.alerte-title').removeClass('alerte-title');
+                }
+                $('#yesNoModal').modal('hide');
+            },
+
+            error: function(xhr, textStatus, errorThrown) {
+                alert('Ajax request failed.');
+            }
+        });
+    });
+
+    function del_confirm(majeurId, annee) {
+        document.getElementById('btn_delete').dataset.majeurId = majeurId;
+        document.getElementById('btn_delete').dataset.annee = annee;
+
+        $('#yesNoModal').modal('show');
+    }
 </script>
 {% endblock %}

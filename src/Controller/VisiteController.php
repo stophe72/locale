@@ -21,9 +21,10 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class VisiteController extends AbstractController
 {
-    const VISITE_EFFACER = 0;
-    const VISITE_PRESENT = 1;
-    const VISITE_ABSENT = 2;
+    const VISITE_EFFACER      = 0;
+    const VISITE_PRESENT      = 1;
+    const VISITE_ABSENT       = 2;
+    const VISITE_TOUT_EFFACER = 3;
 
     /**
      * @var Security
@@ -82,6 +83,27 @@ class VisiteController extends AbstractController
                 'url_back' => $this->generateUrl('user_majeurs'),
             ]
         );
+    }
+
+    /**
+     * @Route("user/visite/ajaxVisiteToutEffacer", name="ajax_visite_tout_effacer")
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function ajaxVisiteToutEffacer(Request $request, MajeurRepository $majeurRepository, VisiteRepository $visiteRepository)
+    {
+        $majeurId = $request->get('majeurId');
+        $annee = $request->get('annee');
+
+        $majeur = $majeurRepository->find($majeurId);
+
+        if (!$majeur || !$this->isInSameGroupe($majeur)) {
+            return new JsonResponse(['success' => false]);
+        }
+
+        $visiteRepository->effacerVisitesForMajeuraAndAnnee($majeur, $annee);
+
+        return new JsonResponse(['success' => true]);
     }
 
     /**

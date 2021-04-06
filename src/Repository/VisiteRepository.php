@@ -22,6 +22,17 @@ class VisiteRepository extends ServiceEntityRepository
         parent::__construct($registry, VisiteEntity::class);
     }
 
+    public function effacerVisitesForMajeuraAndAnnee(MajeurEntity $majeur, int $annee) {
+        $qb = $this->createQueryBuilder('v');
+        $qb->delete()
+            ->where('v.majeur = :majeurId')
+            ->andWhere('YEAR(v.date) = :annee')
+            ->setParameter('majeurId', $majeur->getId())
+            ->setParameter('annee', $annee);
+
+        return $qb->getQuery()->execute();
+    }
+
     public function getFromMajeurAndAnnee(MandataireEntity $mandataire, MajeurEntity $majeur, int $annee)
     {
         if (!$mandataire) {
