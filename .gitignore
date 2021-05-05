@@ -26,3 +26,4 @@ yarn.lock
 .project
 .env.test
 public/uploads/*
+doc/Specs_1.0.docx
