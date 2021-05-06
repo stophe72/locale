@@ -81,8 +81,10 @@ class ImportManager
 
     private function setTypeOperation(CompteGestionEntity $compteGestion, array $ios, string $libelle)
     {
+        /** @var $io ImportOperation */
         foreach ($ios as $io) {
-            if (strpos($libelle, $io->getLibelle()) !== false) {
+            $i = $io->isCaseSensible ? "" : "i";
+            if (preg_match("/" . $io->getLibelle() . "/" . $i, $libelle)) {
                 $compteGestion->setTypeOperation($io->getTypeOperation());
                 $compteGestion->setNature($io->getNature());
 

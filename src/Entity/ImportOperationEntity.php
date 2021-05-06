@@ -36,6 +36,15 @@ class ImportOperationEntity extends BaseGroupeLibelleEntity
      */
     private $nature;
 
+    /**
+     * @var int
+     *
+     * @Assert\NotNull
+     *
+     * @ORM\Column(name="caseSensible", type="boolean", nullable=true)
+     */
+    private $caseSensible;
+
 
     public function getMajeur(): ?MajeurEntity
     {
@@ -81,6 +90,30 @@ class ImportOperationEntity extends BaseGroupeLibelleEntity
     public function setNature(?int $nature)
     {
         $this->nature = $nature;
+
+        return $this;
+    }
+
+    /**
+     * Get the value of caseSensible
+     *
+     * @return  int
+     */
+    public function isCaseSensible()
+    {
+        return $this->caseSensible;
+    }
+
+    /**
+     * Set the value of caseSensible
+     *
+     * @param  int  $caseSensible
+     *
+     * @return  self
+     */
+    public function setCaseSensible(int $caseSensible)
+    {
+        $this->caseSensible = $caseSensible;
 
         return $this;
     }
