@@ -66,7 +66,7 @@ class ImportOperationType extends AbstractType
                 ]
             )
             ->add(
-                'caseSensible',
+                'casseSensible',
                 CheckboxType::class,
                 [
                     'required' => false,

@@ -41,9 +41,9 @@ class ImportOperationEntity extends BaseGroupeLibelleEntity
      *
      * @Assert\NotNull
      *
-     * @ORM\Column(name="caseSensible", type="boolean", nullable=true)
+     * @ORM\Column(name="casseSensible", type="boolean", nullable=true)
      */
-    private $caseSensible;
+    private $casseSensible;
 
 
     public function getMajeur(): ?MajeurEntity
@@ -95,25 +95,25 @@ class ImportOperationEntity extends BaseGroupeLibelleEntity
     }
 
     /**
-     * Get the value of caseSensible
+     * Get the value of casseSensible
      *
      * @return  int
      */
-    public function isCaseSensible()
+    public function isCasseSensible()
     {
-        return $this->caseSensible;
+        return $this->casseSensible;
     }
 
     /**
-     * Set the value of caseSensible
+     * Set the value of casseSensible
      *
-     * @param  int  $caseSensible
+     * @param  int  $casseSensible
      *
      * @return  self
      */
-    public function setCaseSensible(int $caseSensible)
+    public function setCasseSensible(int $casseSensible)
     {
-        $this->caseSensible = $caseSensible;
+        $this->casseSensible = $casseSensible;
 
         return $this;
     }

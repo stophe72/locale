@@ -83,7 +83,7 @@ class ImportManager
     {
         /** @var $io ImportOperation */
         foreach ($ios as $io) {
-            $i = $io->isCaseSensible ? "" : "i";
+            $i = $io->isCasseSensible() ? "" : "i";
             if (preg_match("/" . $io->getLibelle() . "/" . $i, $libelle)) {
                 $compteGestion->setTypeOperation($io->getTypeOperation());
                 $compteGestion->setNature($io->getNature());
