@@ -85,6 +85,9 @@
                                         <a class="dropdown-item" href="{{ path("user_majeur_suivi", {"slug": majeur.slug}) }}">
                                             <i class="fas fa-thumbtack"></i> Suivis
                                         </a>
+                                        <a class="dropdown-item" href="{{ path("user_rapport", {"id": majeur.id}) }}">
+                                            <i class="far fa-file-pdf"></i> Rapport
+                                        </a>
                                         <a class="dropdown-item" href="{{ path("user_majeur_edit", {"slug": majeur.slug}) }}">
                                             <i class="fa fa-pen"></i> Editer
                                         </a>

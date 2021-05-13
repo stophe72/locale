@@ -43,6 +43,7 @@ class SuiviController extends AbstractController
 
     private function getMandataire()
     {
+        /** @var $user UserInterface */
         $user = $this->security->getUser();
         return $this->mandataireRepository->findOneBy([
             'user' => $user->getId(),
@@ -65,7 +66,7 @@ class SuiviController extends AbstractController
         if (!$this->isInSameGroupe($majeur)) {
             return $this->redirectToRoute('user_majeurs');
         }
-        $suivis = $suiviRepository->findBy(['majeur' => $majeur->getId()]);
+        $suivis = $suiviRepository->findBy(['majeur' => $majeur->getId()], ['dateCreation' => 'DESC']);
 
         return $this->render('suivi/index.html.twig', [
             'page_title' => 'Suivi - ' . $majeur->__toString(),

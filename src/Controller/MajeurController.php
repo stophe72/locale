@@ -58,6 +58,7 @@ class MajeurController extends AbstractController
 
     private function getMandataire()
     {
+        /** @var $user UserInterface */
         $user = $this->security->getUser();
         return $this->mandataireRepository->findOneBy(['user' => $user->getId()]);
     }
@@ -108,7 +109,6 @@ class MajeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $majeur->setImage($this->fileManager->saveUploadedFile($imageFile, $this->getParameter('upload_directory')));
@@ -140,7 +140,6 @@ class MajeurController extends AbstractController
         $form->handleRequest($request);
 
         if ($this->isInSameGroupe($majeur) && $form->isSubmitted() && $form->isValid()) {
-            /** @var UploadedFile $imageFile */
             $imageFile = $form->get('image')->getData();
             if ($imageFile) {
                 $majeur->setImage($this->fileManager->saveUploadedFile($imageFile, $this->getParameter('upload_directory')));
