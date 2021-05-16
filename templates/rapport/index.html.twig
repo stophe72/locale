@@ -1,20 +1,19 @@
-{% extends 'base.html.twig' %}
+{% extends 'layout.html.twig' %}
 
-{% block title %}Hello RapportController!{% endblock %}
-
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ '/home/stophe/html_public/mjpm/src/Controller/RapportController.php'|file_link(0) }}">src/Controller/RapportController.php</a></code></li>
-        <li>Your template at <code><a href="{{ '/home/stophe/html_public/mjpm/templates/rapport/index.html.twig'|file_link(0) }}">templates/rapport/index.html.twig</a></code></li>
-    </ul>
-</div>
+{% block content %}
+    <div class="rowcol mt-4 mb-4">
+        <h3 class="text-primary"><i class="fas fa-file-invoice"></i> {{ page_title }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+    {% if annees | length > 0 %}
+        <ul class="list-group list-group-flush">
+        {% for annee in annees %}
+            <a href="{{ path('user_rapport', { id: majeur.id, annee: annee }) }}" class="list-group-item">Exercice {{ annee }}</a>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            Aucun rapport à générer
+        </div>
+    {% endif %}
 {% endblock %}

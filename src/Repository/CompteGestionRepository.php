@@ -26,11 +26,20 @@ class CompteGestionRepository extends ServiceEntityRepository
         parent::__construct($registry, CompteGestionEntity::class);
     }
 
-    public function getFromFilter(MandataireEntity $mandataire, DonneeBancaireEntity $donneeBancaire, CompteGestionFilter $filter)
-    {
+    public function getFromFilter(
+        MandataireEntity $mandataire,
+        DonneeBancaireEntity $donneeBancaire,
+        CompteGestionFilter $filter
+    ) {
         $qb = $this->createQueryBuilder('cg');
-        $qb->innerJoin('cg.typeOperation', 'to')
-            ->innerJoin('cg.donneeBancaire', 'db', Join::WITH, $qb->expr()->eq('db', ':donneeBancaireId'))
+        $qb
+            ->innerJoin('cg.typeOperation', 'to')
+            ->innerJoin(
+                'cg.donneeBancaire',
+                'db',
+                Join::WITH,
+                $qb->expr()->eq('db', ':donneeBancaireId')
+            )
             ->innerJoin(MajeurEntity::class, 'm', Join::WITH, 'm = db.majeur')
             ->innerJoin('to.familleTypeOperation', 'fto')
             ->where('m.groupe = :groupeId')
@@ -38,36 +47,52 @@ class CompteGestionRepository extends ServiceEntityRepository
             ->setParameter('groupeId', $mandataire->getGroupe()->getId());
 
         if ($filter->getLibelle()) {
-            $qb->andWhere('LOWER(cg.libelle) LIKE LOWER(:libelle)')
+            $qb
+                ->andWhere('LOWER(cg.libelle) LIKE LOWER(:libelle)')
                 ->setParameter('libelle', '%' . $filter->getLibelle() . '%');
         }
         if ($filter->getDateDebut() && $filter->getDateFin()) {
-            $dates = Util::orderDates($filter->getDateDebut(), $filter->getDateFin());
+            $dates = Util::orderDates(
+                $filter->getDateDebut(),
+                $filter->getDateFin()
+            );
             $filter->setDateDebut($dates[0]);
             $filter->setDateFin($dates[1]);
         }
         if ($filter->getDateDebut()) {
-            $qb->andWhere('cg.date >= :dateDebut')
+            $qb
+                ->andWhere('cg.date >= :dateDebut')
                 ->setParameter('dateDebut', $filter->getDateDebut());
         }
         if ($filter->getDateFin()) {
-            $qb->andWhere('cg.date <= :dateFin')
+            $qb
+                ->andWhere('cg.date <= :dateFin')
                 ->setParameter('dateFin', $filter->getDateFin());
         }
         if ($filter->getTypeOperation()) {
-            $qb->andWhere('to = :typeOperation')
-                ->setParameter('typeOperation', $filter->getTypeOperation()->getId());
+            $qb
+                ->andWhere('to = :typeOperation')
+                ->setParameter(
+                    'typeOperation',
+                    $filter->getTypeOperation()->getId()
+                );
         }
         if ($filter->getFamilleTypeOperation()) {
-            $qb->andWhere('fto = :familleTypeOperationId')
-                ->setParameter('familleTypeOperationId', $filter->getFamilleTypeOperation()->getId());
+            $qb
+                ->andWhere('fto = :familleTypeOperationId')
+                ->setParameter(
+                    'familleTypeOperationId',
+                    $filter->getFamilleTypeOperation()->getId()
+                );
         }
         if ($filter->getMontant()) {
-            $qb->andWhere('cg.montant = :montant')
+            $qb
+                ->andWhere('cg.montant = :montant')
                 ->setParameter('montant', $filter->getMontant());
         }
         if ($filter->getNature()) {
-            $qb->andWhere('cg.nature = :nature')
+            $qb
+                ->andWhere('cg.nature = :nature')
                 ->setParameter('nature', $filter->getNature());
         }
 
@@ -77,9 +102,17 @@ class CompteGestionRepository extends ServiceEntityRepository
     public function getSoldes(MajeurEntity $majeur, int $annee)
     {
         $qb = $this->createQueryBuilder('cg');
-        $qb->select('tc.libelle AS typeCompte, SUM(cg.montant * cg.nature) AS solde')
+        $qb
+            ->select(
+                'tc.libelle AS typeCompte, SUM(cg.montant * cg.nature) AS solde'
+            )
             ->innerJoin('cg.donneeBancaire', 'db')
-            ->innerJoin(TypeCompteEntity::class, 'tc', Join::WITH, 'tc.id = db.typeCompte')
+            ->innerJoin(
+                TypeCompteEntity::class,
+                'tc',
+                Join::WITH,
+                'tc.id = db.typeCompte'
+            )
             ->andWhere('db.majeur = :majeurId')
             ->andWhere('cg.date BETWEEN :from AND :to')
             ->groupBy('tc.id')
@@ -91,20 +124,30 @@ class CompteGestionRepository extends ServiceEntityRepository
         return $qb->getQuery()->getResult();
     }
 
-    public function getRecettesParTypeOperation(MajeurEntity $majeur, int $annee)
-    {
+    public function getRecettesParTypeOperation(
+        MajeurEntity $majeur,
+        int $annee
+    ) {
         return $this->getMontantsParTypeOperation($majeur, $annee);
     }
 
-    public function getDepensesParTypeOperation(MajeurEntity $majeur, int $annee)
-    {
+    public function getDepensesParTypeOperation(
+        MajeurEntity $majeur,
+        int $annee
+    ) {
         return $this->getMontantsParTypeOperation($majeur, $annee, -1);
     }
 
-    private function getMontantsParTypeOperation(MajeurEntity $majeur, int $annee, int $nature = 1)
-    {
+    private function getMontantsParTypeOperation(
+        MajeurEntity $majeur,
+        int $annee,
+        int $nature = 1
+    ) {
         $qb = $this->createQueryBuilder('cg');
-        $qb->select('ope.libelle AS libelle, SUM(cg.montant * cg.nature) AS montant')
+        $qb
+            ->select(
+                'ope.libelle AS libelle, SUM(cg.montant * cg.nature) AS montant'
+            )
             ->innerJoin('cg.typeOperation', 'ope')
             ->innerJoin('ope.familleTypeOperation', 'fto')
             ->innerJoin('cg.donneeBancaire', 'db')
@@ -119,5 +162,20 @@ class CompteGestionRepository extends ServiceEntityRepository
             ->addOrderBy('ope.libelle', 'ASC');
 
         return $qb->getQuery()->getResult();
+    }
+
+    public function getAllYears(MajeurEntity $majeur)
+    {
+        $qb = $this->createQueryBuilder('cg');
+        $qb
+            ->select('YEAR(cg.date) AS annee')
+            ->innerJoin(DonneeBancaireEntity::class, 'db', Join::WITH, 'db.id = cg.donneeBancaire')
+            ->where('db.majeur = :majeurId')
+            ->distinct()
+            ->orderBy('annee', 'DESC')
+            ->setParameter('majeurId', $majeur->getId());
+        $arrays = $qb->getQuery()->getScalarResult();
+
+        return array_column($arrays, 'annee', 'annee');
     }
 }

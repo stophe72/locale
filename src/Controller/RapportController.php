@@ -12,6 +12,7 @@ use DateTime;
 use Knp\Bundle\SnappyBundle\Snappy\Response\PdfResponse;
 use Knp\Snappy\Pdf;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Security;
 
@@ -32,21 +33,44 @@ class RapportController extends AbstractController
      */
     private $mandataireRepository;
 
+    /**
+     * @var CompteGestionRepository
+     */
+    private CompteGestionRepository $compteGestionRepository;
+
+    /**
+     * @var ParametreMissionRepository
+     */
+    private $parametreMissionRepository;
+
+    /**
+     * @var JugementRepository
+     */
+    private JugementRepository $jugementRepository;
+
+    /**
+     * @var MajeurRepository
+     */
+    private MajeurRepository $majeurRepository;
+
+
     public function __construct(
         Security $security,
         Pdf $pdf,
-        MandataireRepository $mandataireRepository
+        CompteGestionRepository $compteGestionRepository,
+        ParametreMissionRepository $parametreMissionRepository,
+        JugementRepository $jugementRepository,
+        MandataireRepository $mandataireRepository,
+        MajeurRepository $majeurRepository
     ) {
         $this->snappyPdf = $pdf;
         $this->security = $security;
-        $this->mandataireRepository = $mandataireRepository;
-    }
 
-    private function isNoteOwnBy(NoteDeFraisEntity $noteDeFrais)
-    {
-        return $noteDeFrais &&
-            $this->getMandataire() ==
-                $noteDeFrais->getFicheFrais()->getMandataire();
+        $this->compteGestionRepository = $compteGestionRepository;
+        $this->parametreMissionRepository = $parametreMissionRepository;
+        $this->jugementRepository = $jugementRepository;
+        $this->mandataireRepository = $mandataireRepository;
+        $this->majeurRepository = $majeurRepository;
     }
 
     private function getMandataire()
@@ -59,9 +83,24 @@ class RapportController extends AbstractController
     }
 
     /**
-     * @Route("user/rapports", name="user_rapports")
+     * @Route("user/rapports/{id}", name="user_rapports")
      */
     public function index(
+        MajeurEntity $majeur
+    ) {
+        if ($majeur->getGroupe() != $this->getMandataire()->getGroupe()) {
+            return $this->redirectToRoute('user_majeurs');
+        }
+        $annees = $this->compteGestionRepository->getAllYears($majeur);
+
+        return $this->render('rapport/index.html.twig', [
+            'page_title' => 'Rapports - ' . $majeur->__toString(),
+            'majeur' => $majeur,
+            'annees' => $annees,
+        ]);
+    }
+
+    public function rapportHtml(
         MajeurRepository $majeurRepository,
         CompteGestionRepository $compteGestionRepository,
         ParametreMissionRepository $parametreMissionRepository,
@@ -146,33 +185,32 @@ class RapportController extends AbstractController
      * @Route("user/rapport/{id}", name="user_rapport")
      */
     public function pdfRapport(
-        MajeurEntity $majeur,
-        CompteGestionRepository $compteGestionRepository,
-        ParametreMissionRepository $parametreMissionRepository,
-        JugementRepository $jugementRepository
+        Request $request,
+        MajeurEntity $majeur
     ) {
         // A partir du 01/01/2020, on présente les comptes de 2019
-        $anneeCourante = date('Y');
-        $anneeCourante--;
-        $anneePrecedente = $anneeCourante - 1;
+        $annee = $request->get('annee', 0);
+        // $annee = date('Y');
+        // $annee--;
+        $anneePrecedente = $annee - 1;
 
         $debut = new DateTime();
         $fin = new DateTime();
-        $debut->setDate($anneeCourante, 1, 1);
-        $fin->setDate($anneeCourante, 12, 31);
+        $debut->setDate($annee, 1, 1);
+        $fin->setDate($annee, 12, 31);
 
-        $jugement = $jugementRepository->findOneBy([
+        $jugement = $this->jugementRepository->findOneBy([
             'majeur' => $majeur->getId(),
         ]);
-        $pm = $parametreMissionRepository->findOneBy([
+        $pm = $this->parametreMissionRepository->findOneBy([
             'majeur' => $majeur->getId(),
         ]);
 
-        $comptesCourants = $compteGestionRepository->getSoldes(
+        $comptesCourants = $this->compteGestionRepository->getSoldes(
             $majeur,
-            $anneeCourante
+            $annee
         );
-        $comptesPrecedents = $compteGestionRepository->getSoldes(
+        $comptesPrecedents = $this->compteGestionRepository->getSoldes(
             $majeur,
             $anneePrecedente
         );
@@ -186,13 +224,13 @@ class RapportController extends AbstractController
             $totalCourant += $compte['solde'];
         }
 
-        $depenses = $compteGestionRepository->getDepensesParTypeOperation(
+        $depenses = $this->compteGestionRepository->getDepensesParTypeOperation(
             $majeur,
-            $anneeCourante
+            $annee
         );
-        $recettes = $compteGestionRepository->getRecettesParTypeOperation(
+        $recettes = $this->compteGestionRepository->getRecettesParTypeOperation(
             $majeur,
-            $anneeCourante
+            $annee
         );
 
         $totalRecettes = 0;
@@ -207,7 +245,7 @@ class RapportController extends AbstractController
         // Retrieve the HTML generated in our twig file
         $html = $this->renderView('rapport/cr_gestion.html.twig', [
             'majeur' => $majeur,
-            'annee' => $anneeCourante,
+            'annee' => $annee,
             'debut' => $debut,
             'fin' => $fin,
             'comptesCourants' => $comptesCourants,
@@ -230,7 +268,7 @@ class RapportController extends AbstractController
                 // '_' .
                 // $majeur->getPrenom() .
                 // '-' .
-                $anneeCourante .
+                $annee .
                 '.pdf'
         );
     }

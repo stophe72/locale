@@ -49,11 +49,15 @@ class MajeurController extends AbstractController
 
     private $fileManager;
 
-    public function __construct(Security $security, MandataireRepository $mandataireRepository)
+    public function __construct(
+        Security $security,
+        MandataireRepository $mandataireRepository,
+        FileManager $fileManager
+        )
     {
         $this->security = $security;
         $this->mandataireRepository = $mandataireRepository;
-        $this->fileManager = new FileManager();
+        $this->fileManager = $fileManager;
     }
 
     private function getMandataire()

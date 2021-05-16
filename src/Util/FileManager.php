@@ -2,12 +2,20 @@
 
 namespace App\Util;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class FileManager
 {
+    private $logger;
+
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
     public function saveUploadedFile(UploadedFile $uploadFile, string $uploadPath)
     {
         $originalFilename = pathinfo($uploadFile->getClientOriginalName(), PATHINFO_FILENAME);
@@ -23,6 +31,7 @@ class FileManager
             );
         } catch (FileException $e) {
             // ... handle exception if something happens during file upload
+            $this->logger->error($e->getMessage());
         }
         return $newFilename;
     }

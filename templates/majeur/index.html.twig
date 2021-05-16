@@ -74,29 +74,20 @@
                         <td>{{ majeur.lieuNaissance }}</td>
                         <td>
                             <div class="row float-right pr-4">
-                                <div class="btn-group">
-                                    <a href="{{ path('user_majeur_show', {'slug': majeur.slug}) }}" title="Détails du majeur" class="btn btn-primary">
-                                        <i class="fa fa-info-circle"></i> Détails
-                                    </a>
-                                    <button type="button" class="btn btn-primary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="sr-only">Toggle Dropdown</span>
+                                <div class="dropdown">
+                                    <button class="btn btn-primary dropdown-toggle mr-3" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Action
                                     </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{{ path("user_majeur_suivi", {"slug": majeur.slug}) }}">
-                                            <i class="fas fa-thumbtack"></i> Suivis
-                                        </a>
-                                        <a class="dropdown-item" href="{{ path("user_rapport", {"id": majeur.id}) }}">
-                                            <i class="far fa-file-pdf"></i> Rapport
-                                        </a>
-                                        <a class="dropdown-item" href="{{ path("user_majeur_edit", {"slug": majeur.slug}) }}">
-                                            <i class="fa fa-pen"></i> Editer
-                                        </a>
-                                        <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")' type="button">
-                                            <i class="fa fa-trash"></i> Supprimer
-                                        </a>
+                                        <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{{ path('user_majeur_show', {'slug': majeur.slug}) }}" title="Détails du majeur"><i class="fa fa-info-circle"></i> Détails</a>
+                                        <a class="dropdown-item" href="{{ path("user_visites", { "slug": majeur.slug } ) }}"><i class="fas fa-handshake"></i> Visites</a>
+                                        <a class="dropdown-item" href="{{ path("user_majeur_suivi", {"slug": majeur.slug}) }}"><i class="fas fa-thumbtack"></i> Suivis</a>
+                                        <a class="dropdown-item" href="{{ path("user_rapports", {"id": majeur.id}) }}"><i class="fas fa-file-invoice"></i> Rapports</a>
+                                        <div class="dropdown-divider" href="#"></div>
+                                        <a class="dropdown-item" href="{{ path("user_majeur_edit", {"slug": majeur.slug}) }}"><i class="fa fa-pen"></i> Editer</a>
+                                        <a class="dropdown-item text-danger" onclick='del_confirm({{ majeur.id }}, "\"{{ majeur.id }}\"{% if majeur is not null %} du {{ majeur.nom }}{% endif %}")'><i class="fa fa-trash"></i> Supprimer</a>
                                     </div>
                                 </div>
-                                <a class="mx-2 btn btn-primary" href="{{ path("user_visites", { "slug": majeur.slug } ) }}"><i class="fa fa-handshake"></i> Visites</a>
                                 <div class="dropdown">
                                     <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="fa fa-university"></i> Compte gestion
