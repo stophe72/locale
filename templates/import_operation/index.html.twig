@@ -28,7 +28,7 @@
                     <td>{{ io.libelle }}</td>
                     <td>{{ io.typeOperation.libelle }}</td>
                     <td>{% if io.nature == 1 %}Crédit{% else %}Débit{% endif %}</td>
-                    <td>{% if io.casseSensible == 1 %}<i class="fas fa-check text-success"></i>{% endif %}</td>
+                    <td>{% if io.casseSensible == 1 %}<i class="fas fa-check-square text-success"></i>{% else %}<i class="far fa-square text-success"></i>{% endif %}</td>
                     <td class="text-right">
                         <a href="{{ path('user_importoperation_edit', {'id': io.id}) }}" title="Détails de la donnée bancaire" class="btn btn-outline-primary btn-sm mr-2">
                             <i class="fa fa-pen"></i> Editer

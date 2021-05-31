@@ -9,27 +9,21 @@ use DateTime;
 
 class ImportManager
 {
-    const DEFAULT_DATE = '01/01/1970';
-    const DEFAULT_LIBELLE = '--- indeterminé ---';
+    const DEFAULT_LIBELLE = '--- indéterminé ---';
 
-    /**
-     * @var DateTime
-     */
-    private $defaultDate;
-
-    public function __construct()
-    {
-        $this->defaultDate = new DateTime(self::DEFAULT_DATE);
-    }
-
-    public function parseCsv(DonneeBancaireEntity $donneeBancaire, array $file, ImportOperationRepository $importOperationRepository)
-    {
+    public function parseCsv(
+        DonneeBancaireEntity $donneeBancaire,
+        array $file,
+        ImportOperationRepository $importOperationRepository
+    ) {
         $ios = $importOperationRepository->findAll();
         $cgs = [];
-        $cgsKo = [];
         foreach ($file as $row) {
             $data = str_getcsv($row);
 
+            if (!count($data) == 3) {
+                continue;
+            }
             $compteGestion = $this->getNewWithDefaults($donneeBancaire);
 
             if ($this->isDateValide($data[0])) {
@@ -48,43 +42,41 @@ class ImportManager
 
             $this->setTypeOperation($compteGestion, $ios, $libelle);
 
-            if ($this->isCompteOperationValide($compteGestion)) {
-                $cgs[] = $compteGestion;
-            } else {
-                $cgsKo[] = $compteGestion;
-            }
+            $cgs[] = $compteGestion;
         }
 
-        return [
-            'ok' => $cgs,
-            'ko' => $cgsKo,
-        ];
+        return $cgs;
     }
 
     private function getNewWithDefaults(DonneeBancaireEntity $donneeBancaire)
     {
         $compteGestion = new CompteGestionEntity();
         $compteGestion->setDonneeBancaire($donneeBancaire);
-        $compteGestion->setDate($this->defaultDate);
+        $compteGestion->setDate(new DateTime());
         $compteGestion->setLibelle(self::DEFAULT_LIBELLE);
         $compteGestion->setMontant(0);
+        // $compteGestion->setNature(1);
 
         return $compteGestion;
     }
-
+/*
     private function isCompteOperationValide(CompteGestionEntity $compteGestion)
     {
-        return ($compteGestion->getDate()->format('d/m/Y') != $this->defaultDate->format('d/m/Y'))
-            && $compteGestion->getTypeOperation() != null
-            && $compteGestion->getLibelle() != self::DEFAULT_LIBELLE;
+        return $compteGestion->getDate()->format('d/m/Y') !=
+            (new DateTime())->defaultDate->format('d/m/Y') &&
+            $compteGestion->getTypeOperation() != null &&
+            $compteGestion->getLibelle() != self::DEFAULT_LIBELLE;
     }
-
-    private function setTypeOperation(CompteGestionEntity $compteGestion, array $ios, string $libelle)
-    {
+*/
+    private function setTypeOperation(
+        CompteGestionEntity $compteGestion,
+        array $ios,
+        string $libelle
+    ) {
         /** @var $io ImportOperation */
         foreach ($ios as $io) {
-            $i = $io->isCasseSensible() ? "" : "i";
-            if (preg_match("/" . $io->getLibelle() . "/" . $i, $libelle)) {
+            $i = $io->isCasseSensible() ? '' : 'i';
+            if (preg_match('/' . $io->getLibelle() . '/' . $i, $libelle)) {
                 $compteGestion->setTypeOperation($io->getTypeOperation());
                 $compteGestion->setNature($io->getNature());
 

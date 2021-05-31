@@ -12,13 +12,6 @@ use Symfony\Component\Validator\Constraints\File;
 
 class ImportCompteGestionType extends AbstractType
 {
-    private $entityManager;
-
-    public function __construct(EntityManagerInterface $entityManager)
-    {
-        $this->entityManager = $entityManager;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -33,9 +26,6 @@ class ImportCompteGestionType extends AbstractType
                     'constraints' => [
                         new File([
                             'maxSize' => '1024k',
-                            // 'mimeTypes' => [
-                            //     'text/csv',
-                            // ],
                             'mimeTypesMessage' => 'Merci de choisir un fichier CSV valide (*.csv, 1 Mo maximum)',
                         ])
                     ],

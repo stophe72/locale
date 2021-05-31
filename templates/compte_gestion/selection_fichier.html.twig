@@ -1,0 +1,49 @@
+{% extends 'layout.html.twig' %}
+
+{% block content %}
+    <div class="row mt-4 mb-4">
+        <h3 class="text-primary"><i class="fas fa-file-csv"></i> Importer</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+
+    {{ form_start(formImport) }}
+    <div class="modal" tabindex="-1" role="dialog" id="selectFileModal">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Importer</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form_errors(formImport) }}
+                    {{ form_row(formImport.nomFichier) }}
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Valider</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Annuler</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {{ form_end(formImport) }}
+{#
+    <div class="row float-right mb-3">
+        <div class="col">
+            <a class="mr-2" href="{{ url_back }}">Retour à la liste</a>
+        </div>
+    </div> #}
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $('.custom-file-input').on('change', function() {
+    let fileName = $(this).val().split('\\').pop();
+       $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $("#btn_importer").on("click", function(e) {
+        $('#selectFileModal').modal('show');
+    });
+{% endblock %}

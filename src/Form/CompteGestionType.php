@@ -21,56 +21,47 @@ class CompteGestionType extends BaseLibelleType
         parent::buildForm($builder, $options);
 
         $builder
-            ->add(
-                'donneeBancaire',
-                EntityType::class,
-                [
-                    'class' => DonneeBancaireEntity::class,
-                    'label' => 'Compte bancaire',
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ],
-                    'query_builder' => function (DonneeBancaireRepository $donneeBancaireRepository) {
-                        return $donneeBancaireRepository->createQueryBuilder('db')
-                            ->orderBy('db.numeroCompte', 'ASC');
-                    },
-                ]
-            )
-            ->add(
-                'date',
-                DateType::class,
-                [
-                    'widget' => 'single_text',
-                ]
-            )
-            ->add(
-                'typeOperation',
-                EntityType::class,
-                [
-                    'label' => 'Type d\'opération',
-                    'class' => TypeOperationEntity::class,
-                    'attr' => [
-                        'class' => 'custom-select',
-                    ],
-                    'query_builder' => function (TypeOperationRepository $typeOperationRepository) {
-                        return $typeOperationRepository->createQueryBuilder('to')
-                            ->orderBy('to.libelle', 'ASC');
-                    },
-                ]
-            )
+            ->add('donneeBancaire', EntityType::class, [
+                'class' => DonneeBancaireEntity::class,
+                'label' => 'Compte bancaire',
+                'attr' => [
+                    'class' => 'custom-select',
+                ],
+                'query_builder' => function (
+                    DonneeBancaireRepository $donneeBancaireRepository
+                ) {
+                    return $donneeBancaireRepository
+                        ->createQueryBuilder('db')
+                        ->orderBy('db.numeroCompte', 'ASC');
+                },
+            ])
+            ->add('date', DateType::class, [
+                'widget' => 'single_text',
+            ])
+            ->add('typeOperation', EntityType::class, [
+                'label' => 'Type d\'opération',
+                'class' => TypeOperationEntity::class,
+                'attr' => [
+                    'class' => 'custom-select',
+                ],
+                'query_builder' => function (
+                    TypeOperationRepository $typeOperationRepository
+                ) {
+                    return $typeOperationRepository
+                        ->createQueryBuilder('to')
+                        ->orderBy('to.libelle', 'ASC');
+                },
+            ])
             ->add('montant', MoneyType::class)
-            ->add(
-                'nature',
-                ChoiceType::class,
-                [
-                    'choices' => [
-                        'Crédit' => 1,
-                        'Débit' => -1,
-                    ],
-                    'expanded' => true,
-                    'multiple' => false,
-                ]
-            );
+            ->add('nature', ChoiceType::class, [
+                'choices' => [
+                    'Crédit' => 1,
+                    'Débit' => -1,
+                ],
+                'expanded' => true,
+                'multiple' => false,
+                'label_attr' => ['class' => 'radio-inline'],
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver)

@@ -1,0 +1,101 @@
+{% extends 'layout.html.twig' %}
+
+{% block title %}Hello ImportCompteGestionController!{% endblock %}
+
+{% block content %}
+    <div class="row my-4 mx-3">
+        <h3 class="text-primary"><i class="fas fa-file-csv"></i> {{ page_title }} - {{ donneeBancaire.majeur.nom }} {{ donneeBancaire.majeur.prenom }} - Compte n° {{ donneeBancaire.numeroCompte }}</h3>
+        <div class="d-none text-primary spinner-border spinner-border-sm mx-3 align-self-center" id="loadingDiv"></div>
+    </div>
+
+    {{ form_start(formFile) }}
+        <div class="row mt-4">
+            <div class="col-sm-10">
+                {{ form_errors(formFile) }}
+                {{ form_row(formFile.nomFichier) }}
+            </div>
+            <div class="col-sm-2 float-right">
+                <button id="btn_filtrer" type="submit" class="btn btn-primary"><i class="fas fa-file-import"></i> Importer</button>
+            </div>
+        </div>
+    {{ form_end(formFile) }}
+
+    {% if formImport.compteGestions | length > 0 %}
+        <div class="rowcol mt-4 mb-2">
+            <div class="row">
+                <div class="col-sm-2 px-1 d-none text-secondary">
+                    <strong>Donnée bancaire</strong>
+                </div>
+                <div class="col-sm-3 px-1 text-secondary">
+                    <strong>Libellé</strong>
+                </div>
+                <div class="col-sm-2 px-1 text-secondary">
+                    <strong>Date</strong>
+                </div>
+                <div class="col-sm-2 px-1 text-secondary">
+                    <strong>Type d'opération</strong>
+                </div>
+                <div class="col-sm-2 px-1 text-secondary">
+                    <strong>Montant</strong>
+                </div>
+                <div class="col-sm-2 text-secondary">
+                    <strong>Nature</strong>
+                </div>
+            </div>
+        </div>
+        <div class="rowcol mb-4">
+            {{ form_start(formImport) }}
+                {{ form_errors(formImport) }}
+                {% for formRow in formImport.compteGestions %}
+                    <div class="row mb-2 import_item">
+                        <div class="col-sm-2 px-1 d-none">
+                            {{ form_widget(formRow.donneeBancaire) }}
+                        </div>
+                        <div class="col-sm-3 px-1">
+                            {{ form_widget(formRow.libelle) }}
+                        </div>
+                        <div class="col-sm-2 px-1">
+                            {{ form_widget(formRow.date) }}
+                        </div>
+                        <div class="col-sm-2 px-1">
+                            {{ form_widget(formRow.typeOperation) }}
+                        </div>
+                        <div class="col-sm-2 px-1">
+                            {{ form_widget(formRow.montant) }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ form_widget(formRow.nature) }}
+                        </div>
+                        <div class="col-sm-1">
+                            <a href="#" class="btn btn-danger js-remove-import">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {{ form_end(formImport) }}
+        </div>
+    {% endif %}
+
+    <div class="row float-right mb-3">
+        <div class="col">
+            <a class="mx-3" href="{{ url_back }}">Retour à la liste</a>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $('.custom-file-input').on('change', function() {
+    let fileName = $(this).val().split('\\').pop();
+       $(this).next('.custom-file-label').addClass("selected").html(fileName);
+    });
+
+    $(".js-remove-import").on("click", function(e) {
+        e.preventDefault();
+        $(this).closest('.import_item')
+            .fadeOut()
+            .remove();
+    });
+</script>
+{% endblock %}
