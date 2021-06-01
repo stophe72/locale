@@ -2,6 +2,35 @@
 
 {% block title %}Hello ImportCompteGestionController!{% endblock %}
 
+{% import _self as formMacros %}
+{% macro printImportRow(formRow) %}
+    <div class="tags row mb-2 import_item">
+        <div class="col-sm-2 px-1 d-none">
+            {{ form_widget(formRow.donneeBancaire) }}
+        </div>
+        <div class="col-sm-3 px-1">
+            {{ form_widget(formRow.libelle) }}
+        </div>
+        <div class="col-sm-2 px-1">
+            {{ form_widget(formRow.date) }}
+        </div>
+        <div class="col-sm-2 px-1">
+            {{ form_widget(formRow.typeOperation) }}
+        </div>
+        <div class="col-sm-2 px-1">
+            {{ form_widget(formRow.montant) }}
+        </div>
+        <div class="col-sm-2">
+            {{ form_widget(formRow.nature) }}
+        </div>
+        <div class="col-sm-1">
+            <a href="#" class="btn btn-danger js-remove-import">
+                <i class="fas fa-trash"></i>
+            </a>
+        </div>
+    </div>
+{% endmacro %}
+
 {% block content %}
     <div class="row my-4 mx-3">
         <h3 class="text-primary"><i class="fas fa-file-csv"></i> {{ page_title }} - {{ donneeBancaire.majeur.nom }} {{ donneeBancaire.majeur.prenom }} - Compte n° {{ donneeBancaire.numeroCompte }}</h3>
@@ -45,43 +74,26 @@
         </div>
         <div class="rowcol mb-4">
             {{ form_start(formImport) }}
-                {{ form_errors(formImport) }}
-                {% for formRow in formImport.compteGestions %}
-                    <div class="row mb-2 import_item">
-                        <div class="col-sm-2 px-1 d-none">
-                            {{ form_widget(formRow.donneeBancaire) }}
-                        </div>
-                        <div class="col-sm-3 px-1">
-                            {{ form_widget(formRow.libelle) }}
-                        </div>
-                        <div class="col-sm-2 px-1">
-                            {{ form_widget(formRow.date) }}
-                        </div>
-                        <div class="col-sm-2 px-1">
-                            {{ form_widget(formRow.typeOperation) }}
-                        </div>
-                        <div class="col-sm-2 px-1">
-                            {{ form_widget(formRow.montant) }}
-                        </div>
-                        <div class="col-sm-2">
-                            {{ form_widget(formRow.nature) }}
-                        </div>
-                        <div class="col-sm-1">
-                            <a href="#" class="btn btn-danger js-remove-import">
-                                <i class="fas fa-trash"></i>
-                            </a>
-                        </div>
+                <div id="wrapper"
+                        data-prototype="{{ formMacros.printImportRow(formImport.compteGestions.vars.prototype) | e('html_attr') }}"
+                        data-index="{{ formImport.compteGestions | length }}"
+                        >
+                    {{ form_errors(formImport) }}
+                    {% for formRow in formImport.compteGestions %}
+                        {{ formMacros.printImportRow(formRow) }}
+                    {% endfor %}
+                </div>
+                <div class="row float-right my-3">
+                    <div class="col">
+                        <a href="{{ url_back }}">Retour à la liste</a>
+                        <a id="btn_ajouter" href="#" class="btn btn-outline-primary add_item_link ml-3" data-collection-holder-class="tags">Ajouter</a>
+                        <button id="btn_importer" type="submit" class="btn btn-success mx-3"><i class="fas fa-check mr-2"></i>Valider</button>
                     </div>
-                {% endfor %}
+                </div>
             {{ form_end(formImport) }}
         </div>
     {% endif %}
 
-    <div class="row float-right mb-3">
-        <div class="col">
-            <a class="mx-3" href="{{ url_back }}">Retour à la liste</a>
-        </div>
-    </div>
 {% endblock %}
 
 {% block javascripts %}
@@ -91,11 +103,30 @@
        $(this).next('.custom-file-label').addClass("selected").html(fileName);
     });
 
-    $(".js-remove-import").on("click", function(e) {
-        e.preventDefault();
-        $(this).closest('.import_item')
-            .fadeOut()
-            .remove();
+    $(document).ready(function() {
+        const $wrapper = $('#wrapper');
+
+        $wrapper.on("click", ".js-remove-import", function(e) {
+            e.preventDefault();
+            $(this).closest('.import_item')
+                .fadeOut()
+                .remove();
+        });
+
+        $("#btn_ajouter").on('click', function(e) {
+            e.preventDefault();
+            // Get the data-prototype explained earlier
+            var prototype = $wrapper.data('prototype');
+            // get the new index
+            var index = $wrapper.data('index');
+            // Replace '__name__' in the prototype's HTML to
+            // instead be a number based on how many items we have
+            var newForm = prototype.replace(/__name__/g, index);
+            // increase the index with one for the next item
+            $wrapper.data('index', index + 1);
+            // Display the form in the page before the "new" link
+            $wrapper.append(newForm);
+        });
     });
 </script>
 {% endblock %}

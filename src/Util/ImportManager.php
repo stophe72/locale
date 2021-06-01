@@ -9,8 +9,6 @@ use DateTime;
 
 class ImportManager
 {
-    const DEFAULT_LIBELLE = '--- indéterminé ---';
-
     public function parseCsv(
         DonneeBancaireEntity $donneeBancaire,
         array $file,
@@ -53,21 +51,11 @@ class ImportManager
         $compteGestion = new CompteGestionEntity();
         $compteGestion->setDonneeBancaire($donneeBancaire);
         $compteGestion->setDate(new DateTime());
-        $compteGestion->setLibelle(self::DEFAULT_LIBELLE);
         $compteGestion->setMontant(0);
-        // $compteGestion->setNature(1);
 
         return $compteGestion;
     }
-/*
-    private function isCompteOperationValide(CompteGestionEntity $compteGestion)
-    {
-        return $compteGestion->getDate()->format('d/m/Y') !=
-            (new DateTime())->defaultDate->format('d/m/Y') &&
-            $compteGestion->getTypeOperation() != null &&
-            $compteGestion->getLibelle() != self::DEFAULT_LIBELLE;
-    }
-*/
+
     private function setTypeOperation(
         CompteGestionEntity $compteGestion,
         array $ios,

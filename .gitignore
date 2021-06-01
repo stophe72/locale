@@ -27,3 +27,8 @@ yarn.lock
 .env.test
 public/uploads/*
 doc/Specs_1.0.docx
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+###< phpunit/phpunit ###

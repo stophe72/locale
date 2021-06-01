@@ -14,7 +14,11 @@ class CompteGestionImportType extends AbstractType
     {
         $builder->add('compteGestions', CollectionType::class, [
             'entry_type' => CompteGestionType::class,
-            'entry_options' => ['label' => false],
+            'entry_options' => [
+                'label' => false,
+            ],
+            'allow_add' => true,
+            'allow_delete' => true,
         ]);
     }
 
